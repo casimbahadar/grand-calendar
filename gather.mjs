@@ -49,14 +49,26 @@ const IN_SET = new Set(IN_REGION);
 const OUT_SET = new Set(OUT_OF_REGION);
 
 function normalizePlace(s) {
-  return s.toLowerCase().replace(/\./g, '').replace(/\bsaint\b/g, 'st').replace(/\s+/g, ' ').trim();
+  return s.toLowerCase().replace(/\./g, '').replace(/\bsaint\b/g, 'st')
+    .replace(/^(township|city|town) of /, '')
+    .replace(/\s+(on|ontario)$/, '') // "Waterloo ON" written without a comma
+    .replace(/\s+/g, ' ').trim();
 }
+
+function titleCase(s) { return s.replace(/\b\w/g, (c) => c.toUpperCase()); }
 
 export function regionOf(location) {
   if (!location) return { status: 'unknown', how: 'no address in source' };
-  const parts = location.split(',').map((p) => p.trim()).filter(Boolean);
-  for (const p of parts) if (IN_SET.has(normalizePlace(p))) return { status: 'in', place: p, how: 'place name in address' };
-  for (const p of parts) if (OUT_SET.has(normalizePlace(p))) return { status: 'out', place: p, how: 'place name in address' };
+  const parts = location.split(',').map((p) => normalizePlace(p)).filter(Boolean);
+  for (const p of parts) if (IN_SET.has(p)) return { status: 'in', place: titleCase(p), how: 'place name in address' };
+  for (const p of parts) if (OUT_SET.has(p)) return { status: 'out', place: titleCase(p), how: 'place name in address' };
+  // Fallback for addresses like "145 Bedford Rd. Kitchener" or "Downtown Hespeler":
+  // an in-region name at the end of a part. Out-of-region names still need an exact match.
+  for (const p of parts) {
+    for (const name of IN_REGION) {
+      if (p.endsWith(` ${name}`)) return { status: 'in', place: titleCase(name), how: 'place name at end of an address part' };
+    }
+  }
   return { status: 'unknown', how: 'no known place name in address' };
 }
 
@@ -174,6 +186,11 @@ export function normalizeEvent(raw, source, checkedAt) {
     const last = addDays(end.date, -1);
     end = last >= start.date ? { date: last, time: null, allDay: true } : null;
     notes.push('All-day end date converted to the last day of the event.');
+  }
+  if (end && !end.allDay && start.time === '00:00' && end.date === start.date && end.time === '23:59') {
+    end = null;
+    timeListed = false;
+    notes.push('Source gives 00:00 to 23:59 (its way of marking all day); treated as hours not listed.');
   }
   if (end && !end.allDay && end.date === start.date && end.time === start.time) {
     end = null;

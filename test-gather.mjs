@@ -27,7 +27,7 @@ check('region: Waterloo, Baden, Kitchener, St. Jacobs, Elmira, "Cambridge " are 
     ['Holiday Sip', 'St. Jacobs'], ['4th Annual', 'Elmira'], ['Dance Legion', 'Cambridge'], ['SYNTHETIC TEST all-day', 'St Clements']]) {
     const r = byTitle(t).derived.region;
     assert.equal(r.status, 'in', t);
-    assert.equal(r.place, place, t);
+    assert.equal(r.place.toLowerCase(), place.toLowerCase().replace(/\./g, ''), t);
   }
 });
 check('region: Stratford is out, no address is unknown', () => {
@@ -36,12 +36,31 @@ check('region: Stratford is out, no address is unknown', () => {
   assert.equal(regionOf('Some Hall, 1 Main St, Nowhereville, ON').status, 'unknown');
 });
 
+check('region: address formats seen in the live feed', () => {
+  const cases = [
+    ['Vector Space, 187 King St South, Unit106, Waterloo ON, N2L 0A5, ON, Canada', 'in'],
+    ['Kwartzlab, 145 Bedford Rd. Kitchener, ON, ON, Canada', 'in'],
+    ['Base Church – Bloomingdale, 850 Sawmill Rd , Township of Woolwich, ON, Canada', 'in'],
+    ['Downtown Hespeler, Groh Ave → Guelph Ave & Sheffield St, ON, Canada', 'in'],
+    ['Vector Space, info@kwvector.space, ON, Canada', 'unknown'],
+    ['ON', 'unknown'],
+    ['A Hall, 9 Main St, Guelph, ON, Canada', 'out'],
+  ];
+  for (const [loc, want] of cases) assert.equal(regionOf(loc).status, want, loc);
+});
+
 check('00:00 with equal end is "time not listed"', () => {
   for (const t of ['Christmas at the Castle', 'Dance Legion']) {
     const e = byTitle(t);
     assert.equal(e.derived.timeListed, false, t);
     assert.equal(e.end, null, t);
   }
+});
+check('00:00 to 23:59 is "hours not listed" (Christkindl Market pattern)', () => {
+  const raw = parseICS('BEGIN:VEVENT\nUID:x\nSUMMARY:T\nDTSTART;TZID=America/Toronto:20261203T000000\nDTEND;TZID=America/Toronto:20261203T235900\nEND:VEVENT')[0];
+  const e = normalizeEvent(raw, source, 'x');
+  assert.equal(e.derived.timeListed, false);
+  assert.equal(e.end, null);
 });
 check('equal start and end at 19:30 keeps the start, drops the end', () => {
   const e = byTitle('Raptors');
