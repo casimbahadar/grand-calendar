@@ -1,7 +1,7 @@
 // Run with: node test-gather.mjs
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
-import { parseICS, normalizeEvent, regionOf, disallowed, SOURCES } from './gather.mjs';
+import { parseICS, normalizeEvent, regionOf, disallowed, SOURCES, parseWplStatus, needsStatusCheck, assignFirstSeen } from './gather.mjs';
 
 const text = await readFile(new URL('./explore-sample.ics', import.meta.url), 'utf8');
 const source = SOURCES.find((x) => x.id === 'explore-waterloo');
@@ -139,6 +139,45 @@ check('WPL: age line kept in the description, organizer dropped', () => {
 check('Explore Waterloo is off for the GitHub job, the library is on', () => {
   assert.equal(SOURCES.find((x) => x.id === 'explore-waterloo').server, false);
   assert.equal(wplSource.server, true);
+});
+
+// ---------- Registration status (trimmed copies of 4 real calendar.wpl.ca pages) ----------
+const page = async (id) => parseWplStatus(await readFile(new URL(`./wpl-page-${id}.html`, import.meta.url), 'utf8'), id);
+const full = await page('17114664');
+const open = await page('17114674');
+const dropIn = await page('17242221');
+const closed = await page('17321367');
+check('status: full with a wait list (Mahjong Club, Nov 5)', () => {
+  assert.equal(full.state, 'full');
+  assert.equal(full.waitlist, true);
+});
+check('status: open with seats, ignoring "full" notices for other events in the sidebar', () => {
+  assert.equal(open.state, 'open');
+  assert.equal(open.seatsRemaining, 14);
+  assert.equal(open.waitlist, false);
+});
+check('status: drop-in program (Explore Play Learn)', () => {
+  assert.equal(dropIn.state, 'drop-in');
+  assert.equal(dropIn.dropIn, true);
+});
+check('status: registration closed', () => assert.equal(closed.state, 'closed'));
+
+// ---------- Hourly runs: what gets rechecked, and the "New" badge ----------
+check('between full passes, only events without a known status get their page loaded', () => {
+  const until = '2026-11-16';
+  const known = { registration: { state: 'open' } };
+  const ev = (date) => ({ start: { date } });
+  assert.equal(needsStatusCheck(ev('2026-11-05'), undefined, false, until), true, 'newly posted');
+  assert.equal(needsStatusCheck(ev('2026-11-05'), { registration: null }, false, until), true, 'just entered the window');
+  assert.equal(needsStatusCheck(ev('2026-11-05'), known, false, until), false, 'already known');
+  assert.equal(needsStatusCheck(ev('2026-11-05'), known, true, until), true, 'full pass rechecks it');
+  assert.equal(needsStatusCheck(ev('2026-12-20'), undefined, true, until), false, 'beyond 14 days');
+});
+check('firstSeen: new events get now, existing keep theirs, older files use their own time', () => {
+  const prev = { generatedAt: '2026-11-02T17:25:46Z', events: [{ id: 'a', firstSeen: '2026-11-01T00:00:00Z' }, { id: 'b' }] };
+  const evs = [{ id: 'a' }, { id: 'b' }, { id: 'c' }];
+  assignFirstSeen(evs, prev, '2026-11-02T20:00:00Z');
+  assert.deepEqual(evs.map((e) => e.firstSeen), ['2026-11-01T00:00:00Z', '2026-11-02T17:25:46Z', '2026-11-02T20:00:00Z']);
 });
 
 console.log(`\n${passed} checks passed`);

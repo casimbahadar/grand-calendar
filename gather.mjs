@@ -8,12 +8,15 @@
 
 import { readFile, writeFile } from 'node:fs/promises';
 import { pathToFileURL } from 'node:url';
+import { readAges } from './ages.mjs';
 
 const OUT_FILE = 'events.json';
 const TZ = 'America/Toronto';
 const HORIZON_DAYS = 60;
 const DELAY_MS = 2000; // pause between page requests, to be polite to the source
 const DESC_MAX = 1000;
+const STATUS_DAYS = 14; // registration status is checked on event pages for events this close
+const STATUS_EVERY_MS = 5.5 * 60 * 60 * 1000; // full status pass about every 6 hours (runs can start late)
 const UA = 'GrandCalendar/0.1 (personal events digest; https://github.com/casimbahadar/grand-calendar)';
 
 const wplFeed = () => {
@@ -44,6 +47,7 @@ export const SOURCES = [
     eventUrl: (uid) => `https://calendar.wpl.ca/event/${encodeURIComponent(uid)}`,
     // Library venues are branch names with no town, e.g. "Eastside Branch - Program Room".
     defaultPlace: 'Waterloo',
+    statusFromPages: true,
   },
 ];
 
@@ -222,6 +226,7 @@ export function normalizeEvent(raw, source, checkedAt) {
   }
 
   let description = val('DESCRIPTION') ? unescapeText(val('DESCRIPTION')).trim() : '';
+  const age = readAges(title, description); // read before the description is shortened
   let descriptionTruncated = false;
   if (description.length > DESC_MAX) { description = description.slice(0, DESC_MAX); descriptionTruncated = true; }
 
@@ -259,7 +264,7 @@ export function normalizeEvent(raw, source, checkedAt) {
     end: end ? { date: end.date, time: end.time } : null,
     allDay: start.allDay,
     lastChecked: checkedAt,
-    derived: { region, timeListed, notes },
+    derived: { region, timeListed, age, notes },
   };
 }
 
@@ -360,6 +365,89 @@ async function gatherSingle(source, checkedAt) {
   return { events, pages: 1, truncated: all.length >= 500 };
 }
 
+// ---------- Registration status from library event pages ----------
+// Each page also lists *other* events in a sidebar, with their own "full" notices.
+// Only the part before the first sidebar entry belongs to this event.
+function decodeEntities(t) {
+  return t.replace(/&#(\d+);/g, (_, n) => String.fromCodePoint(+n))
+    .replace(/&#x([0-9a-f]+);/gi, (_, n) => String.fromCodePoint(parseInt(n, 16)))
+    .replace(/&nbsp;/g, ' ').replace(/&quot;/g, '"').replace(/&#039;|&apos;/g, "'")
+    .replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
+}
+
+export function parseWplStatus(html, eventId) {
+  const cut = html.indexOf('<div class="amev-event-description"');
+  const main = cut >= 0 ? html.slice(0, cut) : html;
+  const text = decodeEntities(main.replace(/<(script|style)[\s\S]*?<\/(script|style)>/gi, ' ').replace(/<[^>]+>/g, ' ')).replace(/\s+/g, ' ');
+  const idAttr = `data-eventid="${eventId}"`;
+  const waitlist = [...main.matchAll(/<[^>]*registerForEvent[^>]*>/g)]
+    .some((m) => m[0].includes(idAttr) && m[0].includes('data-regtype="2"'));
+  const seats = /(\d+) Seats? Remaining/i.exec(text);
+  const opens = /Registration (?:opens|will open|begins)[^.<]{0,60}/i.exec(text);
+  const dropIn = /\|\s*Drop-in\s*\|/i.test(text);
+  let state;
+  if (/This event is full/i.test(text)) state = 'full';
+  else if (/Registration (?:is )?now closed/i.test(text)) state = 'closed';
+  else if (seats) state = 'open';
+  else if (opens) state = 'not-open-yet';
+  else if (dropIn) state = 'drop-in';
+  else state = 'not-stated';
+  return {
+    state,
+    seatsRemaining: seats ? +seats[1] : null,
+    waitlist,
+    dropIn,
+    opensText: opens ? opens[0].trim() : null,
+  };
+}
+
+// Which events get their page loaded this run. On a full pass: every event in the window.
+// Between full passes: only events with no known status yet (newly posted, or just
+// moved into the 14-day window). Everything else keeps its last status and check time.
+export function needsStatusCheck(e, prevE, fullPass, until) {
+  if (e.start.date > until) return false;
+  if (fullPass) return true;
+  return !prevE || !prevE.registration;
+}
+
+async function addPageStatus(source, events, prev, fullPass) {
+  const until = addDays(todayToronto(), STATUS_DAYS);
+  const prevById = new Map((prev?.events || []).map((e) => [e.id, e]));
+  let checked = 0;
+  let failed = 0;
+  for (const e of events) {
+    const prevE = prevById.get(e.id);
+    if (!needsStatusCheck(e, prevE, fullPass, until)) {
+      e.registration = e.start.date > until ? null : (prevE?.registration ?? null);
+      continue;
+    }
+    if (checked + failed > 0) await sleep(DELAY_MS);
+    try {
+      const res = await fetch(e.url, { headers: { 'User-Agent': UA }, signal: AbortSignal.timeout(20000) });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const uid = e.id.slice(source.id.length + 1);
+      e.registration = { ...parseWplStatus(await res.text(), uid), checkedAt: new Date().toISOString(), from: 'event page' };
+      checked++;
+    } catch {
+      // Keep the last known status, with its old check time, rather than showing nothing.
+      e.registration = prevE?.registration ?? null;
+      failed++;
+    }
+  }
+  return { checked, failed };
+}
+
+// firstSeen = when Grand Calendar first saw the event. The app uses it for the "New" badge.
+// Events already in the previous file keep their time (or that file's time, for files made
+// before this field existed), so an upgrade doesn't mark everything as new.
+export function assignFirstSeen(events, prev, now) {
+  const prevById = new Map((prev?.events || []).map((e) => [e.id, e]));
+  for (const e of events) {
+    const p = prevById.get(e.id);
+    e.firstSeen = p ? (p.firstSeen ?? prev.generatedAt) : now;
+  }
+}
+
 async function readPrevious() {
   try { return JSON.parse(await readFile(OUT_FILE, 'utf8')); } catch { return null; }
 }
@@ -387,6 +475,16 @@ export async function run({ fixtures = {} } = {}) {
         if (robots.note) status.note = robots.note;
         if (!robots.allowed) throw new Error(robots.note || 'robots.txt disallows the feed; source skipped');
         result = source.kind === 'ical-paged' ? await gatherPaged(source, checkedAt) : await gatherSingle(source, checkedAt);
+        if (source.statusFromPages) {
+          const lastFull = Date.parse(prevStatus?.statusPages?.fullPassAt || '') || 0;
+          const fullPass = Date.now() - lastFull >= STATUS_EVERY_MS;
+          const st = await addPageStatus(source, result.events, prev, fullPass);
+          status.statusPages = {
+            mode: fullPass ? 'full pass' : 'new events only',
+            checked: st.checked, failed: st.failed, withinDays: STATUS_DAYS,
+            fullPassAt: fullPass ? checkedAt : prevStatus.statusPages.fullPassAt,
+          };
+        }
       }
       events.push(...result.events);
       Object.assign(status, {
@@ -403,6 +501,7 @@ export async function run({ fixtures = {} } = {}) {
     sourcesOut.push(status);
   }
 
+  assignFirstSeen(events, prev, checkedAt);
   if (!fixtureMode) events = events.filter((e) => (e.end ? e.end.date : e.start.date) >= today);
   const unique = [...new Map(events.map((e) => [e.id, e])).values()];
   unique.sort((a, b) => `${a.start.date}T${a.start.time || '00:00'}`.localeCompare(`${b.start.date}T${b.start.time || '00:00'}`));
