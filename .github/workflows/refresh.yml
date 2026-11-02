@@ -1,0 +1,38 @@
+name: Refresh events
+
+on:
+  schedule:
+    - cron: "17 */6 * * *"   # every 6 hours, at 17 minutes past (GitHub may start it late)
+  workflow_dispatch:           # adds a "Run workflow" button for manual runs
+
+permissions:
+  contents: write
+
+concurrency:
+  group: refresh-events
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Gather events
+        run: |
+          node --version
+          node gather.mjs
+
+      - name: Save events.json if it changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add events.json
+          if git diff --cached --quiet; then
+            echo "No changes to save"
+            exit 0
+          fi
+          git commit -m "Refresh events"
+          git pull --rebase
+          git push
