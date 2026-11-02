@@ -4,7 +4,7 @@ import { readFile } from 'node:fs/promises';
 import { parseICS, normalizeEvent, regionOf, disallowed, SOURCES } from './gather.mjs';
 
 const text = await readFile(new URL('./explore-sample.ics', import.meta.url), 'utf8');
-const source = SOURCES[0];
+const source = SOURCES.find((x) => x.id === 'explore-waterloo');
 const raws = parseICS(text);
 const events = raws.map((r) => normalizeEvent(r, source, '2026-11-02T00:00:00.000Z')).filter(Boolean);
 const byTitle = (t) => events.find((e) => e.title.startsWith(t));
@@ -97,6 +97,48 @@ check('robots.txt rules', () => {
   assert.equal(disallowed('User-agent: *\nDisallow: /*?ical=', '/events/list/?ical=1'), true);
   assert.equal(disallowed('User-agent: *\nDisallow: /wp-admin/\nAllow: /wp-admin/admin-ajax.php', '/events/list/?ical=1'), false);
   assert.equal(disallowed('User-agent: *\nDisallow: /events/\nAllow: /events/list/', '/events/list/?ical=1'), false);
+});
+
+// ---------- Waterloo Public Library (6 real events copied from the live feed) ----------
+const wplSource = SOURCES.find((x) => x.id === 'wpl');
+const wplText = await readFile(new URL('./wpl-sample.ics', import.meta.url), 'utf8');
+const wpl = parseICS(wplText).map((r) => normalizeEvent(r, wplSource, 'x')).filter(Boolean);
+const w = (t) => wpl.find((e) => e.title.startsWith(t));
+
+check('WPL: 6 events, titles trimmed', () => {
+  assert.equal(wpl.length, 6);
+  assert.equal(w('20s & 30s').title, '20s & 30s Social Club');
+});
+check('WPL: UTC times match what calendar.wpl.ca shows', () => {
+  // Explore Play Learn: page shows Mon Nov 2, 10:30am - 11:15am
+  assert.deepEqual(w('Explore Play Learn').start, { date: '2026-11-02', time: '10:30' });
+  assert.deepEqual(w('Explore Play Learn').end, { date: '2026-11-02', time: '11:15' });
+  // 20s & 30s Social Club: ends 01:00 UTC the next day, page shows Tue Nov 3, 6:00pm - 8:00pm
+  assert.deepEqual(w('20s & 30s').start, { date: '2026-11-03', time: '18:00' });
+  assert.deepEqual(w('20s & 30s').end, { date: '2026-11-03', time: '20:00' });
+  // Picturebook Book Club: page shows Tue Nov 10, 11:30am - 12:15pm
+  assert.deepEqual(w('Picturebook').start, { date: '2026-11-10', time: '11:30' });
+});
+check('WPL: region from the library default, labelled as such', () => {
+  const r = w('Art and STEM').derived.region;
+  assert.equal(r.status, 'in');
+  assert.equal(r.place, 'Waterloo');
+  assert.match(r.how, /Waterloo Public Library venue/);
+});
+check('WPL: link built from event number, coordinates and status kept', () => {
+  const e = w('Explore Play Learn');
+  assert.equal(e.url, 'https://calendar.wpl.ca/event/17242221');
+  assert.ok(e.derived.notes.some((n) => n.includes('link built')));
+  assert.deepEqual(e.geo, { lat: 43.474333, lng: -80.5710992 });
+  assert.equal(e.status, 'CONFIRMED');
+});
+check('WPL: age line kept in the description, organizer dropped', () => {
+  assert.equal(w('Picturebook').description, 'For kids ages 4 to 6 years old with a caregiver.');
+  assert.ok(!JSON.stringify(wpl).includes('noreply@wpl.ca'));
+});
+check('Explore Waterloo is off for the GitHub job, the library is on', () => {
+  assert.equal(SOURCES.find((x) => x.id === 'explore-waterloo').server, false);
+  assert.equal(wplSource.server, true);
 });
 
 console.log(`\n${passed} checks passed`);

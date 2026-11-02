@@ -1,6 +1,7 @@
 // Grand Calendar: event gatherer.
-// Milestone 2: one source (Explore Waterloo Region iCal feed).
 // Runs on GitHub Actions every 6 hours and writes events.json.
+// Sources marked server: false are skipped here (Explore Waterloo blocks GitHub's
+// servers); the app reads those directly on the phone instead.
 //
 // Rule for every event: top-level fields are what the source stated.
 // Anything the app worked out itself lives under `derived`, with a reason.
@@ -15,15 +16,34 @@ const DELAY_MS = 2000; // pause between page requests, to be polite to the sourc
 const DESC_MAX = 1000;
 const UA = 'GrandCalendar/0.1 (personal events digest; https://github.com/casimbahadar/grand-calendar)';
 
+const wplFeed = () => {
+  // Built the same way calendar.wpl.ca builds its own iCal link (up to 500 upcoming events).
+  const filters = { feedType: 'ical', filters: { location: ['all'], ages: ['all'], types: ['all'], tags: [], term: '', days: 1 } };
+  return `https://calendar.wpl.ca/feeds?data=${Buffer.from(JSON.stringify(filters)).toString('base64')}`;
+};
+
 export const SOURCES = [
   {
     id: 'explore-waterloo',
     name: 'Explore Waterloo Region',
+    kind: 'ical-paged',
+    server: false, // HTTP 403 from GitHub's servers (Nov 2, 2026); read on the phone instead
     origin: 'https://explorewaterloo.ca',
     pageUrl: (n) => (n === 1
       ? 'https://explorewaterloo.ca/events/list/?ical=1'
       : `https://explorewaterloo.ca/events/list/page/${n}/?ical=1`),
     maxPages: 40,
+  },
+  {
+    id: 'wpl',
+    name: 'Waterloo Public Library',
+    kind: 'ical-single',
+    server: true,
+    origin: 'https://calendar.wpl.ca',
+    feedUrl: wplFeed,
+    eventUrl: (uid) => `https://calendar.wpl.ca/event/${encodeURIComponent(uid)}`,
+    // Library venues are branch names with no town, e.g. "Eastside Branch - Program Room".
+    defaultPlace: 'Waterloo',
   },
 ];
 
@@ -206,9 +226,22 @@ export function normalizeEvent(raw, source, checkedAt) {
   if (description.length > DESC_MAX) { description = description.slice(0, DESC_MAX); descriptionTruncated = true; }
 
   const rawUrl = val('URL') ? unescapeText(val('URL')).trim() : null;
-  const url = rawUrl && /^https?:\/\//.test(rawUrl) ? rawUrl : null;
+  let url = rawUrl && /^https?:\/\//.test(rawUrl) ? rawUrl : null;
+  if (!url && source.eventUrl) {
+    url = source.eventUrl(uid);
+    notes.push('Event link built from the source\'s event number (its feed has no link field).');
+  }
   const location = val('LOCATION') ? unescapeText(val('LOCATION')).replace(/\s+/g, ' ').trim() : null;
   const categories = val('CATEGORIES') ? splitCategories(val('CATEGORIES')) : [];
+  const status = val('STATUS') ? val('STATUS').trim().toUpperCase() : null; // e.g. CONFIRMED, CANCELLED
+  let geo = null;
+  const g = val('GEO') ? /^(-?\d+(?:\.\d+)?);(-?\d+(?:\.\d+)?)$/.exec(val('GEO').trim()) : null;
+  if (g) geo = { lat: +g[1], lng: +g[2] };
+
+  let region = regionOf(location);
+  if (region.status === 'unknown' && source.defaultPlace) {
+    region = { status: 'in', place: source.defaultPlace, how: `${source.name} venue; its venue names don't include a town` };
+  }
 
   // ORGANIZER is deliberately not kept: it can hold a private person's name and email.
   return {
@@ -220,11 +253,13 @@ export function normalizeEvent(raw, source, checkedAt) {
     url,
     location,
     categories,
+    status,
+    geo,
     start: { date: start.date, time: start.time },
     end: end ? { date: end.date, time: end.time } : null,
     allDay: start.allDay,
     lastChecked: checkedAt,
-    derived: { region: regionOf(location), timeListed, notes },
+    derived: { region, timeListed, notes },
   };
 }
 
@@ -263,7 +298,8 @@ export function disallowed(robotsTxt, path) {
 }
 
 async function robotsCheck(source) {
-  const paths = [1, 2].map((n) => { const u = new URL(source.pageUrl(n)); return u.pathname + u.search; });
+  const urls = source.kind === 'ical-paged' ? [source.pageUrl(1), source.pageUrl(2)] : [source.feedUrl()];
+  const paths = urls.map((x) => { const u = new URL(x); return u.pathname + u.search; });
   try {
     const res = await fetch(`${source.origin}/robots.txt`, { headers: { 'User-Agent': UA }, signal: AbortSignal.timeout(10000) });
     // No robots.txt (4xx) means no rules. A server error means we can't tell, so skip this run.
@@ -312,11 +348,24 @@ async function gatherPaged(source, checkedAt) {
   return { events: [...byId.values()], pages, truncated, partialError };
 }
 
+async function gatherSingle(source, checkedAt) {
+  const horizon = addDays(todayToronto(), HORIZON_DAYS);
+  const res = await fetch(source.feedUrl(), { headers: { 'User-Agent': UA }, signal: AbortSignal.timeout(30000) });
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  const text = await res.text();
+  if (!text.includes('BEGIN:VCALENDAR')) throw new Error('response was not a calendar file');
+  const all = parseICS(text).map((r) => normalizeEvent(r, source, checkedAt)).filter(Boolean);
+  const events = all.filter((e) => e.start.date <= horizon);
+  // The feed caps at 500 events; if it is full we may be missing some.
+  return { events, pages: 1, truncated: all.length >= 500 };
+}
+
 async function readPrevious() {
   try { return JSON.parse(await readFile(OUT_FILE, 'utf8')); } catch { return null; }
 }
 
-export async function run({ fixturePath = null } = {}) {
+export async function run({ fixtures = {} } = {}) {
+  const fixtureMode = Object.keys(fixtures).length > 0;
   const checkedAt = new Date().toISOString();
   const today = todayToronto();
   const prev = await readPrevious();
@@ -324,18 +373,20 @@ export async function run({ fixturePath = null } = {}) {
   let events = [];
 
   for (const source of SOURCES) {
+    if (!fixtureMode && !source.server) continue;
+    if (fixtureMode && !fixtures[source.id]) continue;
     const status = { id: source.id, name: source.name, checkedAt };
     const prevStatus = prev?.sources?.find((s) => s.id === source.id);
     try {
       let result;
-      if (fixturePath) {
-        const text = await readFile(fixturePath, 'utf8');
+      if (fixtureMode) {
+        const text = await readFile(fixtures[source.id], 'utf8');
         result = { events: parseICS(text).map((r) => normalizeEvent(r, source, checkedAt)).filter(Boolean), pages: 1, truncated: false, fixture: true };
       } else {
         const robots = await robotsCheck(source);
         if (robots.note) status.note = robots.note;
         if (!robots.allowed) throw new Error(robots.note || 'robots.txt disallows the feed; source skipped');
-        result = await gatherPaged(source, checkedAt);
+        result = source.kind === 'ical-paged' ? await gatherPaged(source, checkedAt) : await gatherSingle(source, checkedAt);
       }
       events.push(...result.events);
       Object.assign(status, {
@@ -352,7 +403,7 @@ export async function run({ fixturePath = null } = {}) {
     sourcesOut.push(status);
   }
 
-  if (!fixturePath) events = events.filter((e) => (e.end ? e.end.date : e.start.date) >= today);
+  if (!fixtureMode) events = events.filter((e) => (e.end ? e.end.date : e.start.date) >= today);
   const unique = [...new Map(events.map((e) => [e.id, e])).values()];
   unique.sort((a, b) => `${a.start.date}T${a.start.time || '00:00'}`.localeCompare(`${b.start.date}T${b.start.time || '00:00'}`));
 
@@ -363,9 +414,13 @@ export async function run({ fixturePath = null } = {}) {
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
-  const i = process.argv.indexOf('--fixture');
-  run({ fixturePath: i >= 0 ? process.argv[i + 1] : null }).then(({ out, allFailed }) => {
-    for (const s of out.sources) console.log(`${s.name}: ${s.ok ? 'ok' : `FAILED (${s.error})`}, ${s.count} events${s.truncated ? ', truncated' : ''}`);
+  // Offline test: node gather.mjs --fixture explore-waterloo=explore-sample.ics --fixture wpl=wpl-sample.ics
+  const fixtures = {};
+  process.argv.forEach((a, i) => {
+    if (a === '--fixture') { const [id, path] = process.argv[i + 1].split('='); fixtures[id] = path; }
+  });
+  run({ fixtures }).then(({ out, allFailed }) => {
+    for (const s of out.sources) console.log(`${s.name}: ${s.ok ? 'ok' : `FAILED (${s.error})`}, ${s.count} events${s.truncated ? ', may be incomplete' : ''}`);
     console.log(`Total events written: ${out.events.length}`);
     if (allFailed) process.exitCode = 1;
   });
