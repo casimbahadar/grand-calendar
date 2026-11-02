@@ -1,0 +1,678 @@
+{
+"note": "Coordinates for Explore Waterloo venues, looked up once with OpenStreetMap Nominatim (one request per 1.2 s, results cached here). null means no reliable match; the app shows the town instead. Keys are \"venue name|street address\" in lower case.",
+"attribution": "Venue locations © OpenStreetMap contributors, ODbL",
+"lookedUpAt": "2026-11-02",
+"venues": {
+"10 malcolm street|cambridge": null,
+"13 food and beverage|13 main street": {
+"lat": 43.35885,
+"lng": -80.31516,
+"matchedBy": "address"
+},
+"44 gaukel st|44 gaukel st - room 227": {
+"lat": 43.4499,
+"lng": -80.49355,
+"matchedBy": "venue name"
+},
+"9 princess street east|9 princess street east": {
+"lat": 43.4667,
+"lng": -80.52207,
+"matchedBy": "address"
+},
+"abe erb – downtown kitchener|151 charles st w.": {
+"lat": 43.45096,
+"lng": -80.49818,
+"matchedBy": "address"
+},
+"abe erb – downtown kitchener|151 charles street west": {
+"lat": 43.45096,
+"lng": -80.49818,
+"matchedBy": "address"
+},
+"abe erb – uptown waterloo|15 king street south": {
+"lat": 43.4646,
+"lng": -80.52259,
+"matchedBy": "address"
+},
+"accelerator centre|295 hagey blvd.": {
+"lat": 43.4774,
+"lng": -80.5491,
+"matchedBy": "address"
+},
+"african lion safari|1386 cooper road": null,
+"african lion safari|1386 cooper road, cambridge, ontario": null,
+"aok craft beer + arcade|165 king street west  #unit b03": {
+"lat": 43.4507,
+"lng": -80.49227,
+"matchedBy": "address"
+},
+"apollo cinema|141 ontario street north": {
+"lat": 43.4519,
+"lng": -80.48888,
+"matchedBy": "address"
+},
+"baden|": {
+"lat": 43.39005,
+"lng": -80.65976,
+"matchedBy": "venue name"
+},
+"base church – bloomingdale|850 sawmill rd": {
+"lat": 43.51028,
+"lng": -80.46154,
+"matchedBy": "address"
+},
+"bingemans gift of lights|425 bingemans center drive": null,
+"bingemans gift of lights|425 bingemans center drive, kitchener, on": null,
+"bingemans gift of lights|425 bingemans centre drive": {
+"lat": 43.47237,
+"lng": -80.45086,
+"matchedBy": "address"
+},
+"bingemans marshall hall|425 bingemans centre dr": {
+"lat": 43.47237,
+"lng": -80.45086,
+"matchedBy": "address"
+},
+"block 3 brewing company|1430 unit #3, king street n": {
+"lat": 43.54025,
+"lng": -80.55276,
+"matchedBy": "address (second try)"
+},
+"block three brewing company|1430 unit#2, king st n": {
+"lat": 43.54025,
+"lng": -80.55276,
+"matchedBy": "venue name"
+},
+"block three brewing|1430 king st. n, unit 2": null,
+"boathouse dtk|57 jubilee drive": {
+"lat": 43.44711,
+"lng": -80.49566,
+"matchedBy": "address"
+},
+"builders club basement|165 king street west": {
+"lat": 43.4507,
+"lng": -80.49227,
+"matchedBy": "address"
+},
+"cambridge butterfly conservatory|2500 kossuth road": {
+"lat": 43.45148,
+"lng": -80.36739,
+"matchedBy": "address"
+},
+"cambridge centre|355 hespeler road": {
+"lat": 43.39312,
+"lng": -80.3196,
+"matchedBy": "address"
+},
+"cambridge city hall|50 dickson st.": {
+"lat": 43.36043,
+"lng": -80.31224,
+"matchedBy": "address"
+},
+"cambridge newfoundland club|1500 dunbar rd.": {
+"lat": 43.39063,
+"lng": -80.32032,
+"matchedBy": "address"
+},
+"cambridge public library, queen’s square|1 north square": {
+"lat": 43.35943,
+"lng": -80.31818,
+"matchedBy": "address"
+},
+"camellia bake shop|305 northfield drive east": {
+"lat": 43.51429,
+"lng": -80.51765,
+"matchedBy": "address"
+},
+"canadian clay and glass gallery|25 caroline street north": {
+"lat": 43.46492,
+"lng": -80.52622,
+"matchedBy": "address"
+},
+"canoeing the grand|3734 king st e": {
+"lat": 43.42112,
+"lng": -80.40971,
+"matchedBy": "address"
+},
+"castle kilbride|60 snyder's road west": {
+"lat": 43.40427,
+"lng": -80.67163,
+"matchedBy": "address"
+},
+"catalyst 137|137 glasgow street": {
+"lat": 43.4513,
+"lng": -80.5133,
+"matchedBy": "address"
+},
+"catalyst commons|137 glasgow st #210": {
+"lat": 43.4513,
+"lng": -80.5133,
+"matchedBy": "address"
+},
+"catalyst137|137 glasgow street": {
+"lat": 43.4513,
+"lng": -80.5133,
+"matchedBy": "address"
+},
+"centre in the square|101 queen st n": {
+"lat": 43.45444,
+"lng": -80.48391,
+"matchedBy": "address"
+},
+"centre in the square|101 queen st n, kitchener, on": {
+"lat": 43.45444,
+"lng": -80.48391,
+"matchedBy": "venue name"
+},
+"centre in the square|101 queen st n, kitchener, on n2h 6p7": {
+"lat": 43.45444,
+"lng": -80.48391,
+"matchedBy": "venue name"
+},
+"centre in the square|101 queen st n.": {
+"lat": 43.45444,
+"lng": -80.48391,
+"matchedBy": "address"
+},
+"centre in the square|101 queen st. n": {
+"lat": 43.45444,
+"lng": -80.48391,
+"matchedBy": "address"
+},
+"centre in the square|101 queen street n": {
+"lat": 43.45444,
+"lng": -80.48391,
+"matchedBy": "address"
+},
+"community christian reformed church|1275 bleams road": {
+"lat": 43.40092,
+"lng": -80.4941,
+"matchedBy": "address"
+},
+"conestoga banquet hall, waterloo|617 king st n.": {
+"lat": 43.50479,
+"lng": -80.53709,
+"matchedBy": "address"
+},
+"conestogo public school|1948 sawmill road": {
+"lat": 43.54206,
+"lng": -80.508,
+"matchedBy": "address"
+},
+"conrad centre for the performing arts|36 king st w": {
+"lat": 43.45033,
+"lng": -80.48967,
+"matchedBy": "address"
+},
+"conrad centre for the performing arts|36 king street west": {
+"lat": 43.45033,
+"lng": -80.48967,
+"matchedBy": "address"
+},
+"dallas night club|312 king street west": {
+"lat": 43.45207,
+"lng": -80.49494,
+"matchedBy": "address"
+},
+"downtown ayr|": null,
+"downtown cambridge|king st. east": null,
+"downtown elmira|church st w and arthur st, elmira, on.": {
+"lat": 43.59908,
+"lng": -80.55845,
+"matchedBy": "venue name"
+},
+"downtown hespeler|groh ave → guelph ave & sheffield st": null,
+"e.v.o. kitchen|31 water st south": {
+"lat": 43.35773,
+"lng": -80.31513,
+"matchedBy": "address"
+},
+"emmanuel united church|22 bridgeport rd west": {
+"lat": 43.46766,
+"lng": -80.52466,
+"matchedBy": "address"
+},
+"ernie’s cookhouse|7 queen st w.": {
+"lat": 43.43132,
+"lng": -80.31114,
+"matchedBy": "address"
+},
+"evo kitchen & bar|31 water street s.": {
+"lat": 43.35773,
+"lng": -80.31513,
+"matchedBy": "address"
+},
+"evo kitchen & bar|31 water street south": {
+"lat": 43.35773,
+"lng": -80.31513,
+"matchedBy": "address"
+},
+"farm league brewing|295 ainslie street south": {
+"lat": 43.35112,
+"lng": -80.31319,
+"matchedBy": "address"
+},
+"fireside haven studio|54 guelph ave": {
+"lat": 43.43324,
+"lng": -80.31191,
+"matchedBy": "address"
+},
+"fireside haven studio|54 guelph avenue  #unit 1": {
+"lat": 43.43324,
+"lng": -80.31191,
+"matchedBy": "address"
+},
+"four fathers brewing|125 guelph ave": {
+"lat": 43.43482,
+"lng": -80.31148,
+"matchedBy": "address"
+},
+"gale presbyterian church|10 barnswallow drive": {
+"lat": 43.60088,
+"lng": -80.57658,
+"matchedBy": "address"
+},
+"gaslight district|64 grand ave. s": {
+"lat": 43.35544,
+"lng": -80.31764,
+"matchedBy": "address"
+},
+"globe studios|141 whitney pl., kitchener": {
+"lat": 43.44131,
+"lng": -80.48853,
+"matchedBy": "venue name"
+},
+"hespeler legion|28 schofield st": {
+"lat": 43.42765,
+"lng": -80.3164,
+"matchedBy": "address"
+},
+"humanities theatre – uwaterloo|200 university avenue west": {
+"lat": 43.46705,
+"lng": -80.54479,
+"matchedBy": "address"
+},
+"inglis street & willison street|ayr": null,
+"inside square peg at the christkindl market|220 king st w.": {
+"lat": 43.45152,
+"lng": -80.49311,
+"matchedBy": "address"
+},
+"jtm cake studio|20 park hill road east  #unit 103": {
+"lat": 43.36345,
+"lng": -80.31427,
+"matchedBy": "address"
+},
+"ken seiling waterloo region museum|10 huron road": {
+"lat": 43.40177,
+"lng": -80.4371,
+"matchedBy": "address"
+},
+"kentucky bourbon & bbq|103 king street north": {
+"lat": 43.46875,
+"lng": -80.52355,
+"matchedBy": "address"
+},
+"king edward public school|709 king st w.": {
+"lat": 43.45423,
+"lng": -80.50702,
+"matchedBy": "address"
+},
+"kingpin bowling lounge|425 bingemans centre dr": {
+"lat": 43.47237,
+"lng": -80.45086,
+"matchedBy": "address"
+},
+"kitchener city hall|200 king street west": {
+"lat": 43.45168,
+"lng": -80.49196,
+"matchedBy": "address"
+},
+"kitchener public library|85 queen street north": {
+"lat": 43.4527,
+"lng": -80.48612,
+"matchedBy": "address"
+},
+"knox presbyterian church|50 erb st. w": {
+"lat": 43.49858,
+"lng": -80.54402,
+"matchedBy": "address"
+},
+"knox presbyterian church|50 erb. st. w": {
+"lat": 43.49858,
+"lng": -80.54402,
+"matchedBy": "address"
+},
+"kw famous creative cafe|741 king st w, unit 116": {
+"lat": 43.45529,
+"lng": -80.50708,
+"matchedBy": "address"
+},
+"kwartzlab|145 bedford rd": {
+"lat": 43.43776,
+"lng": -80.4771,
+"matchedBy": "address"
+},
+"kwartzlab|145 bedford rd. kitchener, on": null,
+"langdon hall country house hotel & spa|1 langdon drive": {
+"lat": 43.38147,
+"lng": -80.37202,
+"matchedBy": "address"
+},
+"lavender lane wellness centre|215 toman dr.": {
+"lat": 43.51289,
+"lng": -80.51743,
+"matchedBy": "address"
+},
+"lazaridis hall: wilfrid laurier university|64 university ave w": {
+"lat": 43.47509,
+"lng": -80.52949,
+"matchedBy": "address"
+},
+"little mushroom dining lounge|131 sheldon drive, unit 17": {
+"lat": 43.40234,
+"lng": -80.31408,
+"matchedBy": "address"
+},
+"lokal lounge, the walper hotel / 20 queen st s, kitchener, on n2g 1v6|20 queen st s.": {
+"lat": 43.44965,
+"lng": -80.48958,
+"matchedBy": "address"
+},
+"maxwell’s concerts & events|35 university ave e, unit 2": {
+"lat": 43.47644,
+"lng": -80.52194,
+"matchedBy": "address"
+},
+"mcdougall cottage historic site|89 grand avenue south": {
+"lat": 43.3542,
+"lng": -80.3173,
+"matchedBy": "address"
+},
+"midnight run cafe|84d king street north": {
+"lat": 43.48147,
+"lng": -80.52604,
+"matchedBy": "address"
+},
+"midtown yoga|663 belmont ave w.": {
+"lat": 43.45271,
+"lng": -80.5179,
+"matchedBy": "address"
+},
+"paper marché|132 ahrens street west": {
+"lat": 43.45787,
+"lng": -80.49308,
+"matchedBy": "address"
+},
+"play with clay|10 water st. n": {
+"lat": 43.35923,
+"lng": -80.31547,
+"matchedBy": "address"
+},
+"preston auditorium|1458 hamilton street": {
+"lat": 43.38826,
+"lng": -80.34876,
+"matchedBy": "address"
+},
+"puddicombe house|145 peel street": {
+"lat": 43.37776,
+"lng": -80.70845,
+"matchedBy": "address"
+},
+"queen street commons cafe|queen street commons cafe": {
+"lat": 43.44921,
+"lng": -80.4895,
+"matchedBy": "venue name"
+},
+"region of waterloo library – ayr branch|137 stanley st.": {
+"lat": 43.28553,
+"lng": -80.44876,
+"matchedBy": "address"
+},
+"remix swing|92 king st south": {
+"lat": 43.4631,
+"lng": -80.52163,
+"matchedBy": "address"
+},
+"remix swing|92 king street south": {
+"lat": 43.4631,
+"lng": -80.52163,
+"matchedBy": "address"
+},
+"revive karaoke|28 king street north": {
+"lat": 43.46587,
+"lng": -80.52219,
+"matchedBy": "address"
+},
+"revive karaoke|28b king street north": {
+"lat": 43.49941,
+"lng": -80.53064,
+"matchedBy": "address"
+},
+"revive – blue room|28 king st n": {
+"lat": 43.46587,
+"lng": -80.52219,
+"matchedBy": "address"
+},
+"rim park – forbes hall|2001 university ave e": {
+"lat": 43.51943,
+"lng": -80.50229,
+"matchedBy": "address"
+},
+"rural roots brewing|21b industrial dr.": {
+"lat": 43.58689,
+"lng": -80.56149,
+"matchedBy": "address"
+},
+"saint lukes place|1624 franklin blvd": {
+"lat": 43.42433,
+"lng": -80.31176,
+"matchedBy": "address"
+},
+"schneider haus national historic site|466 queen street south": {
+"lat": 43.44494,
+"lng": -80.49502,
+"matchedBy": "address"
+},
+"smartizen – early education academy|370 university avenue east": {
+"lat": 43.48937,
+"lng": -80.49482,
+"matchedBy": "address"
+},
+"st jacobs|young street, st jacobs, ontario": null,
+"st. jacobs farmers’ market|878 weber street north  #1": null,
+"st. jacobs village shops|1440 king st north": {
+"lat": 43.54076,
+"lng": -80.55322,
+"matchedBy": "address"
+},
+"steinmann mennonite church|1316 snyder's road west": {
+"lat": 43.40018,
+"lng": -80.6965,
+"matchedBy": "address"
+},
+"stockyards brewing|25 benjamin rd": {
+"lat": 43.50881,
+"lng": -80.55446,
+"matchedBy": "address"
+},
+"sweet pea studio|29 manitou drive 1e": {
+"lat": 43.41638,
+"lng": -80.45152,
+"matchedBy": "address (second try)"
+},
+"tannery event centre|151 charles st w": {
+"lat": 43.45096,
+"lng": -80.49818,
+"matchedBy": "address"
+},
+"tapestry hall|74 grand ave. s.": {
+"lat": 43.35491,
+"lng": -80.31764,
+"matchedBy": "address"
+},
+"the canadian brewhouse (kitchener)|2960 kingsway drive  #unit p004": {
+"lat": 43.42467,
+"lng": -80.43898,
+"matchedBy": "address"
+},
+"the corner studio|141 whitney place, kitchener, on": {
+"lat": 43.44143,
+"lng": -80.48868,
+"matchedBy": "venue name"
+},
+"the french|58 grand avenue south": {
+"lat": 43.35576,
+"lng": -80.31765,
+"matchedBy": "address"
+},
+"the gator’s tail|970 franklin boulevard": {
+"lat": 43.39187,
+"lng": -80.30399,
+"matchedBy": "address"
+},
+"the iv loft at four fathers brewing|125 guelph avenue": {
+"lat": 43.43482,
+"lng": -80.31148,
+"matchedBy": "address"
+},
+"the kitchener memorial auditorium|400 east avenue": {
+"lat": 43.44724,
+"lng": -80.46695,
+"matchedBy": "address"
+},
+"the mini bounce|634 king street east": {
+"lat": 43.39601,
+"lng": -80.35906,
+"matchedBy": "address"
+},
+"the rabbid fox|123 pioneer drive": {
+"lat": 43.3948,
+"lng": -80.43221,
+"matchedBy": "address"
+},
+"the registry theatre|122 frederick street": {
+"lat": 43.45194,
+"lng": -80.48566,
+"matchedBy": "address"
+},
+"the st. mathews centre|54 benton st": {
+"lat": 43.44816,
+"lng": -80.48938,
+"matchedBy": "address"
+},
+"the st. matthews centre|54 benton street": {
+"lat": 43.44816,
+"lng": -80.48938,
+"matchedBy": "address"
+},
+"the underwing|58 grand ave s.": {
+"lat": 43.35576,
+"lng": -80.31765,
+"matchedBy": "address"
+},
+"the underwing|58 grand avenue south": {
+"lat": 43.35576,
+"lng": -80.31765,
+"matchedBy": "address"
+},
+"the village fair – fair trade marketplace|112 peel street": {
+"lat": 43.3778,
+"lng": -80.70922,
+"matchedBy": "address"
+},
+"the walper hotel, downtown kitchener|20 queen st s.": {
+"lat": 43.44965,
+"lng": -80.48958,
+"matchedBy": "address"
+},
+"themuseum|10 king street west": {
+"lat": 43.45009,
+"lng": -80.48949,
+"matchedBy": "address"
+},
+"themuseum|10 king street west, kitchener": {
+"lat": 43.45009,
+"lng": -80.48949,
+"matchedBy": "venue name"
+},
+"trinity village|2727 kingsway drive": {
+"lat": 43.42992,
+"lng": -80.44175,
+"matchedBy": "address"
+},
+"twb brewing|300 mill street  #1": {
+"lat": 43.43681,
+"lng": -80.4843,
+"matchedBy": "address"
+},
+"twb co-operative brewing|300 mill st, unit": {
+"lat": 43.43646,
+"lng": -80.48462,
+"matchedBy": "venue name"
+},
+"twb co-operative brewing|300 mill st, unit 1": {
+"lat": 43.43681,
+"lng": -80.4843,
+"matchedBy": "address"
+},
+"twb co-operative brewing|300 mill st, unit 1, kitchener, on": {
+"lat": 43.43646,
+"lng": -80.48462,
+"matchedBy": "venue name"
+},
+"twh social|1 king st w": {
+"lat": 43.44981,
+"lng": -80.48938,
+"matchedBy": "address"
+},
+"vector space|187 king st s unit 106": {
+"lat": 43.46011,
+"lng": -80.51905,
+"matchedBy": "address"
+},
+"vector space|187 king st s, unit 106": {
+"lat": 43.46011,
+"lng": -80.51905,
+"matchedBy": "address"
+},
+"vector space|187 king st south, unit 106, waterloo on, n2l 0a5": null,
+"vector space|187 king st south, unit106, waterloo on, n2l 0a5": null,
+"vector space|187 king st, unit 106": {
+"lat": 43.46011,
+"lng": -80.51905,
+"matchedBy": "address"
+},
+"vector space|info@kwvector.space": null,
+"walper hotel|20 queen st s": {
+"lat": 43.44965,
+"lng": -80.48958,
+"matchedBy": "address"
+},
+"warrior field, waterloo|220 columbia st w.": {
+"lat": 43.46988,
+"lng": -80.55995,
+"matchedBy": "address"
+},
+"wave maker craft brewery & taproom|639 laurel street": {
+"lat": 43.39652,
+"lng": -80.35331,
+"matchedBy": "address"
+},
+"wilfrid laurier university – theatre auditorium|75 university ave w": {
+"lat": 43.47312,
+"lng": -80.52485,
+"matchedBy": "address"
+},
+"willibald farm distillery and brewery|1271 reidsville rd": {
+"lat": 43.28657,
+"lng": -80.42536,
+"matchedBy": "address"
+},
+"yoni mudra art gallery|241 duke street": {
+"lat": 43.44739,
+"lng": -80.48067,
+"matchedBy": "address"
+}
+}
+}

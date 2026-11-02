@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en-CA">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self' https://explorewaterloo.ca https://nominatim.openstreetmap.org; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <title>Grand Calendar</title>
+  <meta name="description" content="Events across Waterloo Region, for adults and kids, gathered from their sources.">
+  <meta name="theme-color" content="#1f5a5c">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Grand Calendar">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icon-180.png">
+  <link rel="stylesheet" href="app.css">
+  <script type="module" src="app.mjs"></script>
+</head>
+<body>
+  <header class="top">
+    <div class="top-row">
+      <h1 class="brand">Grand Calendar</h1>
+      <button type="button" class="icon-btn" id="settings-open" aria-label="Settings">
+        <svg aria-hidden="true" viewBox="0 0 24 24" width="22" height="22"><path fill="currentColor" d="M19.4 13a7.5 7.5 0 0 0 0-2l2-1.6-2-3.4-2.4 1a7.6 7.6 0 0 0-1.7-1L15 3.5h-4l-.4 2.5a7.6 7.6 0 0 0-1.7 1l-2.4-1-2 3.4L6.6 11a7.5 7.5 0 0 0 0 2l-2.1 1.6 2 3.4 2.4-1a7.6 7.6 0 0 0 1.7 1l.4 2.5h4l.4-2.5a7.6 7.6 0 0 0 1.7-1l2.4 1 2-3.4zM13 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7z" transform="translate(-1 0)"/></svg>
+      </button>
+    </div>
+    <details class="status" id="status">
+      <summary id="status-summary">Loading events</summary>
+      <ul id="status-list"></ul>
+    </details>
+    <div class="progress" id="progress" hidden>
+      <progress id="progress-bar" max="1" value="0"></progress>
+      <span id="progress-text" aria-live="polite"></span>
+    </div>
+  </header>
+
+  <main id="view-events">
+    <div class="controls">
+      <label class="search">
+        <span class="visually-hidden">Search events</span>
+        <input id="q" type="search" inputmode="search" autocomplete="off" placeholder="Search, e.g. chess or storytime">
+      </label>
+      <div class="chips" id="topics" role="group" aria-label="Topics"></div>
+
+      <div class="seg" role="group" aria-label="Dates" id="seg-dates">
+        <button type="button" data-v="today">Today</button>
+        <button type="button" data-v="weekend">Weekend</button>
+        <button type="button" data-v="2w">2 weeks</button>
+        <button type="button" data-v="custom">Custom</button>
+      </div>
+      <div class="custom-dates" id="custom-dates" hidden>
+        <label>From <input type="date" id="d-from"></label>
+        <label>To <input type="date" id="d-to"></label>
+      </div>
+
+      <div class="seg" role="group" aria-label="Who it's for" id="seg-who">
+        <button type="button" data-v="everyone">Everyone</button>
+        <button type="button" data-v="family">Family</button>
+        <button type="button" data-v="kids" id="kids-btn">Kids 5 to 6</button>
+      </div>
+
+      <button type="button" class="btn quiet more-filters" id="filters-open">More filters</button>
+    </div>
+
+    <p class="summary" id="summary" aria-live="polite"></p>
+    <div id="results"></div>
+
+    <section class="elsewhere" aria-labelledby="elsewhere-h">
+      <h2 id="elsewhere-h">More places to check</h2>
+      <p class="muted">These sites don't let Grand Calendar read their events, so check them directly.</p>
+      <div class="link-list" id="elsewhere"></div>
+    </section>
+  </main>
+
+  <main id="view-saved" hidden>
+    <h2 class="view-title">Saved events</h2>
+    <p class="muted">Saved on this phone only. Export a copy now and then: removing the app from your Home Screen deletes them.</p>
+    <div class="btn-row">
+      <button type="button" class="btn" id="export">Export saved</button>
+      <button type="button" class="btn" id="import-btn">Import saved</button>
+      <input type="file" id="import" accept=".json,application/json" hidden>
+    </div>
+    <div id="saved-list"></div>
+  </main>
+
+  <nav class="tabs" aria-label="Views">
+    <button type="button" data-view="events" aria-current="page">Events</button>
+    <button type="button" data-view="saved">Saved <span id="saved-count"></span></button>
+  </nav>
+
+  <dialog id="filters" aria-labelledby="filters-h">
+    <form method="dialog" class="sheet">
+      <h2 id="filters-h">More filters</h2>
+
+      <fieldset>
+        <legend>Cost</legend>
+        <div class="seg" data-filter="cost">
+          <button type="button" data-v="any">Any</button>
+          <button type="button" data-v="free">Free</button>
+          <button type="button" data-v="paid">Paid</button>
+        </div>
+        <p class="hint">“Free” only includes events whose source says free.</p>
+      </fieldset>
+
+      <fieldset>
+        <legend>Indoor or outdoor</legend>
+        <div class="seg" data-filter="setting">
+          <button type="button" data-v="any">Any</button>
+          <button type="button" data-v="indoor">Indoor</button>
+          <button type="button" data-v="outdoor">Outdoor</button>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Registration</legend>
+        <div class="seg" data-filter="reg">
+          <button type="button" data-v="any">Any</button>
+          <button type="button" data-v="dropin">Drop-in</button>
+          <button type="button" data-v="open">Spots open</button>
+        </div>
+        <label class="check"><input type="checkbox" id="hide-full"> Hide full and closed events</label>
+      </fieldset>
+
+      <fieldset>
+        <legend>Distance</legend>
+        <p class="hint" id="loc-label">No location set. Distances need one.</p>
+        <button type="button" class="btn quiet" id="clear-loc" hidden>Clear location</button>
+        <div class="btn-row">
+          <button type="button" class="btn" id="use-gps">Use my location</button>
+        </div>
+        <div class="place-row">
+          <label class="visually-hidden" for="place">Type a place</label>
+          <input id="place" type="text" autocomplete="off" placeholder="Or type a place, e.g. Elmira">
+          <button type="button" class="btn" id="place-go">Set</button>
+        </div>
+        <label class="select">Within
+          <select id="radius">
+            <option value="">Any distance</option>
+            <option value="5">5 km</option>
+            <option value="10">10 km</option>
+            <option value="20">20 km</option>
+            <option value="40">40 km</option>
+          </select>
+        </label>
+      </fieldset>
+
+      <div class="btn-row">
+        <button type="button" class="btn" id="filters-reset">Reset filters</button>
+        <button class="btn primary" value="done">Show events</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="settings" aria-labelledby="settings-h">
+    <form method="dialog" class="sheet">
+      <h2 id="settings-h">Settings</h2>
+      <fieldset>
+        <legend>Kids mode ages</legend>
+        <div class="btn-row">
+          <label class="select">From <select id="kid-min"></select></label>
+          <label class="select">To <select id="kid-max"></select></label>
+        </div>
+        <p class="hint">Kids mode shows events whose source says they suit these ages, then events for families or all ages, then events with no age listed.</p>
+      </fieldset>
+      <fieldset>
+        <legend>Event lists</legend>
+        <button type="button" class="btn" id="refresh-now">Refresh Explore Waterloo now</button>
+        <p class="hint">Explore Waterloo is read on this phone and refreshed when your copy is over 6 hours old. Library events refresh on GitHub every hour.</p>
+      </fieldset>
+      <fieldset>
+        <legend>About</legend>
+        <p class="hint">Events come from Explore Waterloo Region and Waterloo Public Library. Every event links to its source. Venue locations © OpenStreetMap contributors (ODbL). Your location stays on this phone, rounded to about 1 km.</p>
+      </fieldset>
+      <div class="btn-row"><button class="btn primary" value="done">Done</button></div>
+    </form>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+</body>
+</html>

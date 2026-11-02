@@ -1,8 +1,8 @@
 // Run with: node test-rules.mjs
-// Uses 14 real Explore Waterloo API events (ew-sample.json) and real library events (wpl-sample.ics).
+// Uses 14 real Explore Waterloo feed events (ew-sample.ics) and real library events (wpl-sample.ics).
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
-import { normalizeEw } from './ew-reader.mjs';
+import { EW_SOURCE } from './ew-reader.mjs';
 import { suitabilityOf } from './suitability.mjs';
 import { topicsOf, searchMatch } from './topics.mjs';
 import { mergeDuplicates, sameEvent } from './merge.mjs';
@@ -12,8 +12,7 @@ import { decodeEntities, htmlToText } from './core.mjs';
 let passed = 0;
 const check = (name, fn) => { fn(); passed++; console.log(`ok  ${name}`); };
 
-const sample = JSON.parse(await readFile(new URL('./ew-sample.json', import.meta.url), 'utf8'));
-const ew = sample.events.map((r) => normalizeEw(r, 'x')).filter(Boolean);
+const ew = parseICS(await readFile(new URL('./ew-sample.ics', import.meta.url), 'utf8')).map((r) => normalizeEvent(r, EW_SOURCE, 'x')).filter(Boolean);
 const E = (t, n = 0) => ew.filter((e) => e.title.startsWith(t))[n];
 const wplSrc = SOURCES.find((s) => s.id === 'wpl');
 const wpl = parseICS(await readFile(new URL('./wpl-sample.ics', import.meta.url), 'utf8')).map((r) => normalizeEvent(r, wplSrc, 'x')).filter(Boolean);
@@ -24,26 +23,23 @@ check('coded characters become plain text', () => {
   assert.equal(htmlToText('<p>One</p><p>Two &amp; three</p>'), 'One\nTwo & three');
 });
 
-// ---------- Explore Waterloo reader ----------
-check('reader: 14 events, titles decoded', () => {
+// ---------- Explore Waterloo reader (calendar feed, as the phone reads it) ----------
+check('reader: 14 events, organizer details dropped', () => {
   assert.equal(ew.length, 14);
-  assert.equal(E('There’s No Place').title, 'There’s No Place Like Space – Kids Event');
-  assert.ok(E('Yuk Yuk’s 50th'));
+  assert.ok(!JSON.stringify(ew).includes('MAILTO'));
 });
-check('reader: ages read after decoding (the coded-dash case)', () => {
-  assert.equal(E('There’s No Place').derived.age.text, 'ages 6 months–6 years');
+check('reader: ages read from the kids space event', () => {
+  assert.match(E('There’s No Place').derived.age.text, /6 months.6 years/);
 });
 check('reader: Christkindl 00:00 placeholder is "hours not listed"', () => {
   const c = E('Christkindl');
   assert.equal(c.derived.timeListed, false);
   assert.equal(c.end, null);
 });
-check('reader: city field gives the region, cost kept as stated', () => {
+check('reader: region from the address, venue key for venues.json', () => {
   assert.equal(E('Dog Mic').derived.region.place, 'Waterloo');
-  assert.equal(E('Dog Mic').derived.region.how, 'city field in source');
-  assert.equal(E('Christkindl').cost, 'Free');
+  assert.equal(E('Dog Mic').venueKey, 'revive karaoke|28b king street north');
 });
-
 // ---------- Suitability ----------
 check('adults only: stated 19+', () => {
   const s = suitabilityOf(E('Dog Mic'));
@@ -72,7 +68,7 @@ check('drinks: stated in text vs inferred from venue', () => {
 });
 check('late start, free cost, outdoor setting', () => {
   assert.ok(suitabilityOf(E('Dog Mic')).notes.some((n) => n.key === 'late'));
-  assert.equal(suitabilityOf(E('Christkindl')).cost.kind, 'free');
+  assert.equal(suitabilityOf(E('Christkindl')).cost.kind, 'free'); // from the Free Events category
   assert.equal(suitabilityOf(E('Raptors')).setting.kind, 'outdoor');
 });
 check('library: caregiver note, indoor inferred from the room, cost not listed', () => {
@@ -119,7 +115,7 @@ check('merge: identical Billy Joel listings and the "Copy of" Miracle become one
   assert.equal(m.title, 'Miracle on 34th Street'); // the original leads, not the copy
 });
 check('merge: two Yuk Yuk shows at different times stay separate', () => {
-  assert.equal(sameEvent(E('Yuk Yuk’s 50th', 0), E('Yuk Yuk’s 50th', 1)), false);
+  assert.equal(sameEvent(E("Yuk Yuk's 50th", 0), E("Yuk Yuk's 50th", 1)), false);
 });
 check('merge: same program at two library branches at the same time stays separate', () => {
   const a = wpl.find((e) => e.title === 'Explore Play Learn');

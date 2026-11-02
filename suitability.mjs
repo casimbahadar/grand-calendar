@@ -42,9 +42,9 @@ export function suitabilityOf(e) {
 
   // Hard hide: only clear adult limits (decision: 19+, adults only, Nightlife, nightclub venue)
   let adultsOnly = null;
-  if (age && age.kind === 'minimum' && age.min >= 18) adultsOnly = { why: `source says "${age.text}"`, how: 'stated' };
+  if (age && age.kind === 'minimum' && age.min >= 18) adultsOnly = { why: `source says “${age.text}”`, how: 'stated' };
   else if (hasCat(e, /^nightlife$/i) && !hasCat(e, /^family[- ]friendly$/i)) adultsOnly = { why: 'listed under Nightlife by the source', how: 'stated' };
-  else if (match(NIGHTCLUB_VENUE, venue)) adultsOnly = { why: `venue "${venue}" is a nightclub`, how: 'inferred' };
+  else if (match(NIGHTCLUB_VENUE, venue)) adultsOnly = { why: `venue “${venue}” is a nightclub`, how: 'inferred' };
 
   // Soft notes
   const drinkWords = match(DRINK_TEXT, text);
@@ -57,7 +57,7 @@ export function suitabilityOf(e) {
   if (e.derived?.timeListed && e.start?.time && e.start.time >= '20:00') {
     notes.push({ key: 'late', label: 'Starts 8 pm or later', how: 'stated', from: e.start.time });
   }
-  if (age?.caregiver) notes.push({ key: 'caregiver', label: 'Caregiver must attend', how: 'stated', from: age.text });
+  if (age?.caregiver) notes.push({ key: 'caregiver', label: 'A caregiver must attend', how: 'stated', from: null });
 
   // Cost: only what the source says
   let cost = { kind: 'not-listed', text: null, how: null };
@@ -65,6 +65,8 @@ export function suitabilityOf(e) {
     cost = /free/i.test(e.cost) && !/\d/.test(e.cost)
       ? { kind: 'free', text: e.cost, how: 'stated' }
       : { kind: /\d/.test(e.cost) ? 'paid' : 'not-listed', text: e.cost, how: 'stated' };
+  } else if (hasCat(e, /^free events$/i)) {
+    cost = { kind: 'free', text: 'Free (listed under Free Events)', how: 'stated' };
   } else {
     const f = match(FREE_TEXT, text);
     if (f) cost = { kind: 'free', text: f, how: 'stated' };
