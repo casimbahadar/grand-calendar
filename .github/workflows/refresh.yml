@@ -23,6 +23,7 @@ jobs:
         run: |
           node test-ages.mjs
           node test-gather.mjs
+          node test-rules.mjs
 
       - name: Gather events
         run: |
