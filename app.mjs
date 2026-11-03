@@ -427,8 +427,7 @@ function cardBody(x, id) {
       e.url ? h('a', { class: 'btn primary', href: e.url, target: '_blank', rel: 'noopener noreferrer', text: `Open on ${SOURCE_NAMES[e.source] || 'source'}` }) : h('p', { class: 'how', text: 'The source gave no link for this event.' }),
       h('div', { class: 'pair' },
         h('button', { type: 'button', class: 'btn', text: saved ? 'Saved' : 'Save', 'aria-pressed': saved ? 'true' : 'false', onclick: () => toggleSave(e) }),
-        h('button', { type: 'button', class: 'btn', text: 'Add to calendar', onclick: () => downloadIcs(e) })),
-      h('button', { type: 'button', class: 'btn quiet', text: 'Download .ics file', onclick: () => downloadIcs(e, true) })));
+        h('button', { type: 'button', class: 'btn', text: 'Add to calendar', onclick: () => downloadIcs(e) }))));
 }
 
 function render() {
@@ -744,7 +743,7 @@ function toggleSave(e) {
 }
 
 const icsText = (s) => String(s || '').replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\r?\n/g, '\\n');
-function downloadIcs(e, forceFile = false) {
+function downloadIcs(e) {
   const d = (iso) => iso.replace(/-/g, '');
   const t = (hhmm) => `${hhmm.replace(':', '')}00`;
   const lines = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Grand Calendar//EN', 'BEGIN:VEVENT',
@@ -763,16 +762,12 @@ function downloadIcs(e, forceFile = false) {
   if (e.url) lines.push(`URL:${e.url}`);
   lines.push(`DESCRIPTION:${icsText(`${note}Source: ${e.url || SOURCE_NAMES[e.source]}`)}`, 'END:VEVENT', 'END:VCALENDAR');
   const ics = lines.join('\r\n') + '\r\n';
-  // iPhone and iPad: opening calendar data directly may show Calendar's "Add" screen
-  // instead of a file download. Other devices download the .ics file.
-  const ios = /iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-  if (ios && !forceFile) {
-    const w = window.open(`data:text/calendar;charset=utf-8,${encodeURIComponent(ics)}`, '_blank');
-    if (w) { toast('If Calendar doesn\'t open, use "Download .ics file" below the button.'); return; }
-  }
+  // A downloaded .ics file is what works on iPhone: Safari offers "Save...", then the file
+  // opens in Calendar. (Opening calendar data directly left a blank "data:" page; removed.)
   const blob = new Blob([ics], { type: 'text/calendar' });
   const a = h('a', { href: URL.createObjectURL(blob), download: `${e.title.slice(0, 40).replace(/[^\w ]+/g, '').trim() || 'event'}.ics` });
   document.body.append(a); a.click(); a.remove();
+  toast('Calendar file ready. Tap Save, then open it to add the event to Calendar.');
 }
 
 function exportSaved() {
