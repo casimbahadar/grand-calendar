@@ -46,6 +46,7 @@ const state = {
   programs: [],            // program sessions from programs.json
   programsReady: null,     // null = loading, true, or an error message
   pq: '', pwho: 'everyone', pUpcoming: false,
+  providers: [], provType: null,
   calView: 'month',        // month | week | list (remembered)
   calDay: null,            // selected day in the calendar, ISO
   calOpen: null,           // calendar entry opened to show its full card
@@ -849,6 +850,45 @@ function renderElsewhere() {
 }
 
 // ---------- Programs ----------
+const PROVIDER_TYPES = { gymnastics: 'Gymnastics', swimming: 'Swimming lessons', music: 'Music lessons', dance: 'Dance', coding: 'Coding and robotics', martial: 'Martial arts', art: 'Art classes', skating: 'Skating', sports: 'Kids\' sports clubs' };
+async function loadProviders() {
+  try { state.providers = (await loadJson('providers.json')).providers || []; } catch { state.providers = []; }
+  try { state.providerChecks = (await loadJson('provider-checks.json')).results || {}; } catch { state.providerChecks = {}; }
+  if (state.view === 'programs') render();
+}
+const classFits = (c) => typeof c.min === 'number' && c.min <= state.kid.max && (c.max === null || c.max === undefined || c.max >= state.kid.min);
+function renderProviders() {
+  const types = [...new Set(state.providers.map((p) => p.type))];
+  $('prov-types').replaceChildren(...types.map((t) => h('button', { type: 'button', class: 'chip', 'aria-pressed': state.provType === t ? 'true' : 'false', text: PROVIDER_TYPES[t] || t, onclick: () => { state.provType = state.provType === t ? null : t; render(); } })));
+  const q = state.pq.trim().toLowerCase();
+  const kids = state.pwho === 'kids';
+  let list = state.providers.filter((p) => !state.provType || p.type === state.provType);
+  if (q) list = list.filter((p) => `${p.name} ${p.sport || ''} ${PROVIDER_TYPES[p.type] || p.type} ${p.area} ${p.classes.map((c) => c.name).join(' ')}`.toLowerCase().includes(q) || q.split(/\s+/).some((w) => w.length > 3 && (PROVIDER_TYPES[p.type] || '').toLowerCase().includes(w)));
+  if (kids) list = list.filter((p) => p.classes.some(classFits));
+  list.sort((a, b) => (kids ? 0 : 0) || a.area.localeCompare(b.area) || a.name.localeCompare(b.name));
+  if (!state.providers.length) { $('prov-list').replaceChildren(); return; }
+  $('prov-list').replaceChildren(...(list.length ? list.map((p) => {
+    const shown = kids ? p.classes.filter(classFits) : p.classes;
+    return h('article', { class: 'prov-card' },
+      h('h3', { text: p.name }),
+      h('div', { class: 'where', text: `${p.sport || PROVIDER_TYPES[p.type] || p.type}. ${p.address}` }),
+      shown.length ? h('ul', {}, shown.map((c) => h('li', { class: !kids && classFits(c) ? 'fit' : '' }, h('span', { text: c.name }), h('span', { class: 'stated', text: `Ages as stated: ${c.stated}` })))) : null,
+      !p.classes.length ? h('p', { class: 'how', text: p.agesNote || 'Ages not confirmed.' }) : null,
+      p.note ? h('p', { class: 'how', text: p.note }) : null,
+      (() => {
+        const ck = state.providerChecks?.[p.id];
+        if (!ck || ck.status === 'ok' || ck.status === 'manual') return null;
+        const when = ck.flaggedAt ? dateOf(ck.flaggedAt.slice(0, 10)).toLocaleDateString('en-CA', { month: 'short', day: 'numeric' }) : '';
+        const why = ck.status === 'missing' ? `Some ages listed here are no longer on their page (${ck.missing.join('; ')}).`
+          : ck.status === 'changed' ? 'Their page lists different ages than when this was checked, often a new season.'
+            : 'Their page couldn\'t be reached at the last monthly check.';
+        return h('p', { class: 'stale', text: `May be out of date: ${why} Flagged ${when}.` });
+      })(),
+      h('p', { class: 'how', text: `Checked ${/^https?:/.test(p.source) ? 'on their website' : `in the ${p.source}`} ${dateOf(p.checked).toLocaleDateString('en-CA', { month: 'short', day: 'numeric', year: 'numeric' })}. Classes change each season.` }),
+      h('a', { class: 'btn', href: p.url, target: '_blank', rel: 'noopener noreferrer', text: 'Open their site' }));
+  }) : [h('p', { class: 'muted', text: kids ? `No checked providers list classes for ages ${state.kid.min} to ${state.kid.max} in this group yet.` : 'No checked providers match.' })]));
+}
+
 async function loadPrograms() {
   try {
     const d = await loadJson('programs.json');
@@ -982,6 +1022,7 @@ function programCard(g) {
 }
 
 function renderPrograms() {
+  renderProviders();
   $('pkids-btn').textContent = $('kids-btn').textContent;
   for (const b of $('seg-pwho').children) b.setAttribute('aria-pressed', String(b.dataset.v === state.pwho));
   $('p-upcoming').checked = state.pUpcoming;
@@ -1380,6 +1421,7 @@ wire();
 render();
 load();
 loadPrograms();
+loadProviders();
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => { /* alerts just won't be available */ });
 
 // For testing in a headless browser.

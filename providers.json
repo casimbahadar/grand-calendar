@@ -1,0 +1,1927 @@
+{
+ "about": "Program providers in Waterloo Region and Stratford, checked by hand. Ages are only listed where the provider's own website states them, in its wording. Re-check each season: classes change.",
+ "providers": [
+  {
+   "id": "kw-gymnastics",
+   "name": "KW Gymnastics Club",
+   "type": "gymnastics",
+   "area": "Kitchener",
+   "address": "805 Victoria St S, Kitchener",
+   "url": "https://kwgymnastics.ca/classes-and-passes/classes/",
+   "classes": [
+    {
+     "name": "Gymnastics (4 to 7 years old)",
+     "stated": "4-7 years old",
+     "min": 4,
+     "max": 7
+    },
+    {
+     "name": "Trampolining",
+     "stated": "5+",
+     "min": 5,
+     "max": null
+    },
+    {
+     "name": "Tumbling",
+     "stated": "7+",
+     "min": 7,
+     "max": null
+    },
+    {
+     "name": "Adult gymnastics",
+     "stated": "16+",
+     "min": 16,
+     "max": null
+    }
+   ],
+   "checked": "2026-11-03",
+   "source": "https://kwgymnastics.ca/classes-and-passes/classes/"
+  },
+  {
+   "id": "dynamo-gymnastics",
+   "name": "Dynamo Gymnastics",
+   "type": "gymnastics",
+   "area": "Cambridge",
+   "address": "650 Jamieson Pkwy, Unit 8, Cambridge",
+   "url": "https://dynamogymnastics.ca/recreational-2/recreational/",
+   "classes": [
+    {
+     "name": "Kindergym",
+     "stated": "Girls/Boys (3-5 years old)",
+     "min": 3,
+     "max": 5
+    },
+    {
+     "name": "Sr Kindergym",
+     "stated": "Girls/Boys (5-6 years old)",
+     "min": 5,
+     "max": 6
+    },
+    {
+     "name": "Girls Gym",
+     "stated": "Girls 6-9 years old",
+     "min": 6,
+     "max": 9
+    },
+    {
+     "name": "Boys Gym",
+     "stated": "Boys 6-12 years old",
+     "min": 6,
+     "max": 12
+    },
+    {
+     "name": "Junior Floor (assessment required)",
+     "stated": "Girls/Boys 6 years +",
+     "min": 6,
+     "max": null
+    }
+   ],
+   "checked": "2026-11-03",
+   "source": "https://dynamogymnastics.ca/recreational-2/recreational/"
+  },
+  {
+   "id": "woolwich-gymnastics",
+   "name": "Woolwich Gymnastics Club",
+   "type": "gymnastics",
+   "area": "Elmira",
+   "address": "90 Union St, Unit 3, Elmira",
+   "url": "https://www.woolwichgymnastics.ca/programs",
+   "classes": [
+    {
+     "name": "Tumble Tots",
+     "stated": "3.5-4.5 years",
+     "min": 3.5,
+     "max": 4.5
+    },
+    {
+     "name": "Advanced Kinder Kids",
+     "stated": "4 - 5.5 years",
+     "min": 4,
+     "max": 5.5
+    },
+    {
+     "name": "Kinder Kids",
+     "stated": "4.5-6 years",
+     "min": 4.5,
+     "max": 6
+    },
+    {
+     "name": "Jr. Co-Ed Rec",
+     "stated": "Jr. 6-8 years",
+     "min": 6,
+     "max": 8
+    },
+    {
+     "name": "Tumbling",
+     "stated": "6 years +",
+     "min": 6,
+     "max": null
+    }
+   ],
+   "checked": "2026-11-03",
+   "source": "https://www.woolwichgymnastics.ca/programs"
+  },
+  {
+   "id": "revolution-gymnastics",
+   "name": "Revolution Gymnastics and Sports Centre",
+   "type": "gymnastics",
+   "area": "Waterloo",
+   "address": "455 Dutton Dr, Unit 2, Waterloo",
+   "url": "https://revolutiongym.uplifterinc.com/registration/fall-recreational/",
+   "classes": [
+    {
+     "name": "Parent & Tots",
+     "stated": "18 months - 3.5 years",
+     "min": 1.5,
+     "max": 3.5
+    },
+    {
+     "name": "Kinderfun",
+     "stated": "3.5-4.5 Co-ed",
+     "min": 3.5,
+     "max": 4.5
+    },
+    {
+     "name": "Kinderfun",
+     "stated": "4-5.5 Co-ed",
+     "min": 4,
+     "max": 5.5
+    },
+    {
+     "name": "Advanced Jr Girls",
+     "stated": "ages 6 to 8 years",
+     "min": 6,
+     "max": 8
+    },
+    {
+     "name": "Advanced Jr Boys",
+     "stated": "ages 6 to 8 years",
+     "min": 6,
+     "max": 8
+    }
+   ],
+   "checked": "2026-11-03",
+   "source": "https://revolutiongym.uplifterinc.com/registration/fall-recreational/",
+   "note": "From their Fall 2026 recreational registration page."
+  },
+  {
+   "id": "shine-gymnastics",
+   "name": "Shine Gymnastics",
+   "type": "gymnastics",
+   "area": "Waterloo",
+   "address": "341 Marsland Dr, Unit 2, Waterloo",
+   "url": "https://www.shinegymnastics.ca/",
+   "classes": [],
+   "agesNote": "Their site didn't state class ages in a form Grand Calendar could read. Check their site.",
+   "checked": "2026-11-03",
+   "source": "https://www.shinegymnastics.ca/"
+  },
+  {
+   "id": "kitchener-swim",
+   "name": "City of Kitchener swimming lessons",
+   "type": "swimming",
+   "area": "Kitchener",
+   "address": "City pools, including Breithaupt Centre, Cameron Heights, Cowan Recreation Centre, Forest Heights and Lyle Hallman (Grand River Recreation Complex)",
+   "url": "https://www.kitchener.ca/pools-and-swimming/swimming-lessons-and-programs/swimming-lessons/",
+   "classes": [
+    {
+     "name": "Kitchener Swims Parent & Tot 3",
+     "stated": "2 to 3-year-olds",
+     "min": 2,
+     "max": 3
+    },
+    {
+     "name": "Preschool levels",
+     "stated": "ages 3 to 5",
+     "min": 3,
+     "max": 5
+    },
+    {
+     "name": "Swimmer levels (beginner and up)",
+     "stated": "ages 5 to 12",
+     "min": 5,
+     "max": 12
+    },
+    {
+     "name": "Adapted Aquatics, Beginner",
+     "stated": "4+",
+     "min": 4,
+     "max": null
+    }
+   ],
+   "checked": "2026-11-03",
+   "source": "https://www.kitchener.ca/pools-and-swimming/swimming-lessons-and-programs/swimming-lessons/",
+   "note": "Register through ActiveNet (Kitchener's program search link in Programs)."
+  },
+  {
+   "id": "waterloo-swim",
+   "name": "City of Waterloo swimming lessons",
+   "type": "swimming",
+   "area": "Waterloo",
+   "address": "City pools, including the Waterloo Memorial Recreation Complex (Swimplex)",
+   "url": "https://www.waterloo.ca/activewaterloo",
+   "classes": [
+    {
+     "name": "Tykes",
+     "stated": "3 to 5 years",
+     "min": 3,
+     "max": 5
+    },
+    {
+     "name": "Preschool A to E",
+     "stated": "3 to 5 years",
+     "min": 3,
+     "max": 5
+    },
+    {
+     "name": "Waterloo Splash 1 to 6",
+     "stated": "5 to 12 years",
+     "min": 5,
+     "max": 12
+    }
+   ],
+   "checked": "2026-11-03",
+   "source": "City of Waterloo Fall 2026 program guide (swim section)",
+   "check": "Checked through the City of Waterloo guide each season."
+  },
+  {
+   "id": "cambridge-swim",
+   "name": "City of Cambridge swimming lessons",
+   "type": "swimming",
+   "area": "Cambridge",
+   "address": "City pools (see their schedules page)",
+   "url": "https://www.cambridge.ca/recreation-culture/pools-aquatics/swim-schedules-lessons/",
+   "classes": [
+    {
+     "name": "Preschool levels",
+     "stated": "must be 3 years of age by the first day",
+     "min": 3,
+     "max": null
+    },
+    {
+     "name": "Swimmer levels",
+     "stated": "must be 6 years of age by the first day",
+     "min": 6,
+     "max": null
+    }
+   ],
+   "checked": "2026-11-03",
+   "source": "https://www.cambridge.ca/recreation-culture/pools-aquatics/swim-schedules-lessons/"
+  },
+  {
+   "id": "stratford-swim",
+   "name": "City of Stratford swimming lessons",
+   "type": "swimming",
+   "area": "Stratford",
+   "address": "Stratford city pool (see their lessons page)",
+   "url": "https://www.stratford.ca/play-here/recreation-programs/aquatics/lessons/",
+   "classes": [
+    {
+     "name": "Parent Tot",
+     "stated": "4 months to 3 years",
+     "min": 0.33,
+     "max": 3
+    },
+    {
+     "name": "Preschool 1 to 5",
+     "stated": "3 to 5 years",
+     "min": 3,
+     "max": 5
+    },
+    {
+     "name": "Swimmer 1 to 8",
+     "stated": "5 to 14 years",
+     "min": 5,
+     "max": 14
+    },
+    {
+     "name": "Swim Team",
+     "stated": "6 to 18 years old",
+     "min": 6,
+     "max": 18
+    }
+   ],
+   "checked": "2026-11-03",
+   "source": "https://www.stratford.ca/play-here/recreation-programs/aquatics/lessons/"
+  },
+  {
+   "id": "ymca-three-rivers-swim",
+   "name": "YMCA of Three Rivers children's swim programs",
+   "type": "swimming",
+   "area": "Kitchener, Waterloo, Cambridge and Stratford",
+   "address": "A.R. Kaufman (Kitchener), Stork (Waterloo), Chaplin (Cambridge) and Stratford YMCAs",
+   "url": "https://www.ymcathreerivers.ca/health-and-wellness-childrens-aquatic-programs",
+   "classes": [
+    {
+     "name": "Children's Aquatic Programs",
+     "stated": "Ages 0 – 12",
+     "min": 0,
+     "max": 12
+    }
+   ],
+   "checked": "2026-11-03",
+   "source": "https://www.ymcathreerivers.ca/health-and-wellness-childrens-aquatic-programs"
+  },
+  {
+   "id": "british-swim-school-kw",
+   "name": "British Swim School (Kitchener-Waterloo)",
+   "type": "swimming",
+   "area": "Kitchener, Waterloo and Doon",
+   "address": "Hotel pools in Kitchener, Waterloo and Doon (see their locations page)",
+   "url": "https://britishswimschool.com/kitchener-waterloo/programs/",
+   "classes": [
+    {
+     "name": "Water Acclimation, Beginner and Advanced Water Survival",
+     "stated": "Age Group: 3+",
+     "min": 3,
+     "max": null
+    },
+    {
+     "name": "Stroke Foundations, Technique Refinement, Endurance Building",
+     "stated": "Age Group: 3+",
+     "min": 3,
+     "max": null
+    }
+   ],
+   "checked": "2026-11-03",
+   "source": "https://britishswimschool.com/kitchener-waterloo/programs/",
+   "note": "Private company; paid lessons."
+  },
+  {
+   "id": "laurier-academy-music",
+   "name": "Laurier Academy of Music and Arts",
+   "type": "music",
+   "area": "Waterloo and Kitchener",
+   "address": "Laurier's Waterloo campus, and 68 Biehn Dr, Kitchener",
+   "url": "https://wlu.ca/academics/faculties/faculty-of-music/laurier-academy-of-music-and-arts/group-programs-and-camps/early-childhood-music.html",
+   "classes": [
+    {
+     "name": "Early childhood music: 4-Year-Old Class",
+     "stated": "4-Year-Old Class",
+     "min": 4,
+     "max": 4
+    },
+    {
+     "name": "Early childhood music: 5- and 6-Year-Old Class",
+     "stated": "5- and 6-Year-Old Class",
+     "min": 5,
+     "max": 6
+    },
+    {
+     "name": "Early childhood music: 3-Year-Old Class",
+     "stated": "3-Year-Old Class",
+     "min": 3,
+     "max": 3
+    }
+   ],
+   "checked": "2026-11-03",
+   "source": "https://wlu.ca/academics/faculties/faculty-of-music/laurier-academy-of-music-and-arts/group-programs-and-camps/early-childhood-music.html",
+   "note": "Also private lessons in piano, voice, strings, guitar and more; their lessons page doesn't list ages."
+  },
+  {
+   "id": "long-mcquade-waterloo",
+   "name": "Long & McQuade Music Lesson Centre (Waterloo)",
+   "type": "music",
+   "area": "Waterloo",
+   "address": "36 King St N, Waterloo",
+   "url": "https://www.long-mcquade.com/lessons/Ontario/Waterloo/Piano/",
+   "classes": [
+    {
+     "name": "Piano Party (intro group piano class)",
+     "stated": "children ages 4 and 5",
+     "min": 4,
+     "max": 5
+    }
+   ],
+   "checked": "2026-11-03",
+   "source": "https://www.long-mcquade.com/images/lessons/locations/37/Waterloo%20Piano%20Party,%205.5x8.5.pdf",
+   "note": "Piano Party ages come from the store's own flyer; private lessons in many instruments don't list ages.",
+   "check": "Ages come from a PDF flyer the checker can't read."
+  },
+  {
+   "id": "pro-music-school",
+   "name": "Pro Music School",
+   "type": "music",
+   "area": "Waterloo",
+   "address": "133 Weber St N, Waterloo",
+   "url": "https://www.promusic.ca/",
+   "classes": [
+    {
+     "name": "Music lessons (school-wide)",
+     "stated": "students ranging from 3 to 75 years old",
+     "min": 3,
+     "max": 75
+    }
+   ],
+   "checked": "2026-11-03",
+   "source": "https://www.promusic.ca/",
+   "note": "The ages are for the school overall, not a specific class; ask which lessons suit a 5 or 6 year old."
+  },
+  {
+   "id": "kitchener-academy-music",
+   "name": "The Kitchener Academy of Music",
+   "type": "music",
+   "area": "Kitchener",
+   "address": "10 Pioneer Dr, Unit 204, Kitchener",
+   "url": "https://www.kitcheneracademyofmusic.com/music-lessons",
+   "classes": [],
+   "agesNote": "Their site didn't state class ages in a form Grand Calendar could read. Check their site.",
+   "checked": "2026-11-03",
+   "source": "https://www.kitcheneracademyofmusic.com/"
+  },
+  {
+   "id": "lets-dance",
+   "name": "Let's Dance Ltd.",
+   "type": "dance",
+   "area": "Kitchener",
+   "address": "975 Bleams Rd, Unit 2, Kitchener",
+   "url": "https://letsdanceltd.ca/dance-classes/for-toddlers/",
+   "classes": [
+    {
+     "name": "Toddler program (jazz, ballet, tap, hip hop, acro)",
+     "stated": "ages 2–6",
+     "min": 2,
+     "max": 6
+    },
+    {
+     "name": "Kids recreational program",
+     "stated": "children ages 7–13",
+     "min": 7,
+     "max": 13
+    }
+   ],
+   "checked": "2026-11-03",
+   "source": "https://letsdanceltd.ca/dance-classes/for-toddlers/",
+   "note": "Their kids page also says 'Ages 6-11' in its heading, which doesn't match the 7–13 in its description. Ask which fits a 6-year-old.",
+   "pages": [
+    "https://letsdanceltd.ca/dance-classes/for-kids/"
+   ]
+  },
+  {
+   "id": "move-with-grace",
+   "name": "Move With Grace Dance Studio",
+   "type": "dance",
+   "area": "Cambridge",
+   "address": "400 Collier Macmillan Dr, Cambridge",
+   "url": "https://movewithgrace.ca/dance-programs-and-classes/",
+   "classes": [
+    {
+     "name": "Kiddazzle",
+     "stated": "Ages 2-4",
+     "min": 2,
+     "max": 4
+    },
+    {
+     "name": "Micro Minis",
+     "stated": "Ages 4-6",
+     "min": 4,
+     "max": 6
+    }
+   ],
+   "checked": "2026-11-03",
+   "source": "https://movewithgrace.ca/dance-programs-and-classes/"
+  },
+  {
+   "id": "element-dance-arts",
+   "name": "Element Dance Arts",
+   "type": "dance",
+   "area": "Cambridge",
+   "address": "1600 Industrial Rd, Unit 2C, Cambridge",
+   "url": "https://elementdancearts.com/classes/recreational/",
+   "classes": [
+    {
+     "name": "Pre-Kinder Dance (ballet, jazz, tap)",
+     "stated": "Age 3.5-4",
+     "min": 3.5,
+     "max": 4
+    },
+    {
+     "name": "Kinder Dance (ballet, jazz, tap)",
+     "stated": "Age 4-5",
+     "min": 4,
+     "max": 5
+    },
+    {
+     "name": "Recreational program",
+     "stated": "Ages 2.5-18 yrs",
+     "min": 2.5,
+     "max": 18
+    }
+   ],
+   "checked": "2026-11-03",
+   "source": "https://elementdancearts.com/kinder-dance/",
+   "note": "Their Kinder Dance page still shows some older season dates; check current classes when registering.",
+   "pages": [
+    "https://elementdancearts.com/classes/recreational/"
+   ]
+  },
+  {
+   "id": "five-rings-tkd",
+   "name": "Five Rings Taekwondo",
+   "type": "martial",
+   "area": "Waterloo",
+   "address": "550 Parkside Dr, Unit A2, Waterloo",
+   "url": "https://5rings.ca/tiny-tigers/",
+   "classes": [
+    {
+     "name": "Tiny Tigers",
+     "stated": "Suitable for ages 3-5",
+     "min": 3,
+     "max": 5
+    },
+    {
+     "name": "Children's program",
+     "stated": "Children's (6-12)",
+     "min": 6,
+     "max": 12
+    }
+   ],
+   "checked": "2026-11-03",
+   "source": "https://5rings.ca/tiny-tigers/",
+   "pages": [
+    "https://5rings.ca/childrens-6-12/"
+   ]
+  },
+  {
+   "id": "volpe-martial-arts",
+   "name": "Volpe Martial Arts",
+   "type": "martial",
+   "area": "Kitchener",
+   "address": "335 Gage Ave, Unit 3, Kitchener",
+   "url": "https://www.volpemartialarts.com/",
+   "classes": [
+    {
+     "name": "Little Tigers Program",
+     "stated": "(Ages 4 - 5)",
+     "min": 4,
+     "max": 5
+    },
+    {
+     "name": "Youth Program",
+     "stated": "(Ages 6 - 10)",
+     "min": 6,
+     "max": 10
+    }
+   ],
+   "checked": "2026-11-03",
+   "source": "https://www.volpemartialarts.com/",
+   "note": "Hapkido and kung fu based programs."
+  },
+  {
+   "id": "black-belt-world-kitchener",
+   "name": "Black Belt World (Kitchener)",
+   "type": "martial",
+   "area": "Kitchener",
+   "address": "385 Frederick St, Unit 11, Kitchener",
+   "url": "https://blackbeltworld.ca/locations/kitchener/",
+   "classes": [
+    {
+     "name": "Tiny Tigers",
+     "stated": "Ages 3-5",
+     "min": 3,
+     "max": 5
+    },
+    {
+     "name": "Children",
+     "stated": "Ages 6-12",
+     "min": 6,
+     "max": 12
+    }
+   ],
+   "checked": "2026-11-03",
+   "source": "https://blackbeltworld.ca/locations/kitchener/",
+   "note": "Taekwondo. The page lists other locations too; this entry is the Kitchener one."
+  },
+  {
+   "id": "karate-olympic-centre",
+   "name": "Karate Olympic Centre",
+   "type": "martial",
+   "area": "Kitchener",
+   "address": "1264 Victoria St N, Kitchener",
+   "url": "https://karateolympiccentre.com/",
+   "classes": [
+    {
+     "name": "Little Champions",
+     "stated": "Ages 3.5–6",
+     "min": 3.5,
+     "max": 6
+    },
+    {
+     "name": "Kids Karate",
+     "stated": "Ages 7–12",
+     "min": 7,
+     "max": 12
+    }
+   ],
+   "checked": "2026-11-03",
+   "source": "https://karateolympiccentre.com/",
+   "note": "Ages and address are from their own site as shown in a web search; the live page didn't show readable text when checked. Confirm on their site.",
+   "check": "Their page builds its text in a way the checker can't read; re-check by hand."
+  },
+  {
+   "id": "asahi-judo",
+   "name": "Asahi Judo Club",
+   "type": "martial",
+   "area": "Kitchener-Waterloo",
+   "address": "Kitchener-Waterloo (see their site for the dojo location)",
+   "url": "https://www.asahijudoclub.ca/classes",
+   "classes": [
+    {
+     "name": "Judo, U8 age group (age as of December)",
+     "stated": "5 to 7 yrs",
+     "min": 5,
+     "max": 7
+    },
+    {
+     "name": "Judo, U10 age group",
+     "stated": "8 to 9 yrs",
+     "min": 8,
+     "max": 9
+    }
+   ],
+   "checked": "2026-11-03",
+   "source": "https://www.asahijudoclub.ca/classes",
+   "note": "Judo. The club says it's the only city-affiliated judo club in Kitchener-Waterloo. Age groups count age as of December."
+  },
+  {
+   "id": "waterloo-kung-fu",
+   "name": "Waterloo Kung-Fu Academy",
+   "type": "martial",
+   "area": "Waterloo",
+   "address": "620 Davenport Rd, Unit 3, Waterloo",
+   "url": "https://www.waterlookungfu.com/programs-classes/",
+   "classes": [
+    {
+     "name": "Children's kung fu",
+     "stated": "Classes Ages 4 – 5",
+     "min": 4,
+     "max": 5
+    },
+    {
+     "name": "Children's kung fu",
+     "stated": "Classes Ages 6 – 10",
+     "min": 6,
+     "max": 10
+    }
+   ],
+   "checked": "2026-11-03",
+   "source": "https://www.waterlookungfu.com/programs-classes/",
+   "note": "Shaolin Five Animal kung fu."
+  },
+  {
+   "id": "generation-ma",
+   "name": "Shamuon Generation of Martial Arts",
+   "type": "martial",
+   "area": "Waterloo",
+   "address": "Waterloo (see their site)",
+   "url": "https://www.generationma.com/youth-program",
+   "classes": [
+    {
+     "name": "Kids program",
+     "stated": "Kids Ages 2-3",
+     "min": 2,
+     "max": 3
+    },
+    {
+     "name": "Youth Program",
+     "stated": "Ages 4 - 12",
+     "min": 4,
+     "max": 12
+    }
+   ],
+   "checked": "2026-11-03",
+   "source": "https://www.generationma.com/youth-program",
+   "pages": [
+    "https://www.generationma.com/"
+   ]
+  },
+  {
+   "id": "hotshot-athletic",
+   "name": "Hotshot Athletic",
+   "type": "martial",
+   "area": "Kitchener and Cambridge",
+   "address": "Kitchener, Cambridge and Guelph locations (see their site)",
+   "url": "https://www.hotshotathletic.com/programs",
+   "classes": [
+    {
+     "name": "Martial arts (karate, kung fu)",
+     "stated": "Age 3+",
+     "min": 3,
+     "max": null
+    },
+    {
+     "name": "Acrobatics",
+     "stated": "Ages 7+",
+     "min": 7,
+     "max": null
+    }
+   ],
+   "checked": "2026-11-03",
+   "source": "https://www.hotshotathletic.com/programs"
+  },
+  {
+   "id": "return-of-the-dragon",
+   "name": "Return of the Dragon Martial Arts",
+   "type": "martial",
+   "area": "Kitchener",
+   "address": "900 Guelph St, #108, Kitchener",
+   "url": "https://rotdma.com/classes/kids-kung-fu/",
+   "classes": [],
+   "agesNote": "They run Kids Kung Fu, plus Brazilian jiu-jitsu, Muay Thai and kickboxing, but their pages don't state ages for the kids' class. Ask them.",
+   "checked": "2026-11-03",
+   "source": "https://rotdma.com/classes/kids-kung-fu/"
+  },
+  {
+   "id": "code-ninjas-waterloo",
+   "name": "Code Ninjas (Waterloo)",
+   "type": "coding",
+   "area": "Waterloo",
+   "address": "Waterloo (see their site for the centre's address)",
+   "url": "https://www.codeninjas.com/waterloo-on-ca",
+   "classes": [
+    {
+     "name": "Code Ninjas JR (visual coding)",
+     "stated": "AGES 5 TO 7",
+     "min": 5,
+     "max": 7
+    },
+    {
+     "name": "Code Ninjas CREATE",
+     "stated": "AGES 8 TO 14",
+     "min": 8,
+     "max": 14
+    },
+    {
+     "name": "Camps",
+     "stated": "AGES 5 TO 14",
+     "min": 5,
+     "max": 14
+    }
+   ],
+   "checked": "2026-11-03",
+   "source": "https://www.codeninjas.com/waterloo-on-ca"
+  },
+  {
+   "id": "zebra-robotics-kitchener",
+   "name": "Zebra Robotics (Kitchener)",
+   "type": "coding",
+   "area": "Kitchener",
+   "address": "700 Strasburg Rd, Unit 001, Kitchener",
+   "url": "https://zebrarobotics.com/kitchener",
+   "classes": [
+    {
+     "name": "Robotics and coding classes",
+     "stated": "grades 1–12",
+     "min": null,
+     "max": null
+    }
+   ],
+   "checked": "2026-11-03",
+   "source": "https://zebrarobotics.com/kitchener",
+   "note": "They group classes by school grade, not age, so Grand Calendar can't match them to an age. Grade 1 is usually age 6; ask which class fits."
+  },
+  {
+   "id": "stemotics",
+   "name": "STEMOTICS",
+   "type": "coding",
+   "area": "Cambridge",
+   "address": "695 Bishop St N, Cambridge",
+   "url": "https://stemotics.com/",
+   "classes": [
+    {
+     "name": "Summer camp (STEM)",
+     "stated": "ages 4-12",
+     "min": 4,
+     "max": 12
+    }
+   ],
+   "checked": "2026-11-03",
+   "source": "https://stemotics.com/",
+   "note": "They also run LEGO robotics through the City of Waterloo guide (see Programs). Their site says specialized programs exist for all age groups but doesn't list them."
+  },
+  {
+   "id": "brick-works-academy",
+   "name": "Brick Works Academy",
+   "type": "coding",
+   "area": "Waterloo",
+   "address": "50 Erb St W, Waterloo",
+   "url": "https://brickworksacademy.com/",
+   "classes": [],
+   "agesNote": "Their site doesn't state class ages. Ask them which classes suit a 5 or 6 year old.",
+   "checked": "2026-11-03",
+   "source": "https://brickworksacademy.com/"
+  },
+  {
+   "id": "ultimate-coders-kitchener",
+   "name": "Ultimate Coders (Kitchener)",
+   "type": "coding",
+   "area": "Kitchener",
+   "address": "1241 Strasburg Rd, Unit 3, Kitchener",
+   "url": "https://www.ultimatecoders.com/kitchener-on-ca",
+   "classes": [
+    {
+     "name": "Junior Thinker",
+     "stated": "Ages 5–7",
+     "min": 5,
+     "max": 7
+    },
+    {
+     "name": "Junior Creator",
+     "stated": "Ages 7–14",
+     "min": 7,
+     "max": 14
+    },
+    {
+     "name": "Ultimate Innovator",
+     "stated": "Ages 14–18",
+     "min": 14,
+     "max": 18
+    }
+   ],
+   "checked": "2026-11-03",
+   "source": "https://www.ultimatecoders.com/kitchener-on-ca",
+   "note": "Coding, robotics and AI. They also run small-group math classes for grades 1 to 8."
+  },
+  {
+   "id": "kre8ive-coderz",
+   "name": "Kre8ive Coderz",
+   "type": "coding",
+   "area": "Kitchener",
+   "address": "715 Fischer-Hallman Rd, Unit 201, Kitchener",
+   "url": "https://kre8ivecoderz.ca/courses/tiny-coderz",
+   "classes": [
+    {
+     "name": "Tiny Coderz",
+     "stated": "Ages 5-6",
+     "min": 5,
+     "max": 6
+    },
+    {
+     "name": "Mini Coderz",
+     "stated": "Ages 7-8",
+     "min": 7,
+     "max": 8
+    },
+    {
+     "name": "Kre8ive Makerz",
+     "stated": "Ages 8-11",
+     "min": 8,
+     "max": 11
+    },
+    {
+     "name": "Advanced Builderz",
+     "stated": "Ages 11-15",
+     "min": 11,
+     "max": 15
+    },
+    {
+     "name": "Master Coderz",
+     "stated": "Ages 13+",
+     "min": 13,
+     "max": null
+    }
+   ],
+   "checked": "2026-11-03",
+   "source": "https://kre8ivecoderz.ca/courses",
+   "note": "Coding with ScratchJr, Scratch, Minecraft MakeCode, Python and robotics. They also run a math program (PrepBox Math)."
+  },
+  {
+   "id": "woolwich-swim",
+   "name": "Township of Woolwich swimming lessons",
+   "type": "swimming",
+   "area": "Elmira",
+   "address": "Woolwich Memorial Centre, 24 Snyder Ave S, Elmira",
+   "url": "https://www.woolwich.ca/explore-play/recreation-programs/swimming-lessons/",
+   "classes": [
+    {
+     "name": "Preschool levels",
+     "stated": "Ages 3-5 years",
+     "min": 3,
+     "max": 5
+    },
+    {
+     "name": "A class for ages 4 to 8 (see their schedule)",
+     "stated": "Ages 4-8 years",
+     "min": 4,
+     "max": 8
+    },
+    {
+     "name": "Swimmer levels",
+     "stated": "Ages 6 - 12 years",
+     "min": 6,
+     "max": 12
+    }
+   ],
+   "checked": "2026-11-03",
+   "source": "https://www.woolwich.ca/explore-play/recreation-programs/swimming-lessons/",
+   "note": "Their page lists Fall 2026 days, times and resident and non-resident fees."
+  },
+  {
+   "id": "wilmot-swim",
+   "name": "Township of Wilmot swimming lessons",
+   "type": "swimming",
+   "area": "Wilmot",
+   "address": "Wilmot Recreation Complex",
+   "url": "https://www.wilmot.ca/recreation-and-culture/swimming/swimming-lessons/",
+   "classes": [
+    {
+     "name": "Parent and Tot",
+     "stated": "2 - 3 years with parent",
+     "min": 2,
+     "max": 3
+    },
+    {
+     "name": "Preschool levels",
+     "stated": "3 - 5 years",
+     "min": 3,
+     "max": 5
+    },
+    {
+     "name": "Next level after Preschool 1 to 4",
+     "stated": "Age: 5 years and/or completion of Preschool Levels 1 to 4",
+     "min": 5,
+     "max": null
+    }
+   ],
+   "checked": "2026-11-03",
+   "source": "https://www.wilmot.ca/recreation-and-culture/swimming/swimming-lessons/",
+   "note": "Register through Wilmot's recWeb (link under Search other program sites)."
+  },
+  {
+   "id": "yellow-brick-music",
+   "name": "Yellow Brick Music",
+   "type": "music",
+   "area": "Cambridge and Ayr",
+   "address": "25 Sheffield St, Cambridge, and 45 Stanley St, Ayr",
+   "url": "https://yellowbrickmusic.ca/group-programs",
+   "pages": [],
+   "classes": [
+    {
+     "name": "Early Years Music (formerly Musical Safari)",
+     "stated": "newborns through age 7",
+     "min": 0,
+     "max": 7
+    }
+   ],
+   "checked": "2026-11-03",
+   "source": "https://yellowbrickmusic.ca/group-programs",
+   "note": "Group music classes; also beginner instrument groups for ages 8 to 12 and private lessons."
+  },
+  {
+   "id": "cambridge-conservatory",
+   "name": "Cambridge Conservatory of Music",
+   "type": "music",
+   "area": "Cambridge",
+   "address": "55 Dickson St (upstairs, across from City Hall), Cambridge",
+   "url": "https://cambridgeconservatory.com/",
+   "classes": [
+    {
+     "name": "Wunderkeys Piano for Preschoolers",
+     "stated": "ages 3-5",
+     "min": 3,
+     "max": 5
+    }
+   ],
+   "checked": "2026-11-03",
+   "source": "https://cambridgeconservatory.com/",
+   "note": "Also private lessons in piano, guitar, violin, voice and drums; those pages don't list ages."
+  },
+  {
+   "id": "long-mcquade-stratford",
+   "name": "Long & McQuade Music Lesson Centre (Stratford)",
+   "type": "music",
+   "area": "Stratford",
+   "address": "145 Erie St, Stratford",
+   "url": "https://www.long-mcquade.com/lessons/Ontario/Stratford",
+   "classes": [],
+   "agesNote": "Private lessons in piano, voice, strings, guitar, drums and more for all ages, but no specific class ages are listed. Ask which teachers take young beginners.",
+   "checked": "2026-11-03",
+   "source": "https://www.long-mcquade.com/lessons/Ontario/Stratford",
+   "check": "Their lesson pages refuse automated checks; re-check by hand."
+  },
+  {
+   "id": "infinity-dance",
+   "name": "Infinity Dance",
+   "type": "dance",
+   "area": "Stratford",
+   "address": "Stratford (see their site)",
+   "url": "https://infinitydance.ca/ages-5-6-yrs/",
+   "pages": [
+    "https://infinitydance.ca/preschool-classes/"
+   ],
+   "classes": [
+    {
+     "name": "Dance Adventure 2 (preschool)",
+     "stated": "ages 3.5-5",
+     "min": 3.5,
+     "max": 5
+    },
+    {
+     "name": "Mini Dance Classes: acro, ballet, hip hop, jazz (30 minutes)",
+     "stated": "Ages 5-6 yrs",
+     "min": 5,
+     "max": 6
+    }
+   ],
+   "checked": "2026-11-03",
+   "source": "https://infinitydance.ca/ages-5-6-yrs/",
+   "note": "Inclusive studio; also a Dance-Ability program for students with diverse needs."
+  },
+  {
+   "id": "in-motion-dance",
+   "name": "In Motion Dance School",
+   "type": "dance",
+   "area": "Kitchener",
+   "address": "637 Victoria St N and 543 Mill St, Kitchener",
+   "url": "https://www.inmotiondance.ca/",
+   "classes": [
+    {
+     "name": "Kinder Motion",
+     "stated": "ages 2–5",
+     "min": 2,
+     "max": 5
+    },
+    {
+     "name": "Recreational program (September to June)",
+     "stated": "ages 2–17",
+     "min": 2,
+     "max": 17
+    }
+   ],
+   "checked": "2026-11-03",
+   "source": "https://www.inmotiondance.ca/"
+  },
+  {
+   "id": "encore-dance",
+   "name": "Encore Dance Studio",
+   "type": "dance",
+   "area": "Elmira",
+   "address": "8 Mill St, Elmira",
+   "url": "https://encoredancestudio.ca/",
+   "classes": [
+    {
+     "name": "Dance camps and events (holiday dates on their site)",
+     "stated": "Ages 4+",
+     "min": 4,
+     "max": null
+    }
+   ],
+   "checked": "2026-11-03",
+   "source": "https://encoredancestudio.ca/",
+   "note": "Their site doesn't list ages for regular weekly classes; ask about classes for 5 and 6 year olds."
+  },
+  {
+   "id": "confidance",
+   "name": "ConfiDance Studio",
+   "type": "dance",
+   "area": "Kitchener",
+   "address": "625 Wabanaki Dr, Kitchener",
+   "url": "https://www.confidancestudio.ca/",
+   "classes": [],
+   "agesNote": "Their site doesn't state class ages in a form Grand Calendar could read. Check their site.",
+   "checked": "2026-11-03",
+   "source": "https://www.confidancestudio.ca/"
+  },
+  {
+   "id": "triple-arts-karate",
+   "name": "Triple Arts Karate",
+   "type": "martial",
+   "area": "Cambridge",
+   "address": "125 Turnbull Crt, Units 4-6, Cambridge",
+   "url": "https://www.tripleartskaratecambridge.com/",
+   "classes": [
+    {
+     "name": "Mini Dragons Karate",
+     "stated": "Age 4 to 7",
+     "min": 4,
+     "max": 7
+    },
+    {
+     "name": "Kids karate",
+     "stated": "Age 8 to 12",
+     "min": 8,
+     "max": 12
+    }
+   ],
+   "checked": "2026-11-03",
+   "source": "https://www.tripleartskaratecambridge.com/",
+   "note": "Traditional Okinawan Goju-Ryu karate."
+  },
+  {
+   "id": "new-hamburg-karate",
+   "name": "New Hamburg Karate Club",
+   "type": "martial",
+   "area": "New Hamburg (Wilmot)",
+   "address": "New Hamburg (see their site for where classes run)",
+   "url": "https://newhamburgkarate.com/",
+   "classes": [
+    {
+     "name": "Little Ninjas",
+     "stated": "Little Ninjas (ages 4-7)",
+     "min": 4,
+     "max": 7
+    },
+    {
+     "name": "Senior Kids",
+     "stated": "Senior Kids (ages 8-12)",
+     "min": 8,
+     "max": 12
+    }
+   ],
+   "checked": "2026-11-03",
+   "source": "https://newhamburgkarate.com/"
+  },
+  {
+   "id": "top-level-tkd",
+   "name": "Top Level Taekwondo and Martial Arts Academy",
+   "type": "martial",
+   "area": "Cambridge and Waterloo",
+   "address": "1655 Bishop St, Units 1-2, Cambridge, and 283-291 Northfield Dr E, Waterloo",
+   "url": "https://topleveltkd.ca/",
+   "classes": [
+    {
+     "name": "Tiny Tigers",
+     "stated": "Tiny Tigers - Ages 3 1/2 - 5",
+     "min": 3.5,
+     "max": 5
+    },
+    {
+     "name": "Children's Class",
+     "stated": "Children's Class - Ages 6 -12",
+     "min": 6,
+     "max": 12
+    }
+   ],
+   "checked": "2026-11-03",
+   "source": "https://topleveltkd.ca/",
+   "note": "Ages and addresses are from their own site as shown in a web search; the live page didn't show readable text when checked. Confirm on their site.",
+   "check": "Their page builds its text in a way the checker can't read; re-check by hand."
+  },
+  {
+   "id": "kick-masters",
+   "name": "K.I.C.K. Masters Karate & Kickboxing",
+   "type": "martial",
+   "area": "Stratford",
+   "address": "400 Huron St (2nd floor), Stratford",
+   "url": "https://www.kickmasters.ca/classes",
+   "classes": [],
+   "agesNote": "Sport karate with kids classes, but their pages don't state the kids class ages. Ask them.",
+   "checked": "2026-11-03",
+   "source": "https://www.kickmasters.ca/classes"
+  },
+  {
+   "id": "yulia-artspace",
+   "name": "Yulia ArtSpace",
+   "type": "art",
+   "area": "Kitchener",
+   "address": "44 Gaukel St, Kitchener",
+   "url": "https://www.yuliab.ca/art-classes-kitchener",
+   "classes": [
+    {
+     "name": "Art Classes for Kids",
+     "stated": "Ages 3–5",
+     "min": 3,
+     "max": 5
+    },
+    {
+     "name": "Art Classes for Kids",
+     "stated": "Ages 6–8",
+     "min": 6,
+     "max": 8
+    }
+   ],
+   "checked": "2026-11-03",
+   "source": "https://www.yuliab.ca/art-classes-kitchener",
+   "note": "Their FAQ says a child can join at 5 or 6 if they can focus for the class. Also free intro classes for 6 to 12 some months."
+  },
+  {
+   "id": "button-factory-arts",
+   "name": "Button Factory Arts Centre",
+   "type": "art",
+   "area": "Waterloo",
+   "address": "25 Regina St S, Waterloo",
+   "url": "https://www.buttonfactoryarts.ca/kids",
+   "classes": [
+    {
+     "name": "4-week after-school courses (drawing, painting, clay)",
+     "stated": "aged 5-14",
+     "min": 5,
+     "max": 14
+    }
+   ],
+   "checked": "2026-11-03",
+   "source": "https://www.buttonfactoryarts.ca/kids",
+   "note": "Also family Sundays and community events."
+  },
+  {
+   "id": "olena-chorna",
+   "name": "Olena Chorna Fine Arts",
+   "type": "art",
+   "area": "Kitchener",
+   "address": "44 Gaukel St, Kitchener",
+   "url": "https://www.olenachornafinearts.ca/",
+   "classes": [
+    {
+     "name": "Art Classes for Kids (small groups)",
+     "stated": "Kids 4+",
+     "min": 4,
+     "max": null
+    }
+   ],
+   "checked": "2026-11-03",
+   "source": "https://www.olenachornafinearts.ca/"
+  },
+  {
+   "id": "hespeler-school-of-art",
+   "name": "Hespeler School of Art",
+   "type": "art",
+   "area": "Cambridge",
+   "address": "41 Renwick Ave, Cambridge",
+   "url": "https://hespelerschoolofart.ca/childrensPrograms.html",
+   "classes": [
+    {
+     "name": "Creative Painting",
+     "stated": "children ages 6 and up",
+     "min": 6,
+     "max": null
+    },
+    {
+     "name": "Drawing Program",
+     "stated": "children ages 8 and up",
+     "min": 8,
+     "max": null
+    }
+   ],
+   "checked": "2026-11-03",
+   "source": "https://hespelerschoolofart.ca/childrensPrograms.html",
+   "note": "This page says they have a newer website, so these details may be older. Confirm with them."
+  },
+  {
+   "id": "kw-skating-club",
+   "name": "Kitchener-Waterloo Skating Club",
+   "type": "skating",
+   "area": "Kitchener and Waterloo",
+   "address": "RIM Park, 2001 University Ave E, Waterloo, plus rinks across Kitchener and Waterloo",
+   "url": "https://www.kwsc.org/programs/learn-to-skate/",
+   "classes": [
+    {
+     "name": "Parent & Tot",
+     "stated": "3 - 4",
+     "min": 3,
+     "max": 4
+    },
+    {
+     "name": "CanSkate (learn to skate)",
+     "stated": "4 - 12",
+     "min": 4,
+     "max": 12
+    }
+   ],
+   "checked": "2026-11-03",
+   "source": "https://www.kwsc.org/programs/learn-to-skate/",
+   "note": "Also Adaptive CanSkate for all ages, with KidsAbility."
+  },
+  {
+   "id": "cambridge-skating-club",
+   "name": "Cambridge Skating Club",
+   "type": "skating",
+   "area": "Cambridge",
+   "address": "Cambridge (see their site for rinks)",
+   "url": "https://www.cambridgeskatingclub.com/pages/programs/canskate/",
+   "classes": [
+    {
+     "name": "Pre-CanSkate",
+     "stated": "age 3-5 years",
+     "min": 3,
+     "max": 5
+    },
+    {
+     "name": "CanSkate",
+     "stated": "age 5 years and up",
+     "min": 5,
+     "max": null
+    }
+   ],
+   "checked": "2026-11-03",
+   "source": "https://www.cambridgeskatingclub.com/pages/programs/canskate/"
+  },
+  {
+   "id": "ayr-skating-club",
+   "name": "Ayr Skating Club",
+   "type": "skating",
+   "area": "Ayr (North Dumfries)",
+   "address": "Ayr (see their site for the rink)",
+   "url": "https://www.ayrskatingclub.com/",
+   "classes": [
+    {
+     "name": "Pre-CanSkate",
+     "stated": "3-4 years old",
+     "min": 3,
+     "max": 4
+    },
+    {
+     "name": "CanSkate",
+     "stated": "5+ years old",
+     "min": 5,
+     "max": null
+    }
+   ],
+   "checked": "2026-11-03",
+   "source": "https://www.ayrskatingclub.com/"
+  },
+  {
+   "id": "wellesley-skating-club",
+   "name": "Wellesley Skating Club",
+   "type": "skating",
+   "area": "Wellesley",
+   "address": "Wellesley (see their site for the rink)",
+   "url": "https://www.wellesleyskatingclub.ca/programs/canskate-learn-to-skate-ages-5-and-up/",
+   "classes": [
+    {
+     "name": "CanSkate",
+     "stated": "CanSkate (ages 5 and up)",
+     "min": 5,
+     "max": null
+    }
+   ],
+   "checked": "2026-11-03",
+   "source": "https://www.wellesleyskatingclub.ca/programs/canskate-learn-to-skate-ages-5-and-up/",
+   "note": "Also PreCanSkate for ages 3 to 5."
+  },
+  {
+   "id": "stratford-skating-club",
+   "name": "Stratford Skating Club",
+   "type": "skating",
+   "area": "Stratford",
+   "address": "Stratford (see their site for the rink)",
+   "url": "https://stratfordskating.ca/programs/",
+   "classes": [
+    {
+     "name": "Preschool learn to skate",
+     "stated": "PRESCHOOL (ages 3-4)",
+     "min": 3,
+     "max": 4
+    },
+    {
+     "name": "CanSkate",
+     "stated": "CanSkate (Ages 5 and older)",
+     "min": 5,
+     "max": null
+    }
+   ],
+   "checked": "2026-11-03",
+   "source": "https://stratfordskating.ca/programs/"
+  },
+  {
+   "id": "kw-sertoma-speed-skating",
+   "name": "KW Sertoma Speed Skating Club",
+   "type": "skating",
+   "area": "Kitchener-Waterloo",
+   "address": "Kitchener-Waterloo (see their site)",
+   "url": "https://kwspeedskating.com/ltss/",
+   "classes": [
+    {
+     "name": "Learn to Speed Skate",
+     "stated": "all ages",
+     "min": 0,
+     "max": null
+    }
+   ],
+   "checked": "2026-11-03",
+   "source": "https://kwspeedskating.com/ltss/",
+   "note": "Children then move into their FUNdamentals program."
+  },
+  {
+   "id": "new-hamburg-skating-club",
+   "name": "New Hamburg Skating Club",
+   "type": "skating",
+   "area": "Wilmot",
+   "address": "Wilmot Recreation Complex",
+   "url": "https://www.wilmot.ca/en/things-to-do/Skating.aspx",
+   "classes": [],
+   "agesNote": "Runs CanSkate and PreCanSkate, per Skate Ontario's club listing, but I couldn't find their own site to confirm ages. Ask the club.",
+   "checked": "2026-11-03",
+   "source": "https://www.wilmot.ca/en/things-to-do/Skating.aspx",
+   "check": "No own website found; re-check by hand."
+  },
+  {
+   "id": "woolwich-youth-soccer",
+   "name": "Woolwich Youth Soccer Club",
+   "type": "sports",
+   "area": "Elmira, Breslau and St. Jacobs",
+   "address": "5 First St E, Elmira (office); games in Elmira, Breslau and St. Jacobs",
+   "url": "https://woolwichyouthsoccer.com/house-league/",
+   "classes": [
+    {
+     "name": "House league (outdoor, spring and summer)",
+     "stated": "from age three through high school",
+     "min": 3,
+     "max": null
+    }
+   ],
+   "checked": "2026-11-03",
+   "source": "https://woolwichyouthsoccer.com/house-league/",
+   "note": "Divisions go by birth year on their house league page. Registration is through PowerUp Sports.",
+   "sport": "Soccer"
+  },
+  {
+   "id": "stratford-youth-soccer",
+   "name": "Stratford Youth Soccer Club",
+   "type": "sports",
+   "area": "Stratford",
+   "address": "Stratford Burnside Agriplex, 353 McCarthy Rd, Stratford (indoor)",
+   "url": "https://www.stratfordyouthsoccer.com/hli",
+   "classes": [
+    {
+     "name": "Indoor house league (Sundays, October to February)",
+     "stated": "Ages 4 (2022 birth year) and up",
+     "min": 4,
+     "max": null
+    }
+   ],
+   "checked": "2026-11-03",
+   "source": "https://www.stratfordyouthsoccer.com/hli",
+   "note": "The 2026-27 indoor season was full when checked.",
+   "sport": "Soccer"
+  },
+  {
+   "id": "waterloo-united",
+   "name": "Waterloo United (soccer)",
+   "type": "sports",
+   "area": "Waterloo",
+   "address": "RIM Park, 2001 University Ave E, Waterloo",
+   "url": "https://www.waterloounited.com/recreational/",
+   "classes": [
+    {
+     "name": "Recreational, indoor 2026/27",
+     "stated": "U3 to U7",
+     "min": 2,
+     "max": 6
+    }
+   ],
+   "checked": "2026-11-03",
+   "source": "https://www.waterloounited.com/recreational/",
+   "note": "Soccer groups by 'U' age: U6 means under 6 in the season's year, so mostly age 5. Ages here are worked out from the club's own U labels or birth years.",
+   "sport": "Soccer"
+  },
+  {
+   "id": "ayr-minor-soccer",
+   "name": "Ayr Minor Soccer Club",
+   "type": "sports",
+   "area": "Ayr (North Dumfries)",
+   "address": "Fields in Ayr, including the North Dumfries Community Complex",
+   "url": "https://www.ayrsoccerclub.ca/about-us.html",
+   "classes": [
+    {
+     "name": "Grasshopper",
+     "stated": "Grasshopper (U5)",
+     "min": 3,
+     "max": 4
+    },
+    {
+     "name": "Cricket",
+     "stated": "Cricket (U6)",
+     "min": 5,
+     "max": 5
+    },
+    {
+     "name": "U8 (plays locally in Ayr)",
+     "stated": "U8",
+     "min": 6,
+     "max": 7
+    }
+   ],
+   "checked": "2026-11-03",
+   "source": "https://www.ayrsoccerclub.ca/about-us.html",
+   "note": "Soccer groups by 'U' age: U6 means under 6 in the season's year, so mostly age 5. Ages here are worked out from the club's own U labels or birth years.",
+   "sport": "Soccer"
+  },
+  {
+   "id": "wellesley-soccer",
+   "name": "Wellesley Soccer League",
+   "type": "sports",
+   "area": "Wellesley",
+   "address": "Wellesley (see their site for fields)",
+   "url": "https://sites.google.com/wellesleysoccerleague.org/wellesleywild/about",
+   "classes": [
+    {
+     "name": "House league (plays in Wellesley)",
+     "stated": "U4-U8",
+     "min": 3,
+     "max": 7
+    }
+   ],
+   "checked": "2026-11-03",
+   "source": "https://sites.google.com/wellesleysoccerleague.org/wellesleywild/about",
+   "note": "Soccer groups by 'U' age: U6 means under 6 in the season's year, so mostly age 5. Ages here are worked out from the club's own U labels or birth years. Run by parent volunteers.",
+   "sport": "Soccer"
+  },
+  {
+   "id": "kitchener-sc",
+   "name": "Kitchener Soccer Club",
+   "type": "sports",
+   "area": "Kitchener",
+   "address": "Kitchener (see their site)",
+   "url": "https://www.kitchenersc.com/",
+   "classes": [],
+   "agesNote": "Their site builds its pages in a way Grand Calendar can't read, so program ages aren't confirmed. Check their house league page.",
+   "checked": "2026-11-03",
+   "source": "https://www.kitchenersc.com/",
+   "check": "Their site can't be read automatically; re-check by hand.",
+   "sport": "Soccer"
+  },
+  {
+   "id": "kwhlb",
+   "name": "Kitchener-Waterloo House League Baseball (KWHLB)",
+   "type": "sports",
+   "sport": "Baseball",
+   "area": "Kitchener, Waterloo and nearby townships",
+   "address": "Parks across Kitchener and Waterloo; open to Baden, Breslau, Elmira, New Hamburg, St. Jacobs, Wellesley, Wilmot and more",
+   "url": "https://kwhlb.ca/our-story/",
+   "classes": [
+    {
+     "name": "5U Fundamentals",
+     "stated": "5U program (Fundamentals) for 4-5 year olds",
+     "min": 4,
+     "max": 5
+    },
+    {
+     "name": "7U T-Ball",
+     "stated": "7U program (T-Ball) for 6-7 year olds",
+     "min": 6,
+     "max": 7
+    }
+   ],
+   "checked": "2026-11-03",
+   "source": "https://kwhlb.ca/our-story/",
+   "note": "Run jointly by the Kitchener and Waterloo minor baseball associations."
+  },
+  {
+   "id": "south-woolwich-baseball",
+   "name": "South Woolwich Minor Baseball",
+   "type": "sports",
+   "sport": "Baseball",
+   "area": "Elmira",
+   "address": "Elmira (see their site for diamonds)",
+   "url": "https://www.woolwichbaseball.com/",
+   "classes": [
+    {
+     "name": "Co-ed recreational house league",
+     "stated": "kids aged 4 to 14",
+     "min": 4,
+     "max": 14
+    }
+   ],
+   "checked": "2026-11-03",
+   "source": "https://www.woolwichbaseball.com/",
+   "note": "Ages are from their own site as shown in a web search; the live page didn't show readable text. The 2026 season ran May 4 to July 17.",
+   "check": "Their page builds its text in a way the checker can't read; re-check by hand."
+  },
+  {
+   "id": "cambridge-minor-baseball",
+   "name": "Cambridge Minor Baseball",
+   "type": "sports",
+   "sport": "Baseball",
+   "area": "Cambridge",
+   "address": "Cambridge (see their site for diamonds)",
+   "url": "https://cambridgeminorbaseball.ca/",
+   "classes": [
+    {
+     "name": "House league 7U",
+     "stated": "7U",
+     "min": 6,
+     "max": 7
+    }
+   ],
+   "checked": "2026-11-03",
+   "source": "https://cambridgeminorbaseball.ca/",
+   "note": "In baseball, 5U and 7U mean 'that age and under' in the season's year. Ages here are worked out from the club's own labels. They also list a T-ball house league division, without ages."
+  },
+  {
+   "id": "stratford-minor-baseball",
+   "name": "Stratford Minor Baseball",
+   "type": "sports",
+   "sport": "Baseball",
+   "area": "Stratford",
+   "address": "Stratford (see their site for diamonds)",
+   "url": "https://stratfordminorbaseball.ca/",
+   "classes": [
+    {
+     "name": "House league 5U",
+     "stated": "5U",
+     "min": 4,
+     "max": 5
+    }
+   ],
+   "checked": "2026-11-03",
+   "source": "https://stratfordminorbaseball.ca/",
+   "note": "In baseball, 5U and 7U mean 'that age and under' in the season's year. Ages here are worked out from the club's own labels."
+  },
+  {
+   "id": "sportball-kw",
+   "name": "Sportball Kitchener-Waterloo",
+   "type": "sports",
+   "sport": "Multi-sport (soccer, T-ball, basketball, hockey, tennis and more)",
+   "area": "Kitchener-Waterloo",
+   "address": "Kitchener-Waterloo (see their site for locations)",
+   "url": "https://sportball.com/location/sportball-kitchener-waterloo/t-ball/",
+   "classes": [
+    {
+     "name": "Sportball programs, including T-ball",
+     "stated": "16 months to 12 years old",
+     "min": 1.33,
+     "max": 12
+    }
+   ],
+   "checked": "2026-11-03",
+   "source": "https://sportball.com/location/sportball-kitchener-waterloo/t-ball/",
+   "note": "Indoor and outdoor programs, grouped by age.",
+   "pages": [
+    "https://sportball.com/location/sportball-kitchener-waterloo/multi-sport/"
+   ]
+  },
+  {
+   "id": "kitchener-minor-hockey",
+   "name": "Kitchener Minor Hockey",
+   "type": "sports",
+   "sport": "Hockey",
+   "area": "Kitchener",
+   "address": "Kitchener arenas (see their site)",
+   "url": "https://kitchenerminorhockey.com/",
+   "classes": [
+    {
+     "name": "U6 house league",
+     "stated": "U6 House League (2021-2022)",
+     "min": 4,
+     "max": 5
+    },
+    {
+     "name": "U7 house league",
+     "stated": "U7 House League (2020)",
+     "min": 6,
+     "max": 6
+    }
+   ],
+   "checked": "2026-11-03",
+   "source": "https://kitchenerminorhockey.com/",
+   "note": "Hockey Canada's Timbits U7 is for children who are 5 or 6 by December 31 of the season; U8 is 7. Ages here come from the association's own labels or birth years, for the 2026-27 season."
+  },
+  {
+   "id": "cambridge-minor-hockey",
+   "name": "Cambridge Minor Hockey",
+   "type": "sports",
+   "sport": "Hockey",
+   "area": "Cambridge",
+   "address": "Cambridge arenas (see their site)",
+   "url": "https://cambridgeminorhockey.com/Pages/51341/Junior_Hawks_(U7_U8)/",
+   "classes": [
+    {
+     "name": "Junior Hawks (initiation)",
+     "stated": "Junior Hawks (U7/U8)",
+     "min": 5,
+     "max": 7
+    }
+   ],
+   "checked": "2026-11-03",
+   "source": "https://cambridgeminorhockey.com/Pages/51341/Junior_Hawks_(U7_U8)/",
+   "note": "Hockey Canada's Timbits U7 is for children who are 5 or 6 by December 31 of the season; U8 is 7. Ages here come from the association's own labels or birth years, for the 2026-27 season."
+  },
+  {
+   "id": "woolwich-minor-hockey",
+   "name": "Woolwich Minor Hockey",
+   "type": "sports",
+   "sport": "Hockey",
+   "area": "Elmira",
+   "address": "Woolwich Memorial Centre, Elmira (see their site)",
+   "url": "https://woolwichminorhockey.ca/Pages/12711/U7_-_U15_Hockey_Canada_Pathways/",
+   "classes": [
+    {
+     "name": "U7",
+     "stated": "U7 Player Pathway",
+     "min": 5,
+     "max": 6
+    }
+   ],
+   "checked": "2026-11-03",
+   "source": "https://woolwichminorhockey.ca/Pages/12711/U7_-_U15_Hockey_Canada_Pathways/",
+   "note": "Hockey Canada's Timbits U7 is for children who are 5 or 6 by December 31 of the season; U8 is 7. Ages here come from the association's own labels or birth years, for the 2026-27 season."
+  },
+  {
+   "id": "waterloo-minor-hockey",
+   "name": "Waterloo Minor Hockey (Wolves)",
+   "type": "sports",
+   "sport": "Hockey",
+   "area": "Waterloo",
+   "address": "Waterloo arenas (see their site)",
+   "url": "https://waterloominorhockey.com/",
+   "classes": [],
+   "agesNote": "Their site doesn't show the youngest division's ages in a form Grand Calendar could read. Check their house league page.",
+   "checked": "2026-11-03",
+   "source": "https://waterloominorhockey.com/"
+  },
+  {
+   "id": "ayr-minor-hockey",
+   "name": "Ayr Minor Hockey",
+   "type": "sports",
+   "sport": "Hockey",
+   "area": "Ayr (North Dumfries)",
+   "address": "North Dumfries Community Complex (see their site)",
+   "url": "https://ayrminorhockey.com/",
+   "classes": [],
+   "agesNote": "Their site doesn't show the youngest division's ages in a form Grand Calendar could read. Check their house league page.",
+   "checked": "2026-11-03",
+   "source": "https://ayrminorhockey.com/"
+  },
+  {
+   "id": "stratford-minor-hockey",
+   "name": "Stratford Minor Hockey",
+   "type": "sports",
+   "sport": "Hockey",
+   "area": "Stratford",
+   "address": "Stratford arenas (see their site)",
+   "url": "https://stratfordminorhockey.com/",
+   "classes": [],
+   "agesNote": "Their site doesn't show the youngest division's ages in a form Grand Calendar could read. Check their house league page.",
+   "checked": "2026-11-03",
+   "source": "https://stratfordminorhockey.com/"
+  },
+  {
+   "id": "cambridge-ringette",
+   "name": "Cambridge Ringette",
+   "type": "sports",
+   "sport": "Ringette",
+   "area": "Cambridge",
+   "address": "Cambridge arenas (see their site)",
+   "url": "https://www.cambridgeringette.ca/",
+   "classes": [],
+   "agesNote": "Their site doesn't show the youngest division's ages in a form Grand Calendar could read. Ringette's youngest level is usually called Bunnies. Check their house league page.",
+   "checked": "2026-11-03",
+   "source": "https://www.cambridgeringette.ca/"
+  },
+  {
+   "id": "jump-basketball-kw",
+   "name": "JUMP Basketball (Kitchener-Waterloo)",
+   "type": "sports",
+   "sport": "Basketball",
+   "area": "Kitchener-Waterloo",
+   "address": "Schools and community centres in Kitchener-Waterloo, including The Family Centre, 65 Hanson Ave",
+   "url": "https://jumpbasketball.ca/locations/kitchener/",
+   "classes": [
+    {
+     "name": "Youth basketball programs",
+     "stated": "kids aged 4-13",
+     "min": 4,
+     "max": 13
+    }
+   ],
+   "checked": "2026-11-03",
+   "source": "https://jumpbasketball.ca/locations/kitchener/",
+   "note": "Their Intro to Basketball class is listed for JK/SK."
+  },
+  {
+   "id": "jump-basketball-cambridge",
+   "name": "JUMP Basketball (Cambridge)",
+   "type": "sports",
+   "sport": "Basketball",
+   "area": "Cambridge",
+   "address": "Schools in Cambridge (see their site)",
+   "url": "https://jumpbasketball.ca/locations/cambridge/",
+   "classes": [
+    {
+     "name": "Youth basketball programs",
+     "stated": "kids aged 6-13",
+     "min": 6,
+     "max": 13
+    }
+   ],
+   "checked": "2026-11-03",
+   "source": "https://jumpbasketball.ca/locations/cambridge/"
+  },
+  {
+   "id": "cambridge-tennis-club",
+   "name": "Cambridge Tennis Club",
+   "type": "sports",
+   "sport": "Tennis",
+   "area": "Cambridge",
+   "address": "Soper Park, Cambridge",
+   "url": "https://www.cambridgetennisclub.ca/junior-programs",
+   "classes": [
+    {
+     "name": "Mini tennis (Saturday lessons May and June, summer lessons July and August)",
+     "stated": "4-6",
+     "min": 4,
+     "max": 6
+    }
+   ],
+   "checked": "2026-11-03",
+   "source": "https://www.cambridgetennisclub.ca/junior-programs",
+   "note": "Saturday lessons in May and June are free for junior members."
+  },
+  {
+   "id": "waterloo-tennis-club",
+   "name": "Waterloo Tennis Club",
+   "type": "sports",
+   "sport": "Tennis",
+   "area": "Waterloo",
+   "address": "Waterloo Park, Waterloo",
+   "url": "https://www.waterlootennis.com/",
+   "classes": [],
+   "agesNote": "They run junior programs and camps, but their site doesn't state current junior ages in a form Grand Calendar could read. Ask them.",
+   "checked": "2026-11-03",
+   "source": "https://www.waterlootennis.com/"
+  },
+  {
+   "id": "kw-racquet-club",
+   "name": "Kitchener Waterloo Racquet Club",
+   "type": "sports",
+   "sport": "Tennis",
+   "area": "Kitchener-Waterloo",
+   "address": "Kitchener-Waterloo (see their site)",
+   "url": "https://kwracquetclub.com/",
+   "classes": [],
+   "agesNote": "Indoor tennis with kids programs, but their site doesn't state the kids program ages in a form Grand Calendar could read. Ask them.",
+   "checked": "2026-11-03",
+   "source": "https://kwracquetclub.com/"
+  },
+  {
+   "id": "new-hamburg-hockey",
+   "name": "New Hamburg Hockey Association",
+   "type": "sports",
+   "sport": "Hockey",
+   "area": "New Hamburg (Wilmot)",
+   "address": "Wilmot Recreation Complex",
+   "url": "https://newhamburghockey.com/",
+   "classes": [
+    {
+     "name": "U7 Learn to Play and U7 Fundamentals",
+     "stated": "U7 Learn to Play",
+     "min": 5,
+     "max": 6
+    }
+   ],
+   "checked": "2026-11-03",
+   "source": "https://newhamburghockey.com/",
+   "note": "Hockey Canada's Timbits U7 is for children who are 5 or 6 by December 31 of the season. Ages here come from the association's own labels."
+  },
+  {
+   "id": "woolwich-wild",
+   "name": "Woolwich Wild (girls hockey)",
+   "type": "sports",
+   "sport": "Hockey (girls)",
+   "area": "Elmira and St. Jacobs",
+   "address": "Woolwich arenas (see their site)",
+   "url": "https://woolwichwild.com/Manuals/6902/Sections/6905/About_Woolwich_Wild/",
+   "classes": [
+    {
+     "name": "U7",
+     "stated": "U7 is a program for young girls aged 6 and under",
+     "min": 4,
+     "max": 6
+    }
+   ],
+   "checked": "2026-11-03",
+   "source": "https://woolwichwild.com/Manuals/6902/Sections/6905/About_Woolwich_Wild/",
+   "note": "About 50 minutes on the ice each week, starting with fundamentals."
+  },
+  {
+   "id": "wilmot-girls-hockey",
+   "name": "Wilmot Girls Hockey",
+   "type": "sports",
+   "sport": "Hockey (girls)",
+   "area": "Wilmot",
+   "address": "Wilmot Recreation Complex",
+   "url": "https://wilmotgirlshockey.com/",
+   "classes": [
+    {
+     "name": "Timbits U7",
+     "stated": "Timbits U7",
+     "min": 5,
+     "max": 6
+    }
+   ],
+   "checked": "2026-11-03",
+   "source": "https://wilmotgirlshockey.com/",
+   "note": "Hockey Canada's Timbits U7 is for children who are 5 or 6 by December 31 of the season. Ages here come from the association's own labels."
+  },
+  {
+   "id": "waterloo-ravens",
+   "name": "Waterloo Ravens Girls Hockey Association",
+   "type": "sports",
+   "sport": "Hockey (girls)",
+   "area": "Waterloo",
+   "address": "Waterloo arenas (see their site)",
+   "url": "https://waterlooravens.com/",
+   "classes": [
+    {
+     "name": "U7 house league",
+     "stated": "U7",
+     "min": 5,
+     "max": 6
+    }
+   ],
+   "checked": "2026-11-03",
+   "source": "https://waterlooravens.com/",
+   "note": "Hockey Canada's Timbits U7 is for children who are 5 or 6 by December 31 of the season. Ages here come from the association's own labels."
+  }
+ ]
+}

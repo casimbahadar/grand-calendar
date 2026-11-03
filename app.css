@@ -335,3 +335,20 @@ label.select { display: grid; gap: var(--s1); font-size: 14px; color: var(--ink-
 .ics-item span { display: block; font-size: 15px; color: var(--ink-2); margin-top: 2px; }
 .ics-item.dupe { opacity: 0.6; }
 #ics-skipped p { font-size: 15px; color: var(--ink-2); }
+
+/* ---------- Provider directory ---------- */
+.providers { margin-top: var(--s7); }
+.providers h2 { font-size: 17px; color: var(--river-900); }
+.providers > .muted { font-size: 14px; margin: var(--s1) 0 var(--s2); }
+.prov-card { padding: var(--s4); margin-top: var(--s2); background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg); }
+.prov-card h3 { font-size: 17px; }
+.prov-card .where { font-size: 15px; color: var(--ink-2); margin-top: 2px; }
+.prov-card ul { margin: var(--s3) 0 0; padding: 0; list-style: none; }
+.prov-card li { display: flex; justify-content: space-between; gap: var(--s3); padding: var(--s2) 0; border-top: 1px solid var(--line); font-size: 15px; }
+.prov-card li:first-child { border-top: 0; }
+.prov-card li .stated { color: var(--ink-2); text-align: right; flex: none; max-width: 50%; font-weight: 400; }
+.prov-card li.fit { font-weight: 700; }
+.prov-card .how { margin-top: var(--s2); }
+.prov-card > .btn { width: 100%; margin-top: var(--s3); }
+
+.prov-card .stale { margin-top: var(--s2); padding: var(--s2) var(--s3); border-radius: var(--r-sm); background: var(--full-bg, rgba(180,60,40,.10)); color: var(--ink); font-size: 14px; }

@@ -8,8 +8,11 @@ import { readFile, writeFile } from 'node:fs/promises';
 const readJson = async (p, fallback) => { try { return JSON.parse(await readFile(p, 'utf8')); } catch { return fallback; } };
 const SUBJECT = 'https://casimbahadar.github.io/grand-calendar/';
 
-export function alertsToSend(guides, state, test) {
+export function alertsToSend(guides, state, test, checks = null) {
   const out = [];
+  if (checks?.newFlagsAt && checks.newFlagsAt !== state.providerFlagsSeen && checks.flagged > 0) {
+    out.push({ providers: checks.newFlagsAt, title: 'Grand Calendar: providers to re-check', body: `${checks.flagged} provider page${checks.flagged === 1 ? '' : 's'} changed since they were checked. Ask Claude to re-check them.`, url: './' });
+  }
   if (test) out.push({ title: 'Grand Calendar test', body: 'Season alerts are working on this phone.', url: './' });
   for (const [id, g] of Object.entries(guides.guides || {})) {
     if (!g.ok || !g.edition) continue;
@@ -28,7 +31,8 @@ async function main() {
   const state = await readJson('notify-state.json', { notified: {} });
   state.notified ||= {};
   const test = process.env.TEST_PUSH === 'true';
-  const alerts = alertsToSend(guides, state, test);
+  const checks = await readJson('provider-checks.json', null);
+  const alerts = alertsToSend(guides, state, test, checks);
   // Remember editions seen for the first time without alerting.
   for (const [id, g] of Object.entries(guides.guides || {})) if (g.ok && g.edition && !state.notified[id]) state.notified[id] = g.edition;
 
@@ -41,6 +45,7 @@ async function main() {
         const res = await webpush.sendNotification(cfg.subscription, JSON.stringify({ title: a.title, body: a.body, url: a.url }), { TTL: 3 * 24 * 3600 });
         console.log(`sent: ${a.title} (HTTP ${res.statusCode})`);
         if (a.id) state.notified[a.id] = a.edition;
+        if (a.providers) state.providerFlagsSeen = a.providers;
         state.lastSentAt = new Date().toISOString();
         state.lastError = null;
       } catch (err) {

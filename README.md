@@ -10,7 +10,7 @@ Live at: https://casimbahadar.github.io/grand-calendar/
 - **Who it's for:** Everyone, Family, or Kids (ages set in Settings, 5 to 6 by default).
 - **Topics and search:** one-tap topic groups (Board games, Socializing, Crafts & STEM, and others) plus free-text search.
 - **Filters:** cost, indoor or outdoor, drop-in or registration, hide full events, and distance from your location or a typed place.
-- **Programs:** classes and lessons read from the City of Waterloo program guide and the Township of Wellesley programs page, plus a live web search for other providers.
+- **Programs:** classes and lessons read from the City of Waterloo program guide and the Township of Wellesley programs page, a hand-checked directory of providers (gymnastics, swimming, music, dance, martial arts, coding and robotics, art, skating and kids' sports (soccer, baseball, hockey, ringette, basketball, tennis and multi-sport)), plus a live web search for other providers.
 - **Your calendar:** a Calendar tab showing only what you saved, as a month grid or a week strip, with the chosen day's items below. Weekly programs appear on every class day the source states. **Add your own** covers things the app can't read, like an ActiveNet registration or private lessons: one day, or chosen weekdays between a first and last date. It can also import a calendar file, or the calendar link from an ActiveNet receipt, with a check-before-adding preview. A List view keeps export, import and Add to Calendar.
 - **Season alerts:** a phone notification when a new program guide season appears.
 
@@ -79,19 +79,21 @@ All files sit at the repo root except the workflow.
 - `.github/workflows/refresh.yml`: runs every hour at 17 minutes past, and when you tap Run workflow.
 - `gather.mjs`: library events and their registration status.
 - `gather-programs.mjs`, `guide-waterloo.mjs`, `guide-wellesley.mjs`: programs.
-- `notify.mjs`: season alerts.
+- `notify.mjs`: season alerts, and an alert when the monthly provider check flags pages.
+- `check-providers.mjs`: once a month, revisits each provider's own page, confirms each recorded age still appears in their words, and flags pages whose stated ages changed. Results go to `provider-checks.json`; flagged cards show "May be out of date".
 
 **Data the job writes** (don't edit by hand)
-- `events.json`, `programs.json`, `guides.json`, `notify-state.json`.
+- `events.json`, `programs.json`, `guides.json`, `notify-state.json`, `provider-checks.json`.
 
 **Data kept in the repo**
 - `venues.json`: coordinates for Explore Waterloo venues, looked up once with OpenStreetMap.
+- `providers.json`: program providers checked by hand on their own websites, with ages only where they state them and the date checked.
 
 **Web search helper**
 - `worker.js`: paste this into a Cloudflare Worker. It isn't used from the repo itself.
 
 **Tests**
-- `test-ages.mjs`, `test-gather.mjs`, `test-rules.mjs`, `test-guide.mjs`, `test-calendar.mjs`, `test-import.mjs`, with saved copies of real source data (`*-sample.*`, `wpl-page-*.html`).
+- `test-ages.mjs`, `test-gather.mjs`, `test-rules.mjs`, `test-guide.mjs`, `test-calendar.mjs`, `test-import.mjs`, `test-providers.mjs`, with saved copies of real source data (`*-sample.*`, `wpl-page-*.html`).
 
 ## Setup
 
@@ -128,6 +130,7 @@ node test-rules.mjs
 node test-guide.mjs
 node test-calendar.mjs
 node test-import.mjs
+node test-providers.mjs
 ```
 
 The workflow runs these before every gather. If any fail, nothing is published and the previous data stays in place.
@@ -136,6 +139,7 @@ The workflow runs these before every gather. If any fail, nothing is published a
 
 - **Paused schedules.** GitHub disables scheduled workflows in a public repo after 60 days with no activity. The app shows "the hourly update may be paused" when the data is more than 3 hours old. Re-enable the workflow in the Actions tab.
 - **Program guide layout changes.** If a new guide reads as almost empty, the job keeps the previous programs and records an error in `guides.json`. The guide readers then need updating.
+- **Re-checking a flagged provider.** Read their page again, update the entry in `providers.json`, and set its `checked` date to the day you looked. The flag clears at the next monthly check once that date is after the flag. Entries with a `check` reason (a PDF flyer, a page the checker can't read) are re-checked by hand.
 - **Places in the area.** The list of town and village names that count as in the area is in `core.mjs` (`IN_REGION`).
 - **Topic words.** Each topic's word list is in `topics.mjs`.
 - **Polite requests.** The job identifies itself as GrandCalendar, checks the library's robots.txt before reading its feed, and pauses between page requests. Explore Waterloo is read from the phone, at most every 6 hours.

@@ -1,0 +1,1188 @@
+{
+ "checkedAt": "2026-11-03T20:55:44.051Z",
+ "flagged": 0,
+ "newFlagsAt": null,
+ "results": {
+  "kw-gymnastics": {
+   "status": "ok",
+   "missing": [],
+   "hash": "b6f6f43f32cd4212",
+   "phrases": [
+    "11-15 year",
+    "4-7 years",
+    "7-15yrs"
+   ],
+   "added": [],
+   "removed": [],
+   "url": "https://kwgymnastics.ca/classes-and-passes/classes/",
+   "fetchedAt": "2026-11-03T20:55:44.051Z",
+   "flaggedAt": null
+  },
+  "dynamo-gymnastics": {
+   "status": "ok",
+   "missing": [],
+   "hash": "903f34c104c9a137",
+   "phrases": [
+    "10-18 years",
+    "12-24 months",
+    "2-3 years",
+    "3-5 years",
+    "5-6 years",
+    "6-10 years",
+    "6-12 years",
+    "6-9 years"
+   ],
+   "added": [],
+   "removed": [],
+   "url": "https://dynamogymnastics.ca/recreational-2/recreational/",
+   "fetchedAt": "2026-11-03T20:55:44.051Z",
+   "flaggedAt": null
+  },
+  "woolwich-gymnastics": {
+   "status": "ok",
+   "missing": [],
+   "hash": "a35b409b2cc84a27",
+   "phrases": [
+    "2.5-3.5 years",
+    "3.5-4.5 years",
+    "4-5.5 years",
+    "4.5-6 years",
+    "6-8 years",
+    "9-11years"
+   ],
+   "added": [],
+   "removed": [],
+   "url": "https://www.woolwichgymnastics.ca/programs",
+   "fetchedAt": "2026-11-03T20:55:44.051Z",
+   "flaggedAt": null
+  },
+  "revolution-gymnastics": {
+   "status": "ok",
+   "missing": [],
+   "hash": "ce32c576ce222876",
+   "phrases": [
+    "1-2 years",
+    "2.5-3.5yrs",
+    "aged 18 months",
+    "aged 4 to 5.5 years",
+    "ages 12+ years",
+    "ages 3.5 to 4.5 years",
+    "ages 4.5 to 5.5 years",
+    "ages 5 to 6.5 years",
+    "ages 6 to 8 years",
+    "ages 7 to 10.5 years",
+    "ages 7+",
+    "ages 8.5 to 12 years",
+    "ages 8.5+ years"
+   ],
+   "added": [],
+   "removed": [],
+   "url": "https://revolutiongym.uplifterinc.com/registration/fall-recreational/",
+   "fetchedAt": "2026-11-03T20:55:44.051Z",
+   "flaggedAt": null
+  },
+  "shine-gymnastics": {
+   "status": "ok",
+   "missing": [],
+   "hash": "e3b0c44298fc1c14",
+   "phrases": [],
+   "added": [],
+   "removed": [],
+   "url": "https://www.shinegymnastics.ca/",
+   "fetchedAt": "2026-11-03T20:55:44.051Z",
+   "flaggedAt": null
+  },
+  "kitchener-swim": {
+   "status": "ok",
+   "missing": [],
+   "hash": "25454c4d431ad483",
+   "phrases": [
+    "3-year-olds",
+    "6 to 9 years",
+    "age 10",
+    "age : 13+",
+    "age : 4+",
+    "aged 12 to 24 months",
+    "aged 18+",
+    "ages 10",
+    "ages 12 to 17",
+    "ages 13 to 17",
+    "ages 18+",
+    "ages 3 to 5",
+    "ages 3 to 5 years",
+    "ages 5 to 12",
+    "ages 5 to 12 years"
+   ],
+   "added": [],
+   "removed": [],
+   "url": "https://www.kitchener.ca/pools-and-swimming/swimming-lessons-and-programs/swimming-lessons/",
+   "fetchedAt": "2026-11-03T20:55:44.051Z",
+   "flaggedAt": null
+  },
+  "waterloo-swim": {
+   "status": "manual",
+   "reason": "Checked through the City of Waterloo guide each season.",
+   "url": "https://www.waterloo.ca/activewaterloo",
+   "fetchedAt": "2026-11-03T20:55:44.051Z"
+  },
+  "cambridge-swim": {
+   "status": "ok",
+   "missing": [],
+   "hash": "244397ad1432fb1e",
+   "phrases": [
+    "5-year olds",
+    "aged 10-13"
+   ],
+   "added": [],
+   "removed": [],
+   "url": "https://www.cambridge.ca/recreation-culture/pools-aquatics/swim-schedules-lessons/",
+   "fetchedAt": "2026-11-03T20:55:44.051Z",
+   "flaggedAt": null
+  },
+  "stratford-swim": {
+   "status": "ok",
+   "missing": [],
+   "hash": "cbac02bada864ef5",
+   "phrases": [
+    "13+ years",
+    "3 to 5 years",
+    "5 to 14 years",
+    "5 to 16 years",
+    "6 to 18 years",
+    "9 to 16 years"
+   ],
+   "added": [],
+   "removed": [],
+   "url": "https://www.stratford.ca/play-here/recreation-programs/aquatics/lessons/",
+   "fetchedAt": "2026-11-03T20:55:44.051Z",
+   "flaggedAt": null
+  },
+  "ymca-three-rivers-swim": {
+   "status": "ok",
+   "missing": [],
+   "hash": "a397c2ca2d37e9e1",
+   "phrases": [
+    "ages 0-12"
+   ],
+   "added": [],
+   "removed": [],
+   "url": "https://www.ymcathreerivers.ca/health-and-wellness-childrens-aquatic-programs",
+   "fetchedAt": "2026-11-03T20:55:44.051Z",
+   "flaggedAt": null
+  },
+  "british-swim-school-kw": {
+   "status": "ok",
+   "missing": [],
+   "hash": "84513c06e825fd53",
+   "phrases": [
+    "18-36 months",
+    "3-36 months"
+   ],
+   "added": [],
+   "removed": [],
+   "url": "https://britishswimschool.com/kitchener-waterloo/programs/",
+   "fetchedAt": "2026-11-03T20:55:44.051Z",
+   "flaggedAt": null
+  },
+  "laurier-academy-music": {
+   "status": "ok",
+   "missing": [],
+   "hash": "9a34cd6748720c5f",
+   "phrases": [
+    "3-year-old",
+    "4-year-old",
+    "5-and 6-year-old",
+    "ages 0-3"
+   ],
+   "added": [],
+   "removed": [],
+   "url": "https://wlu.ca/academics/faculties/faculty-of-music/laurier-academy-of-music-and-arts/group-programs-and-camps/early-childhood-music.html",
+   "fetchedAt": "2026-11-03T20:55:44.051Z",
+   "flaggedAt": null
+  },
+  "long-mcquade-waterloo": {
+   "status": "manual",
+   "reason": "Ages come from a PDF flyer the checker can't read.",
+   "url": "https://www.long-mcquade.com/images/lessons/locations/37/Waterloo%20Piano%20Party,%205.5x8.5.pdf",
+   "fetchedAt": "2026-11-03T20:55:44.051Z"
+  },
+  "pro-music-school": {
+   "status": "ok",
+   "missing": [],
+   "hash": "597787e50a9516ca",
+   "phrases": [
+    "3 to 75 years"
+   ],
+   "added": [],
+   "removed": [],
+   "url": "https://www.promusic.ca/",
+   "fetchedAt": "2026-11-03T20:55:44.051Z",
+   "flaggedAt": null
+  },
+  "kitchener-academy-music": {
+   "status": "ok",
+   "missing": [],
+   "hash": "e3b0c44298fc1c14",
+   "phrases": [],
+   "added": [],
+   "removed": [],
+   "url": "https://www.kitcheneracademyofmusic.com/",
+   "fetchedAt": "2026-11-03T20:55:44.051Z",
+   "flaggedAt": null
+  },
+  "lets-dance": {
+   "status": "ok",
+   "missing": [],
+   "hash": "0e22c7259d2136e7",
+   "phrases": [
+    "3-year-old",
+    "ages 2-6",
+    "ages 6-11",
+    "ages 7-13"
+   ],
+   "added": [],
+   "removed": [],
+   "url": "https://letsdanceltd.ca/dance-classes/for-toddlers/",
+   "fetchedAt": "2026-11-03T20:55:44.051Z",
+   "flaggedAt": null
+  },
+  "move-with-grace": {
+   "status": "ok",
+   "missing": [],
+   "hash": "25d7a8bd27e602cc",
+   "phrases": [
+    "ages 2-4",
+    "ages 4-6"
+   ],
+   "added": [],
+   "removed": [],
+   "url": "https://movewithgrace.ca/dance-programs-and-classes/",
+   "fetchedAt": "2026-11-03T20:55:44.051Z",
+   "flaggedAt": null
+  },
+  "element-dance-arts": {
+   "status": "ok",
+   "missing": [],
+   "hash": "8c8425b678404deb",
+   "phrases": [
+    "3 year olds",
+    "4&5 year olds",
+    "age 2.5",
+    "age 3-4 year",
+    "age 3.5-4",
+    "age 4-5",
+    "age 4-5 year",
+    "ages 18",
+    "ages 2.5-18 yrs"
+   ],
+   "added": [],
+   "removed": [],
+   "url": "https://elementdancearts.com/kinder-dance/",
+   "fetchedAt": "2026-11-03T20:55:44.051Z",
+   "flaggedAt": null
+  },
+  "five-rings-tkd": {
+   "status": "ok",
+   "missing": [],
+   "hash": "5ec7c3bd3f9d782e",
+   "phrases": [
+    "12-year-old",
+    "3-year-olds",
+    "5-year-olds",
+    "age 3",
+    "aged 3 to 5 years",
+    "ages 3-5",
+    "ages 6-12 years"
+   ],
+   "added": [],
+   "removed": [],
+   "url": "https://5rings.ca/tiny-tigers/",
+   "fetchedAt": "2026-11-03T20:55:44.051Z",
+   "flaggedAt": null
+  },
+  "volpe-martial-arts": {
+   "status": "ok",
+   "missing": [],
+   "hash": "10c85e222f86976b",
+   "phrases": [
+    "ages 11-14",
+    "ages 15+",
+    "ages 4-5",
+    "ages 6-10"
+   ],
+   "added": [],
+   "removed": [],
+   "url": "https://www.volpemartialarts.com/",
+   "fetchedAt": "2026-11-03T20:55:44.051Z",
+   "flaggedAt": null
+  },
+  "black-belt-world-kitchener": {
+   "status": "ok",
+   "missing": [],
+   "hash": "db982651bd72c391",
+   "phrases": [
+    "6 year old",
+    "ages 13+",
+    "ages 3-5",
+    "ages 6-12"
+   ],
+   "added": [],
+   "removed": [],
+   "url": "https://blackbeltworld.ca/locations/kitchener/",
+   "fetchedAt": "2026-11-03T20:55:44.051Z",
+   "flaggedAt": null
+  },
+  "karate-olympic-centre": {
+   "status": "manual",
+   "reason": "Their page builds its text in a way the checker can't read; re-check by hand.",
+   "url": "https://karateolympiccentre.com/",
+   "fetchedAt": "2026-11-03T20:55:44.051Z"
+  },
+  "asahi-judo": {
+   "status": "ok",
+   "missing": [],
+   "hash": "3ee638706f34c903",
+   "phrases": [
+    "10 to 11 yrs",
+    "11+ yrs",
+    "12 to 13 yrs",
+    "14 to 15 yrs",
+    "16 to 17 yrs",
+    "5 to 7 yrs",
+    "8 to 9 yrs"
+   ],
+   "added": [],
+   "removed": [],
+   "url": "https://www.asahijudoclub.ca/classes",
+   "fetchedAt": "2026-11-03T20:55:44.051Z",
+   "flaggedAt": null
+  },
+  "waterloo-kung-fu": {
+   "status": "ok",
+   "missing": [],
+   "hash": "6be712dee622bc6e",
+   "phrases": [
+    "ages 11-14",
+    "ages 4-5",
+    "ages 6-10"
+   ],
+   "added": [],
+   "removed": [],
+   "url": "https://www.waterlookungfu.com/programs-classes/",
+   "fetchedAt": "2026-11-03T20:55:44.051Z",
+   "flaggedAt": null
+  },
+  "generation-ma": {
+   "status": "ok",
+   "missing": [],
+   "hash": "759edcec70136301",
+   "phrases": [
+    "aged 4",
+    "ages 2-3",
+    "ages 4-12"
+   ],
+   "added": [],
+   "removed": [],
+   "url": "https://www.generationma.com/youth-program",
+   "fetchedAt": "2026-11-03T20:55:44.051Z",
+   "flaggedAt": null
+  },
+  "hotshot-athletic": {
+   "status": "ok",
+   "missing": [],
+   "hash": "b6963dd1f3599872",
+   "phrases": [
+    "age 3+",
+    "ages 3+",
+    "ages 7+"
+   ],
+   "added": [],
+   "removed": [],
+   "url": "https://www.hotshotathletic.com/programs",
+   "fetchedAt": "2026-11-03T20:55:44.051Z",
+   "flaggedAt": null
+  },
+  "return-of-the-dragon": {
+   "status": "ok",
+   "missing": [],
+   "hash": "e3b0c44298fc1c14",
+   "phrases": [],
+   "added": [],
+   "removed": [],
+   "url": "https://rotdma.com/classes/kids-kung-fu/",
+   "fetchedAt": "2026-11-03T20:55:44.051Z",
+   "flaggedAt": null
+  },
+  "code-ninjas-waterloo": {
+   "status": "ok",
+   "missing": [],
+   "hash": "71f536b453e8c92d",
+   "phrases": [
+    "ages 5 to 14",
+    "ages 5 to 7",
+    "ages 5-14",
+    "ages 8 to 14"
+   ],
+   "added": [],
+   "removed": [],
+   "url": "https://www.codeninjas.com/waterloo-on-ca",
+   "fetchedAt": "2026-11-03T20:55:44.051Z",
+   "flaggedAt": null
+  },
+  "zebra-robotics-kitchener": {
+   "status": "ok",
+   "missing": [],
+   "hash": "faa28c1a085c5fea",
+   "phrases": [
+    "7+ years",
+    "ages 6-18"
+   ],
+   "added": [],
+   "removed": [],
+   "url": "https://zebrarobotics.com/kitchener",
+   "fetchedAt": "2026-11-03T20:55:44.051Z",
+   "flaggedAt": null
+  },
+  "stemotics": {
+   "status": "ok",
+   "missing": [],
+   "hash": "74a3afd6046adad4",
+   "phrases": [
+    "5 year old",
+    "6 year old",
+    "ages 4-12"
+   ],
+   "added": [],
+   "removed": [],
+   "url": "https://stemotics.com/",
+   "fetchedAt": "2026-11-03T20:55:44.051Z",
+   "flaggedAt": null
+  },
+  "brick-works-academy": {
+   "status": "ok",
+   "missing": [],
+   "hash": "e3b0c44298fc1c14",
+   "phrases": [],
+   "added": [],
+   "removed": [],
+   "url": "https://brickworksacademy.com/",
+   "fetchedAt": "2026-11-03T20:55:44.051Z",
+   "flaggedAt": null
+  },
+  "ultimate-coders-kitchener": {
+   "status": "ok",
+   "missing": [],
+   "hash": "8340306ee3b92467",
+   "phrases": [
+    "age 11",
+    "age 13",
+    "age 5-7",
+    "age 7",
+    "age 9",
+    "aged 7 to 14",
+    "ages 14 to 18",
+    "ages 14-18",
+    "ages 5 to 18",
+    "ages 5 to 7",
+    "ages 5-14",
+    "ages 5-18",
+    "ages 5-7",
+    "ages 6-18",
+    "ages 7 to 14",
+    "ages 7-14"
+   ],
+   "added": [],
+   "removed": [],
+   "url": "https://www.ultimatecoders.com/kitchener-on-ca",
+   "fetchedAt": "2026-11-03T20:55:44.051Z",
+   "flaggedAt": null
+  },
+  "kre8ive-coderz": {
+   "status": "ok",
+   "missing": [],
+   "hash": "22ed5a2ae1a12b72",
+   "phrases": [
+    "ages 11-15",
+    "ages 13+",
+    "ages 13-15",
+    "ages 16-18",
+    "ages 4-15",
+    "ages 5-15",
+    "ages 5-6",
+    "ages 7-8",
+    "ages 8-11",
+    "ages 8-12",
+    "ages 8-15",
+    "ages 8-18"
+   ],
+   "added": [],
+   "removed": [],
+   "url": "https://kre8ivecoderz.ca/courses",
+   "fetchedAt": "2026-11-03T21:03:41.162Z",
+   "flaggedAt": null
+  },
+  "woolwich-swim": {
+   "status": "ok",
+   "missing": [],
+   "hash": "2fcc1c5c6efbf748",
+   "phrases": [
+    "2.5-4.5 years",
+    "ages 13-19 years",
+    "ages 18+ years",
+    "ages 3-5 years",
+    "ages 4-5 years",
+    "ages 4-8 years",
+    "ages 6-12 years"
+   ],
+   "added": [],
+   "removed": [],
+   "url": "https://www.woolwich.ca/explore-play/recreation-programs/swimming-lessons/",
+   "fetchedAt": "2026-11-03T20:55:44.051Z",
+   "flaggedAt": null
+  },
+  "wilmot-swim": {
+   "status": "ok",
+   "missing": [],
+   "hash": "230dcd2f960b3bf6",
+   "phrases": [
+    "12-24 months",
+    "2-3 years",
+    "3-5 years",
+    "3-year-old",
+    "3-year-olds",
+    "5-year old",
+    "age: 2-3 years",
+    "age: 3-5 years",
+    "age: 4-12 months",
+    "age: 5 years",
+    "ages 2-3 years",
+    "ages 4 months",
+    "ages 5 years",
+    "ages: 12-24 months"
+   ],
+   "added": [],
+   "removed": [],
+   "url": "https://www.wilmot.ca/recreation-and-culture/swimming/swimming-lessons/",
+   "fetchedAt": "2026-11-03T20:55:44.051Z",
+   "flaggedAt": null
+  },
+  "yellow-brick-music": {
+   "status": "ok",
+   "missing": [],
+   "hash": "f92dd1ea6d7347cd",
+   "phrases": [
+    "age 3",
+    "age 7",
+    "ages 18+",
+    "ages 4-7",
+    "ages 8-12"
+   ],
+   "added": [],
+   "removed": [],
+   "url": "https://yellowbrickmusic.ca/group-programs",
+   "fetchedAt": "2026-11-03T20:55:44.051Z",
+   "flaggedAt": null
+  },
+  "cambridge-conservatory": {
+   "status": "ok",
+   "missing": [],
+   "hash": "03e2336eed0c4b29",
+   "phrases": [
+    "ages 3-5"
+   ],
+   "added": [],
+   "removed": [],
+   "url": "https://cambridgeconservatory.com/",
+   "fetchedAt": "2026-11-03T20:55:44.051Z",
+   "flaggedAt": null
+  },
+  "long-mcquade-stratford": {
+   "status": "manual",
+   "reason": "Their lesson pages refuse automated checks; re-check by hand.",
+   "url": "https://www.long-mcquade.com/lessons/Ontario/Stratford",
+   "fetchedAt": "2026-11-03T20:55:44.051Z"
+  },
+  "infinity-dance": {
+   "status": "ok",
+   "missing": [],
+   "hash": "c2fc7c703b6a00d0",
+   "phrases": [
+    "aged 18 months",
+    "ages 0-4yrs",
+    "ages 10-12 yrs",
+    "ages 13-18 yrs",
+    "ages 18 months",
+    "ages 2-3.5",
+    "ages 3.5-5",
+    "ages 5-6 yrs",
+    "ages 7-9 yrs"
+   ],
+   "added": [],
+   "removed": [],
+   "url": "https://infinitydance.ca/ages-5-6-yrs/",
+   "fetchedAt": "2026-11-03T20:55:44.051Z",
+   "flaggedAt": null
+  },
+  "in-motion-dance": {
+   "status": "ok",
+   "missing": [],
+   "hash": "99cd92b0a58e64f9",
+   "phrases": [
+    "ages 2",
+    "ages 2-17",
+    "ages 2-5",
+    "ages 5-17"
+   ],
+   "added": [],
+   "removed": [],
+   "url": "https://www.inmotiondance.ca/",
+   "fetchedAt": "2026-11-03T20:55:44.051Z",
+   "flaggedAt": null
+  },
+  "encore-dance": {
+   "status": "ok",
+   "missing": [],
+   "hash": "1aeda366ae37e9ef",
+   "phrases": [
+    "ages 4+"
+   ],
+   "added": [],
+   "removed": [],
+   "url": "https://encoredancestudio.ca/",
+   "fetchedAt": "2026-11-03T20:55:44.051Z",
+   "flaggedAt": null
+  },
+  "confidance": {
+   "status": "ok",
+   "missing": [],
+   "hash": "e3b0c44298fc1c14",
+   "phrases": [],
+   "added": [],
+   "removed": [],
+   "url": "https://www.confidancestudio.ca/",
+   "fetchedAt": "2026-11-03T20:55:44.051Z",
+   "flaggedAt": null
+  },
+  "triple-arts-karate": {
+   "status": "ok",
+   "missing": [],
+   "hash": "0c920bad5282f0c1",
+   "phrases": [
+    "age 4 to 7",
+    "age 4+",
+    "age 8 to 12"
+   ],
+   "added": [],
+   "removed": [],
+   "url": "https://www.tripleartskaratecambridge.com/",
+   "fetchedAt": "2026-11-03T20:55:44.051Z",
+   "flaggedAt": null
+  },
+  "new-hamburg-karate": {
+   "status": "ok",
+   "missing": [],
+   "hash": "fd8c038e03099c29",
+   "phrases": [
+    "ages 13",
+    "ages 4-7",
+    "ages 8-12"
+   ],
+   "added": [],
+   "removed": [],
+   "url": "https://newhamburgkarate.com/",
+   "fetchedAt": "2026-11-03T20:55:44.051Z",
+   "flaggedAt": null
+  },
+  "top-level-tkd": {
+   "status": "manual",
+   "reason": "Their page builds its text in a way the checker can't read; re-check by hand.",
+   "url": "https://topleveltkd.ca/",
+   "fetchedAt": "2026-11-03T20:55:44.051Z"
+  },
+  "kick-masters": {
+   "status": "ok",
+   "missing": [],
+   "hash": "e3b0c44298fc1c14",
+   "phrases": [],
+   "added": [],
+   "removed": [],
+   "url": "https://www.kickmasters.ca/classes",
+   "fetchedAt": "2026-11-03T20:55:44.051Z",
+   "flaggedAt": null
+  },
+  "yulia-artspace": {
+   "status": "ok",
+   "missing": [],
+   "hash": "3cba3637e6c528d7",
+   "phrases": [
+    "11-year-old",
+    "15-16 years",
+    "5-6 years",
+    "8-12 years",
+    "ages 3-5",
+    "ages 6-12",
+    "ages 6-8"
+   ],
+   "added": [],
+   "removed": [],
+   "url": "https://www.yuliab.ca/art-classes-kitchener",
+   "fetchedAt": "2026-11-03T20:55:44.051Z",
+   "flaggedAt": null
+  },
+  "button-factory-arts": {
+   "status": "ok",
+   "missing": [],
+   "hash": "5f411717513bab6d",
+   "phrases": [
+    "aged 5-14"
+   ],
+   "added": [],
+   "removed": [],
+   "url": "https://www.buttonfactoryarts.ca/kids",
+   "fetchedAt": "2026-11-03T20:55:44.051Z",
+   "flaggedAt": null
+  },
+  "olena-chorna": {
+   "status": "ok",
+   "missing": [],
+   "hash": "23e6d37179136a7f",
+   "phrases": [
+    "20+ years",
+    "kids 4+"
+   ],
+   "added": [],
+   "removed": [],
+   "url": "https://www.olenachornafinearts.ca/",
+   "fetchedAt": "2026-11-03T20:55:44.051Z",
+   "flaggedAt": null
+  },
+  "hespeler-school-of-art": {
+   "status": "ok",
+   "missing": [],
+   "hash": "956cc5ce4942b45f",
+   "phrases": [
+    "ages 6",
+    "ages 8"
+   ],
+   "added": [],
+   "removed": [],
+   "url": "https://hespelerschoolofart.ca/childrensPrograms.html",
+   "fetchedAt": "2026-11-03T20:55:44.051Z",
+   "flaggedAt": null
+  },
+  "kw-skating-club": {
+   "status": "ok",
+   "missing": [],
+   "hash": "e3b0c44298fc1c14",
+   "phrases": [],
+   "added": [],
+   "removed": [],
+   "url": "https://www.kwsc.org/programs/learn-to-skate/",
+   "fetchedAt": "2026-11-03T20:55:44.051Z",
+   "flaggedAt": null
+  },
+  "cambridge-skating-club": {
+   "status": "ok",
+   "missing": [],
+   "hash": "dcc93333418bd8ca",
+   "phrases": [
+    "age 12-17",
+    "age 2-4 years",
+    "age 3-5 years",
+    "age 5 years"
+   ],
+   "added": [],
+   "removed": [],
+   "url": "https://www.cambridgeskatingclub.com/pages/programs/canskate/",
+   "fetchedAt": "2026-11-03T20:55:44.051Z",
+   "flaggedAt": null
+  },
+  "ayr-skating-club": {
+   "status": "ok",
+   "missing": [],
+   "hash": "1bf021e0543f0def",
+   "phrases": [
+    "3-4 years",
+    "5+ years"
+   ],
+   "added": [],
+   "removed": [],
+   "url": "https://www.ayrskatingclub.com/",
+   "fetchedAt": "2026-11-03T20:55:44.051Z",
+   "flaggedAt": null
+  },
+  "wellesley-skating-club": {
+   "status": "ok",
+   "missing": [],
+   "hash": "900e8da51e271f1f",
+   "phrases": [
+    "ages 5"
+   ],
+   "added": [],
+   "removed": [],
+   "url": "https://www.wellesleyskatingclub.ca/programs/canskate-learn-to-skate-ages-5-and-up/",
+   "fetchedAt": "2026-11-03T20:55:44.051Z",
+   "flaggedAt": null
+  },
+  "stratford-skating-club": {
+   "status": "ok",
+   "missing": [],
+   "hash": "acc8bf407dc0b608",
+   "phrases": [
+    "3-4 year",
+    "5 year olds",
+    "ages 3 to 4",
+    "ages 3-4",
+    "ages 5"
+   ],
+   "added": [],
+   "removed": [],
+   "url": "https://stratfordskating.ca/programs/",
+   "fetchedAt": "2026-11-03T20:55:44.051Z",
+   "flaggedAt": null
+  },
+  "kw-sertoma-speed-skating": {
+   "status": "ok",
+   "missing": [],
+   "hash": "e3b0c44298fc1c14",
+   "phrases": [],
+   "added": [],
+   "removed": [],
+   "url": "https://kwspeedskating.com/ltss/",
+   "fetchedAt": "2026-11-03T20:55:44.051Z",
+   "flaggedAt": null
+  },
+  "new-hamburg-skating-club": {
+   "status": "manual",
+   "reason": "No own website found; re-check by hand.",
+   "url": "https://www.wilmot.ca/en/things-to-do/Skating.aspx",
+   "fetchedAt": "2026-11-03T20:55:44.051Z"
+  },
+  "woolwich-youth-soccer": {
+   "status": "ok",
+   "missing": [],
+   "hash": "c4f985aa7720029c",
+   "phrases": [
+    "ages 3"
+   ],
+   "added": [],
+   "removed": [],
+   "url": "https://woolwichyouthsoccer.com/house-league/",
+   "fetchedAt": "2026-11-03T20:55:44.051Z",
+   "flaggedAt": null
+  },
+  "stratford-youth-soccer": {
+   "status": "ok",
+   "missing": [],
+   "hash": "fb33bf2260902476",
+   "phrases": [
+    "ages 4"
+   ],
+   "added": [],
+   "removed": [],
+   "url": "https://www.stratfordyouthsoccer.com/hli",
+   "fetchedAt": "2026-11-03T20:55:44.051Z",
+   "flaggedAt": null
+  },
+  "waterloo-united": {
+   "status": "ok",
+   "missing": [],
+   "hash": "e3b0c44298fc1c14",
+   "phrases": [],
+   "added": [],
+   "removed": [],
+   "url": "https://www.waterloounited.com/recreational/",
+   "fetchedAt": "2026-11-03T20:55:44.051Z",
+   "flaggedAt": null
+  },
+  "ayr-minor-soccer": {
+   "status": "ok",
+   "missing": [],
+   "hash": "e3b0c44298fc1c14",
+   "phrases": [],
+   "added": [],
+   "removed": [],
+   "url": "https://www.ayrsoccerclub.ca/about-us.html",
+   "fetchedAt": "2026-11-03T20:55:44.051Z",
+   "flaggedAt": null
+  },
+  "wellesley-soccer": {
+   "status": "ok",
+   "missing": [],
+   "hash": "13450dd8a20a89f4",
+   "phrases": [
+    "age 4-6"
+   ],
+   "added": [],
+   "removed": [],
+   "url": "https://sites.google.com/wellesleysoccerleague.org/wellesleywild/about",
+   "fetchedAt": "2026-11-03T20:55:44.051Z",
+   "flaggedAt": null
+  },
+  "kitchener-sc": {
+   "status": "manual",
+   "reason": "Their site can't be read automatically; re-check by hand.",
+   "url": "https://www.kitchenersc.com/",
+   "fetchedAt": "2026-11-03T20:55:44.051Z"
+  },
+  "kwhlb": {
+   "status": "ok",
+   "missing": [],
+   "hash": "309547e50d6d13c8",
+   "phrases": [
+    "4-5 year",
+    "6-7 year",
+    "ages 4-19 years"
+   ],
+   "added": [],
+   "removed": [],
+   "url": "https://kwhlb.ca/our-story/",
+   "fetchedAt": "2026-11-03T20:55:44.051Z",
+   "flaggedAt": null
+  },
+  "south-woolwich-baseball": {
+   "status": "manual",
+   "reason": "Their page builds its text in a way the checker can't read; re-check by hand.",
+   "url": "https://www.woolwichbaseball.com/",
+   "fetchedAt": "2026-11-03T20:55:44.051Z"
+  },
+  "cambridge-minor-baseball": {
+   "status": "ok",
+   "missing": [],
+   "hash": "e3b0c44298fc1c14",
+   "phrases": [],
+   "added": [],
+   "removed": [],
+   "url": "https://cambridgeminorbaseball.ca/",
+   "fetchedAt": "2026-11-03T20:55:44.051Z",
+   "flaggedAt": null
+  },
+  "stratford-minor-baseball": {
+   "status": "ok",
+   "missing": [],
+   "hash": "e3b0c44298fc1c14",
+   "phrases": [],
+   "added": [],
+   "removed": [],
+   "url": "https://stratfordminorbaseball.ca/",
+   "fetchedAt": "2026-11-03T20:55:44.051Z",
+   "flaggedAt": null
+  },
+  "sportball-kw": {
+   "status": "ok",
+   "missing": [],
+   "hash": "c1810dc2e92dd35e",
+   "phrases": [
+    "2-3 years",
+    "2-3 yrs",
+    "3-5 yrs",
+    "6-8 yrs",
+    "9+ yrs",
+    "ages 16 months"
+   ],
+   "added": [],
+   "removed": [],
+   "url": "https://sportball.com/location/sportball-kitchener-waterloo/t-ball/",
+   "fetchedAt": "2026-11-03T20:55:44.051Z",
+   "flaggedAt": null
+  },
+  "kitchener-minor-hockey": {
+   "status": "ok",
+   "missing": [],
+   "hash": "e3b0c44298fc1c14",
+   "phrases": [],
+   "added": [],
+   "removed": [],
+   "url": "https://kitchenerminorhockey.com/",
+   "fetchedAt": "2026-11-03T20:55:44.051Z",
+   "flaggedAt": null
+  },
+  "cambridge-minor-hockey": {
+   "status": "ok",
+   "missing": [],
+   "hash": "144ad7fc0de00948",
+   "phrases": [
+    "ages 10",
+    "ages 11-14",
+    "ages 15"
+   ],
+   "added": [],
+   "removed": [],
+   "url": "https://cambridgeminorhockey.com/Pages/51341/Junior_Hawks_(U7_U8)/",
+   "fetchedAt": "2026-11-03T20:55:44.051Z",
+   "flaggedAt": null
+  },
+  "woolwich-minor-hockey": {
+   "status": "ok",
+   "missing": [],
+   "hash": "e3b0c44298fc1c14",
+   "phrases": [],
+   "added": [],
+   "removed": [],
+   "url": "https://woolwichminorhockey.ca/Pages/12711/U7_-_U15_Hockey_Canada_Pathways/",
+   "fetchedAt": "2026-11-03T20:55:44.051Z",
+   "flaggedAt": null
+  },
+  "waterloo-minor-hockey": {
+   "status": "ok",
+   "missing": [],
+   "hash": "e3b0c44298fc1c14",
+   "phrases": [],
+   "added": [],
+   "removed": [],
+   "url": "https://waterloominorhockey.com/",
+   "fetchedAt": "2026-11-03T20:55:44.051Z",
+   "flaggedAt": null
+  },
+  "ayr-minor-hockey": {
+   "status": "ok",
+   "missing": [],
+   "hash": "e3b0c44298fc1c14",
+   "phrases": [],
+   "added": [],
+   "removed": [],
+   "url": "https://ayrminorhockey.com/",
+   "fetchedAt": "2026-11-03T20:55:44.051Z",
+   "flaggedAt": null
+  },
+  "stratford-minor-hockey": {
+   "status": "ok",
+   "missing": [],
+   "hash": "e3b0c44298fc1c14",
+   "phrases": [],
+   "added": [],
+   "removed": [],
+   "url": "https://stratfordminorhockey.com/",
+   "fetchedAt": "2026-11-03T20:55:44.051Z",
+   "flaggedAt": null
+  },
+  "cambridge-ringette": {
+   "status": "ok",
+   "missing": [],
+   "hash": "e3b0c44298fc1c14",
+   "phrases": [],
+   "added": [],
+   "removed": [],
+   "url": "https://www.cambridgeringette.ca/",
+   "fetchedAt": "2026-11-03T20:55:44.051Z",
+   "flaggedAt": null
+  },
+  "jump-basketball-kw": {
+   "status": "ok",
+   "missing": [],
+   "hash": "58bc1ddef8423191",
+   "phrases": [
+    "aged 4-13"
+   ],
+   "added": [],
+   "removed": [],
+   "url": "https://jumpbasketball.ca/locations/kitchener/",
+   "fetchedAt": "2026-11-03T20:55:44.051Z",
+   "flaggedAt": null
+  },
+  "jump-basketball-cambridge": {
+   "status": "ok",
+   "missing": [],
+   "hash": "7b425cbd5bc5ac90",
+   "phrases": [
+    "aged 6-13"
+   ],
+   "added": [],
+   "removed": [],
+   "url": "https://jumpbasketball.ca/locations/cambridge/",
+   "fetchedAt": "2026-11-03T20:55:44.051Z",
+   "flaggedAt": null
+  },
+  "cambridge-tennis-club": {
+   "status": "ok",
+   "missing": [],
+   "hash": "d92c16fc42b925d5",
+   "phrases": [
+    "3-17 years",
+    "aged 3-17"
+   ],
+   "added": [],
+   "removed": [],
+   "url": "https://www.cambridgetennisclub.ca/junior-programs",
+   "fetchedAt": "2026-11-03T20:55:44.051Z",
+   "flaggedAt": null
+  },
+  "waterloo-tennis-club": {
+   "status": "ok",
+   "missing": [],
+   "hash": "e3b0c44298fc1c14",
+   "phrases": [],
+   "added": [],
+   "removed": [],
+   "url": "https://www.waterlootennis.com/",
+   "fetchedAt": "2026-11-03T20:55:44.051Z",
+   "flaggedAt": null
+  },
+  "kw-racquet-club": {
+   "status": "ok",
+   "missing": [],
+   "hash": "a7818a9de2ab8c5c",
+   "phrases": [
+    "60+ years"
+   ],
+   "added": [],
+   "removed": [],
+   "url": "https://kwracquetclub.com/",
+   "fetchedAt": "2026-11-03T20:55:44.051Z",
+   "flaggedAt": null
+  },
+  "new-hamburg-hockey": {
+   "status": "ok",
+   "missing": [],
+   "hash": "144ad7fc0de00948",
+   "phrases": [
+    "ages 10",
+    "ages 11-14",
+    "ages 15"
+   ],
+   "added": [],
+   "removed": [],
+   "url": "https://newhamburghockey.com/",
+   "fetchedAt": "2026-11-03T20:55:44.051Z",
+   "flaggedAt": null
+  },
+  "woolwich-wild": {
+   "status": "ok",
+   "missing": [],
+   "hash": "52eec0db405647b2",
+   "phrases": [
+    "aged 19",
+    "aged 5",
+    "aged 6",
+    "aged 6 to 21"
+   ],
+   "added": [],
+   "removed": [],
+   "url": "https://woolwichwild.com/Manuals/6902/Sections/6905/About_Woolwich_Wild/",
+   "fetchedAt": "2026-11-03T20:55:44.051Z",
+   "flaggedAt": null
+  },
+  "wilmot-girls-hockey": {
+   "status": "ok",
+   "missing": [],
+   "hash": "e3b0c44298fc1c14",
+   "phrases": [],
+   "added": [],
+   "removed": [],
+   "url": "https://wilmotgirlshockey.com/",
+   "fetchedAt": "2026-11-03T20:55:44.051Z",
+   "flaggedAt": null
+  },
+  "waterloo-ravens": {
+   "status": "ok",
+   "missing": [],
+   "hash": "e3b0c44298fc1c14",
+   "phrases": [],
+   "added": [],
+   "removed": [],
+   "url": "https://waterlooravens.com/",
+   "fetchedAt": "2026-11-03T20:55:44.051Z",
+   "flaggedAt": null
+  }
+ }
+}
