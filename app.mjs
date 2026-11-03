@@ -732,7 +732,7 @@ async function webSearch(more = false) {
   const base = helper.replace(/\/+$/, '');
   const replies = await Promise.all(wanted.map(async (part) => {
     try {
-      const res = await fetch(`${base}/?q=${encodeURIComponent(q)}&part=${part}`, { signal: AbortSignal.timeout(25000) });
+      const res = await fetch(`${base}/search?q=${encodeURIComponent(q)}&part=${part}`, { signal: AbortSignal.timeout(25000) });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
       return { part, data, cached: res.headers.get('X-Cache') === 'hit' };
@@ -1019,7 +1019,7 @@ function wire() {
     // refuses before contacting Tavily. This proves the site lock and permission header work.
     let searchPath;
     try {
-      const res = await fetch(`${v}/?q=x&part=0`, { signal: AbortSignal.timeout(15000) });
+      const res = await fetch(`${v}/search?q=x&part=0`, { signal: AbortSignal.timeout(15000) });
       const d = await res.json();
       searchPath = res.status === 400 && /2 characters/.test(d.error || '') ? 'works' : `answered “${d.error || res.status}”`;
     } catch (err) {
