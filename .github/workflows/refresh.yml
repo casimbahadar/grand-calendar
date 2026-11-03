@@ -24,17 +24,35 @@ jobs:
           node test-ages.mjs
           node test-gather.mjs
           node test-rules.mjs
+          node test-guide.mjs
 
       - name: Gather events
         run: |
           node --version
           node gather.mjs
 
+      - name: Program guides (about once a day; skipped otherwise)
+        continue-on-error: true
+        run: |
+          command -v pdftotext || (sudo apt-get update -qq && sudo apt-get install -y -qq poppler-utils)
+          node gather-programs.mjs
+
+      - name: Meetup test (only when you tap Run workflow)
+        if: github.event_name == 'workflow_dispatch'
+        continue-on-error: true
+        env:
+          MEETUP_CLIENT_KEY: ${{ secrets.MEETUP_CLIENT_KEY }}
+          MEETUP_MEMBER_ID: ${{ secrets.MEETUP_MEMBER_ID }}
+          MEETUP_SIGNING_KEY_ID: ${{ secrets.MEETUP_SIGNING_KEY_ID }}
+          MEETUP_PRIVATE_KEY: ${{ secrets.MEETUP_PRIVATE_KEY }}
+        run: node meetup-probe.mjs
+
       - name: Save events.json if it changed
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add events.json
+          for f in meetup-probe.json programs.json guides.json; do if [ -f "$f" ]; then git add "$f"; fi; done
           if git diff --cached --quiet; then
             echo "No changes to save"
             exit 0
