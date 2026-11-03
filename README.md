@@ -11,7 +11,7 @@ Live at: https://casimbahadar.github.io/grand-calendar/
 - **Topics and search:** one-tap topic groups (Board games, Socializing, Crafts & STEM, and others) plus free-text search.
 - **Filters:** cost, indoor or outdoor, drop-in or registration, hide full events, and distance from your location or a typed place.
 - **Programs:** classes and lessons read from the City of Waterloo program guide and the Township of Wellesley programs page, plus a live web search for other providers.
-- **Saved events** kept on the phone, with export, import and Add to Calendar.
+- **Your calendar:** a Calendar tab showing only what you saved, as a month grid or a week strip, with the chosen day's items below. Weekly programs appear on every class day the source states. **Add your own** covers things the app can't read, like an ActiveNet registration or private lessons: one day, or chosen weekdays between a first and last date. It can also import a calendar file, or the calendar link from an ActiveNet receipt, with a check-before-adding preview. A List view keeps export, import and Add to Calendar.
 - **Season alerts:** a phone notification when a new program guide season appears.
 
 ## Accuracy rules
@@ -39,7 +39,7 @@ These rules shape every part of the code:
 
 - Kitchener Public Library, and the Kitchener, Waterloo, Wilmot, Woolwich, North Dumfries and Stratford municipal calendars. These block automated requests.
 - Program registration on ActiveNet (Kitchener, Wilmot, Wellesley, Woolwich). Its terms don't allow automated access.
-- Eventbrite, Meetup and Luma. There's no free search access for these. A Meetup API test is included but not yet set up.
+- Eventbrite, Meetup and Luma. There's no free search access for these. Meetup's API needs a paid Meetup Pro subscription to get a key, so it isn't used. Live search can still find Meetup pages.
 - Visit Stratford. Its robots.txt disallows all automated access.
 
 ## How it fits together
@@ -72,16 +72,17 @@ All files sit at the repo root except the workflow.
 - `suitability.mjs`: adults-only hiding, soft notes (alcohol, late start, caregiver), cost, indoor or outdoor.
 - `topics.mjs`: topic groups and search.
 - `merge.mjs`: merges duplicate listings.
+- `calendar.mjs`: works out which days each saved item happens on, from stated days only.
+- `ics-import.mjs`: reads calendar files you import (weekly and daily repeats, skipped dates); patterns it can't read are reported, not guessed.
 
 **GitHub job**
 - `.github/workflows/refresh.yml`: runs every hour at 17 minutes past, and when you tap Run workflow.
 - `gather.mjs`: library events and their registration status.
 - `gather-programs.mjs`, `guide-waterloo.mjs`, `guide-wellesley.mjs`: programs.
 - `notify.mjs`: season alerts.
-- `meetup-probe.mjs`: Meetup API test, manual runs only.
 
 **Data the job writes** (don't edit by hand)
-- `events.json`, `programs.json`, `guides.json`, `notify-state.json`, and `meetup-probe.json` when the test has run.
+- `events.json`, `programs.json`, `guides.json`, `notify-state.json`.
 
 **Data kept in the repo**
 - `venues.json`: coordinates for Explore Waterloo venues, looked up once with OpenStreetMap.
@@ -90,7 +91,7 @@ All files sit at the repo root except the workflow.
 - `worker.js`: paste this into a Cloudflare Worker. It isn't used from the repo itself.
 
 **Tests**
-- `test-ages.mjs`, `test-gather.mjs`, `test-rules.mjs`, `test-guide.mjs`, with saved copies of real source data (`*-sample.*`, `wpl-page-*.html`).
+- `test-ages.mjs`, `test-gather.mjs`, `test-rules.mjs`, `test-guide.mjs`, `test-calendar.mjs`, `test-import.mjs`, with saved copies of real source data (`*-sample.*`, `wpl-page-*.html`).
 
 ## Setup
 
@@ -103,7 +104,6 @@ Add these under Settings, then Secrets and variables, then Actions:
 | Secret | What it's for |
 |---|---|
 | `PUSH_CONFIG` | Season alerts. Copy the code from the app: open it from the Home Screen, then go to Settings and tap Turn on alerts. |
-| `MEETUP_CLIENT_KEY`, `MEETUP_MEMBER_ID`, `MEETUP_SIGNING_KEY_ID`, `MEETUP_PRIVATE_KEY` | Optional Meetup test (not yet set up). |
 
 To check alerts, run the workflow with "Send a test alert to your phone" ticked.
 
@@ -113,7 +113,7 @@ To check alerts, run the workflow with "Send a test alert to your phone" ticked.
 3. Optional but recommended: add a KV namespace binding named `USAGE`. This turns on a monthly cap (1,400 searches by default, under Tavily's free credits). Set a `MONTHLY_CAP` variable to change it.
 4. In the app, go to Settings, then Live search, paste the Worker address, and tap Test helper.
 
-The app calls the Worker at `/search` and `/health`. If the Worker is connected to this GitHub repo, Cloudflare also serves the repo's files from it (the app's `index.html` at `/`), which is why searches don't use the bare address.
+The app calls the Worker at `/search`, `/health` and `/ics`. `/ics` fetches the calendar link from an ActiveNet receipt (only active.com and activecommunities.com addresses, nothing stored), because ActiveNet doesn't let the phone fetch it directly. If the Worker is connected to this GitHub repo, Cloudflare also serves the repo's files from it (the app's `index.html` at `/`), which is why searches don't use the bare address.
 
 Each tap of Search the web uses 3 credits, and Search more places uses 4. Repeating a search within a day uses none.
 
@@ -126,6 +126,8 @@ node test-ages.mjs
 node test-gather.mjs
 node test-rules.mjs
 node test-guide.mjs
+node test-calendar.mjs
+node test-import.mjs
 ```
 
 The workflow runs these before every gather. If any fail, nothing is published and the previous data stays in place.

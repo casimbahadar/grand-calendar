@@ -11,7 +11,7 @@ const TZ = 'America/Toronto';
 const DESC_MAX = 1000;
 
 // ---------- iCal parsing ----------
-function unescapeText(s) {
+export function unescapeText(s) {
   return s.replace(/\\([\\;,nN])/g, (_, c) => (c === 'n' || c === 'N' ? '\n' : c));
 }
 
@@ -74,7 +74,7 @@ function torontoParts(date) {
   return Object.fromEntries(fmtToronto.formatToParts(date).map((p) => [p.type, p.value]));
 }
 
-function parseDT(value, params = {}) {
+export function parseDT(value, params = {}) {
   if (params.VALUE === 'DATE' || /^\d{8}$/.test(value)) {
     return { date: `${value.slice(0, 4)}-${value.slice(4, 6)}-${value.slice(6, 8)}`, time: null, allDay: true };
   }

@@ -104,20 +104,30 @@
   </main>
 
   <main id="view-saved" hidden>
-    <h2 class="view-title">Saved events</h2>
-    <p class="muted">Saved on this phone only. Export a copy now and then: removing the app from your Home Screen deletes them.</p>
-    <div class="btn-row">
-      <button type="button" class="btn" id="export">Export saved</button>
-      <button type="button" class="btn" id="import-btn">Import saved</button>
-      <input type="file" id="import" accept=".json,application/json" hidden>
+    <h2 class="view-title">Your calendar</h2>
+    <p class="muted">Only what you saved. Save an event or a program and it appears here, on every day it happens.</p>
+    <div class="seg cal-views" role="group" aria-label="Calendar view" id="seg-calview">
+      <button type="button" data-v="month">Month</button>
+      <button type="button" data-v="week">Week</button>
+      <button type="button" data-v="list">List</button>
     </div>
-    <div id="saved-list"></div>
+    <button type="button" class="btn add-own" id="add-own-open">Add your own</button>
+    <div id="cal-body"></div>
+    <div id="cal-list" hidden>
+      <p class="muted">Saved on this phone only. Export a copy now and then: removing the app from your Home Screen deletes them.</p>
+      <div class="btn-row">
+        <button type="button" class="btn" id="export">Export saved</button>
+        <button type="button" class="btn" id="import-btn">Import saved</button>
+        <input type="file" id="import" accept=".json,application/json" hidden>
+      </div>
+      <div id="saved-list"></div>
+    </div>
   </main>
 
   <nav class="tabs" aria-label="Views">
     <button type="button" data-view="events" aria-current="page">Events</button>
     <button type="button" data-view="programs">Programs</button>
-    <button type="button" data-view="saved">Saved <span id="saved-count"></span></button>
+    <button type="button" data-view="saved">Calendar <span id="saved-count"></span></button>
   </nav>
 
   <dialog id="filters" aria-labelledby="filters-h">
@@ -179,6 +189,73 @@
       <div class="btn-row">
         <button type="button" class="btn" id="filters-reset">Reset filters</button>
         <button class="btn primary" value="done">Show events</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="add-own" aria-labelledby="add-own-h">
+    <form class="sheet" id="add-own-form" novalidate>
+      <h2 id="add-own-h">Add your own</h2>
+      <p class="hint">For things Grand Calendar can't read, like a program you registered for on ActiveNet or private lessons. Saved on this phone only.</p>
+      <fieldset class="import-box" id="ao-import">
+        <legend>From a registration receipt</legend>
+        <p class="hint">ActiveNet receipts have a calendar link ("To download an .ics file..."). Copy it from the email and paste it here.</p>
+        <div class="place-row">
+          <label class="visually-hidden" for="ao-ics-url">Calendar link</label>
+          <input id="ao-ics-url" type="url" inputmode="url" autocomplete="off" placeholder="https://anprodca.active.com/...">
+          <button type="button" class="btn" id="ao-ics-get">Get</button>
+        </div>
+        <button type="button" class="btn" id="ao-ics-file-btn">Or choose a calendar file</button>
+        <input type="file" id="ao-ics-file" accept=".ics,text/calendar" hidden>
+        <p class="hint" id="ao-ics-status" aria-live="polite"></p>
+      </fieldset>
+      <p class="or-line">Or type it in</p>
+      <label class="field"><span>What</span> <input id="ao-title" type="text" autocomplete="off" maxlength="120" required placeholder="e.g. Swim lessons, Preschool 3"></label>
+      <label class="field"><span>Where <span class="opt">(optional)</span></span> <input id="ao-place" type="text" autocomplete="off" maxlength="120" placeholder="e.g. Kitchener Memorial Auditorium"></label>
+      <fieldset>
+        <legend>How often</legend>
+        <p class="hint" id="ao-dates-note" hidden></p>
+        <div class="seg" role="group" aria-label="How often" id="ao-repeat">
+          <button type="button" data-v="once" aria-pressed="true">One day</button>
+          <button type="button" data-v="weekly" aria-pressed="false">Every week</button>
+        </div>
+      </fieldset>
+      <div id="ao-once">
+        <label class="field"><span>Date</span> <input id="ao-date" type="date"></label>
+      </div>
+      <div id="ao-weekly" hidden>
+        <fieldset>
+          <legend>On these days</legend>
+          <div class="weekday-pick" id="ao-days" role="group" aria-label="Days of the week"></div>
+        </fieldset>
+        <div class="btn-row">
+          <label class="field"><span>First class</span> <input id="ao-first" type="date"></label>
+          <label class="field"><span>Last class</span> <input id="ao-last" type="date"></label>
+        </div>
+      </div>
+      <div class="btn-row">
+        <label class="field"><span>Starts <span class="opt">(optional)</span></span> <input id="ao-start" type="time"></label>
+        <label class="field"><span>Ends <span class="opt">(optional)</span></span> <input id="ao-end" type="time"></label>
+      </div>
+      <label class="field"><span>Link <span class="opt">(optional)</span></span> <input id="ao-url" type="url" inputmode="url" autocomplete="off" placeholder="https://"></label>
+      <label class="field"><span>Notes <span class="opt">(optional)</span></span> <textarea id="ao-notes" rows="2" maxlength="500"></textarea></label>
+      <p class="form-error" id="ao-error" role="alert" hidden></p>
+      <div class="btn-row">
+        <button type="button" class="btn" id="ao-cancel">Cancel</button>
+        <button type="submit" class="btn primary" id="ao-save">Save to calendar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="ics-preview" aria-labelledby="ics-preview-h">
+    <form class="sheet" id="ics-preview-form">
+      <h2 id="ics-preview-h">Found in the calendar file</h2>
+      <p class="hint">Check these before adding. Dates and times are exactly as the file states them.</p>
+      <div id="ics-items"></div>
+      <div id="ics-skipped"></div>
+      <div class="btn-row">
+        <button type="button" class="btn" id="ics-cancel">Cancel</button>
+        <button type="submit" class="btn primary" id="ics-add">Add to calendar</button>
       </div>
     </form>
   </dialog>

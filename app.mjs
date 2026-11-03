@@ -1,6 +1,8 @@
 // Grand Calendar app. Plain ES module, no build step.
 // Source text is only ever inserted as text (never as HTML), so a listing can't inject code.
 
+import { occurrences, monthGrid, weekOf, addDays as calAddDays, validateCustom } from './calendar.mjs';
+import { readCalendarFile } from './ics-import.mjs';
 import { fetchEw } from './ew-reader.mjs';
 import { suitabilityOf } from './suitability.mjs';
 import { TOPICS, topicsOf, searchMatch } from './topics.mjs';
@@ -44,6 +46,9 @@ const state = {
   programs: [],            // program sessions from programs.json
   programsReady: null,     // null = loading, true, or an error message
   pq: '', pwho: 'everyone', pUpcoming: false,
+  calView: 'month',        // month | week | list (remembered)
+  calDay: null,            // selected day in the calendar, ISO
+  calOpen: null,           // calendar entry opened to show its full card
 };
 
 // ---------- Small helpers ----------
@@ -511,25 +516,315 @@ function renderEvents() {
   }));
 }
 
+// The current copy of a saved program (sessions are saved by registration code; older saves by title).
+function liveProgram(s) {
+  const byId = state.programs.filter((p) => p.id === s.event.id);
+  if (byId.length) return byId;
+  return state.programs.filter((p) => `${p.source}|${p.title}` === s.event.id);
+}
+function savedItems() {
+  return Object.entries(state.saved).map(([id, s]) => {
+    if (s.kind === 'custom') return { id, s, kind: 'custom', c: s.custom, live: true };
+    if (s.kind === 'program') { const live = liveProgram(s); return { id, s, kind: 'program', sessions: live.length ? live : s.sessions, live: live.length > 0 }; }
+    const live = state.events.find((e) => e.id === s.event.id);
+    return { id, s, kind: 'event', e: live || s.event, live: Boolean(live) };
+  });
+}
+function savedCard(item) {
+  if (item.kind === 'custom') return customCard(item);
+  const today = isoOf(new Date());
+  if (item.kind === 'program') return programCard({ id: item.id, first: item.sessions[0], sessions: item.sessions });
+  const e = item.e;
+  const el = card({ e, tier: state.who === 'kids' ? kidTier(e) : null, push: [], dist: state.loc && e.geo ? km(state.loc, e.geo) : null }, { inSaved: true });
+  if (!item.live) el.querySelector('.source').textContent = (e.end?.date || e.start.date) < today ? 'This event has passed.' : 'No longer in the source listings. It may have been removed or changed; check the source.';
+  return el;
+}
+
 function renderSaved() {
-  const root = $('saved-list');
-  const entries = Object.values(state.saved).sort((a, b) => a.event.start.date.localeCompare(b.event.start.date));
-  if (!entries.length) {
-    root.replaceChildren(h('div', { class: 'empty' }, h('p', { text: 'Nothing saved yet. Open an event and tap Save to keep it here.' })));
+  const firstDate = (x) => (x.kind === 'event' ? x.e.start.date : x.kind === 'custom' ? (x.c.repeat === 'once' ? x.c.date : x.c.first) : x.sessions[0].start?.date) || '9999';
+  const entries = savedItems().sort((a, b) => firstDate(a).localeCompare(firstDate(b)));
+  for (const b of $('seg-calview').children) b.setAttribute('aria-pressed', String(b.dataset.v === state.calView));
+  $('cal-list').hidden = state.calView !== 'list';
+  $('cal-body').hidden = state.calView === 'list';
+  if (state.calView === 'list') {
+    $('saved-list').replaceChildren(...(entries.length ? entries.map(savedCard) : [h('div', { class: 'empty' }, h('p', { text: 'Nothing saved yet. Open an event or program and tap Save.' }))]));
     return;
   }
+  renderCalendar(entries);
+}
+
+// Calendar: the days each saved item happens on, as a month grid or a week strip, with
+// the selected day's items listed below. Only saved items appear.
+function renderCalendar(entries) {
   const today = isoOf(new Date());
-  root.replaceChildren(...entries.map((s) => {
-    if (s.kind === 'program') {
-      const live = state.programs.filter((p) => `${p.source}|${p.title}` === s.event.id);
-      return programCard({ id: s.event.id, first: live[0] || s.program, sessions: live.length ? live : s.sessions });
+  const byDay = new Map();
+  const unplaced = [];
+  for (const item of entries) {
+    const occ = occurrences(item.kind === 'event' ? { kind: 'event', e: item.e } : item.kind === 'custom' ? { kind: 'custom', c: item.c } : { kind: 'program', sessions: item.sessions });
+    if (!occ.dates.length) { unplaced.push({ item, why: occ.unplaced }); continue; }
+    for (const o of occ.dates) {
+      if (!byDay.has(o.date)) byDay.set(o.date, []);
+      byDay.get(o.date).push({ item, o });
     }
-    const live = state.events.find((e) => e.id === s.event.id);
-    const e = live || s.event;
-    const el = card({ e, tier: state.who === 'kids' ? kidTier(e) : null, push: [], dist: state.loc && e.geo ? km(state.loc, e.geo) : null }, { inSaved: true });
-    if (!live) el.querySelector('.source').textContent = (e.end?.date || e.start.date) < today ? 'This event has passed.' : 'No longer in the source listings. It may have been removed or changed; check the source.';
-    return el;
-  }));
+  }
+  if (!state.calDay) {
+    const next = [...byDay.keys()].filter((d) => d >= today).sort()[0];
+    state.calDay = byDay.has(today) || !next ? today : next;
+  }
+  const sel = state.calDay;
+  const body = $('cal-body');
+  if (!entries.length) {
+    body.replaceChildren(h('div', { class: 'empty' },
+      h('p', { text: 'Your calendar is empty. Save an event or a program and it shows up here on every day it happens, or use Add your own.' }),
+      h('button', { type: 'button', class: 'btn primary', text: 'Browse events', onclick: () => document.querySelector('.tabs button[data-view="events"]').click() })));
+    return;
+  }
+  const monthName = (iso) => dateOf(iso).toLocaleDateString('en-CA', { month: 'long', year: 'numeric' });
+  const dayLabel = (iso) => dateOf(iso).toLocaleDateString('en-CA', { weekday: 'long', month: 'long', day: 'numeric' });
+  const countFor = (iso) => (byDay.get(iso) || []).length;
+  const kindsFor = (iso) => [...new Set((byDay.get(iso) || []).map((x) => x.item.kind))];
+  const pick = (iso) => { state.calDay = iso; state.calOpen = null; render(); };
+
+  const dayButton = (iso, extraClass = '') => {
+    const n = countFor(iso);
+    const d = dateOf(iso);
+    const cls = ['cal-day', extraClass, iso === today ? 'is-today' : '', iso === sel ? 'is-selected' : '', n ? 'has-items' : ''].filter(Boolean).join(' ');
+    return h('button', { type: 'button', class: cls, 'aria-pressed': iso === sel ? 'true' : 'false', 'aria-label': `${dayLabel(iso)}${iso === today ? ', today' : ''}: ${n ? `${n} saved` : 'nothing saved'}`, onclick: () => pick(iso) },
+      extraClass === 'in-week' ? h('span', { class: 'cal-wd', text: d.toLocaleDateString('en-CA', { weekday: 'short' }) }) : null,
+      h('span', { class: 'cal-num', text: String(d.getDate()) }),
+      h('span', { class: 'cal-marks', 'aria-hidden': 'true' }, kindsFor(iso).map((k) => h('i', { class: `mark ${k}` })), n > 1 ? h('b', { text: String(n) }) : null));
+  };
+
+  let nav, grid;
+  if (state.calView === 'month') {
+    const days = monthGrid(sel);
+    const m = dateOf(sel).getMonth();
+    const shiftMonth = (k) => { const d = dateOf(sel); const t = new Date(d.getFullYear(), d.getMonth() + k, 1); pick(isoOf(t)); };
+    nav = calNav(monthName(sel), () => shiftMonth(-1), () => shiftMonth(1), 'month');
+    grid = h('div', { class: 'cal-month', role: 'group', 'aria-label': monthName(sel) },
+      ['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((w, i) => h('span', { class: 'cal-head', 'aria-hidden': 'true', text: w, title: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][i] })),
+      days.map((iso) => dayButton(iso, dateOf(iso).getMonth() === m ? '' : 'other-month')));
+    swipe(grid, () => shiftMonth(1), () => shiftMonth(-1));
+  } else {
+    const days = weekOf(sel);
+    const label = `${dateOf(days[0]).toLocaleDateString('en-CA', { month: 'short', day: 'numeric' })} to ${dateOf(days[6]).toLocaleDateString('en-CA', { month: 'short', day: 'numeric' })}`;
+    nav = calNav(label, () => pick(calAddDays(sel, -7)), () => pick(calAddDays(sel, 7)), 'week');
+    grid = h('div', { class: 'cal-week', role: 'group', 'aria-label': `Week of ${label}` }, days.map((iso) => dayButton(iso, 'in-week')));
+    swipe(grid, () => pick(calAddDays(sel, 7)), () => pick(calAddDays(sel, -7)));
+  }
+
+  const list = (byDay.get(sel) || []).sort((a, b) => String(a.o.time || a.o.timeText || 'zz').localeCompare(String(b.o.time || b.o.timeText || 'zz')));
+  const agenda = h('section', { class: 'cal-agenda', 'aria-live': 'polite' },
+    h('h3', { text: `${dayLabel(sel)}${sel === today ? ' (today)' : ''}` }),
+    list.length ? list.map(({ item, o }) => agendaRow(item, o, sel)) : h('p', { class: 'muted', text: 'Nothing saved for this day.' }));
+
+  body.replaceChildren(...[nav, grid,
+    h('p', { class: 'cal-legend' }, h('i', { class: 'mark event', 'aria-hidden': 'true' }), ' Event ', h('i', { class: 'mark program', 'aria-hidden': 'true' }), ' Program ', h('i', { class: 'mark custom', 'aria-hidden': 'true' }), ' Yours'),
+    agenda,
+    unplaced.length ? h('section', { class: 'cal-unplaced' }, h('h3', { text: 'Saved but not on the calendar' }),
+      unplaced.map(({ item, why }) => h('div', { class: 'cal-row-wrap' }, h('p', { text: `${item.kind === 'event' ? item.e.title : item.kind === 'custom' ? item.c.title : item.sessions[0].title}. ${why}` })))) : null].filter(Boolean));
+}
+
+function calNav(label, prev, next, unit) {
+  const today = isoOf(new Date());
+  return h('div', { class: 'cal-nav' },
+    h('button', { type: 'button', class: 'btn icon', 'aria-label': `Previous ${unit}`, onclick: prev, text: '‹' }),
+    h('h3', { class: 'cal-title', text: label }),
+    h('button', { type: 'button', class: 'btn icon', 'aria-label': `Next ${unit}`, onclick: next, text: '›' }),
+    h('button', { type: 'button', class: 'btn cal-today', text: 'Today', onclick: () => { state.calDay = today; state.calOpen = null; render(); } }));
+}
+
+function agendaRow(item, o, day) {
+  const key = `${item.id}|${day}`;
+  const open = state.calOpen === key;
+  const title = item.kind === 'event' ? item.e.title : item.kind === 'custom' ? item.c.title : (o.session || item.sessions[0]).title;
+  const place = item.kind === 'event' ? (item.e.location || '').split(',')[0] : item.kind === 'custom' ? item.c.place || '' : (o.session || item.sessions[0]).facility || (o.session || item.sessions[0]).location || '';
+  const time = item.kind === 'custom' ? (o.time ? timeRange(o.time, o.endTime) : 'Time not set') : o.time ? timeRange(o.time, item.kind === 'program' && o.session?.end?.time ? o.session.end.time : (item.kind === 'event' && item.e.derived?.timeListed ? item.e.end?.time : null)) : o.timeText || (item.kind === 'event' && o.multiDay ? 'All day or ongoing' : 'Time not listed');
+  return h('div', { class: 'cal-row-wrap' },
+    h('button', { type: 'button', class: 'cal-row', 'aria-expanded': open ? 'true' : 'false', onclick: () => { state.calOpen = open ? null : key; render(); } },
+      h('i', { class: `mark ${item.kind}`, 'aria-hidden': 'true' }),
+      h('span', { class: 'cal-time', text: time }),
+      h('span', { class: 'cal-what' }, h('strong', { text: title }), place ? h('span', { text: place }) : null)),
+    open ? savedCard(item) : null);
+}
+
+// ---------- Your own entries ----------
+const WD_SHORT = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+const WD_PLURAL = ['Sundays', 'Mondays', 'Tuesdays', 'Wednesdays', 'Thursdays', 'Fridays', 'Saturdays'];
+function datesSummary(dates) {
+  const wds = [...new Set(dates.map((d) => dateOf(d).getDay()))].sort();
+  const first = dateOf(dates[0]).toLocaleDateString('en-CA', { month: 'short', day: 'numeric' });
+  const last = dateOf(dates[dates.length - 1]).toLocaleDateString('en-CA', { month: 'short', day: 'numeric', year: 'numeric' });
+  return dates.length === 1 ? dateOf(dates[0]).toLocaleDateString('en-CA', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })
+    : `${dates.length} dates, ${wds.length <= 3 ? wds.map((d) => WD_PLURAL[d]).join(', ') : 'various days'}, ${first} to ${last}`;
+}
+function customSummary(c) {
+  if (c.repeat === 'dates') return `${datesSummary(c.dates)}${c.start ? `, ${timeRange(c.start, c.end || null)}` : ''}`;
+  const when = c.repeat === 'once'
+    ? dateOf(c.date).toLocaleDateString('en-CA', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })
+    : `${c.weekdays.slice().sort().map((d) => WD_PLURAL[d]).join(', ')}, ${dateOf(c.first).toLocaleDateString('en-CA', { month: 'short', day: 'numeric' })} to ${dateOf(c.last).toLocaleDateString('en-CA', { month: 'short', day: 'numeric', year: 'numeric' })}`;
+  return `${when}${c.start ? `, ${timeRange(c.start, c.end || null)}` : ''}`;
+}
+function customCard(item) {
+  const c = item.c;
+  let safeUrl = null;
+  try { const u = new URL(c.url); if (u.protocol === 'https:' || u.protocol === 'http:') safeUrl = u.href; } catch { /* no link */ }
+  return h('article', { class: 'custom-card' },
+    h('h3', { text: c.title }),
+    h('p', { text: customSummary(c) }),
+    c.place ? h('p', { text: c.place }) : null,
+    c.notes ? h('p', { class: 'muted', text: c.notes }) : null,
+    h('p', { class: 'how', text: 'Added by you. Grand Calendar doesn\'t check or update it.' }),
+    safeUrl ? h('a', { class: 'btn', href: safeUrl, target: '_blank', rel: 'noopener noreferrer', text: 'Open link' }) : null,
+    h('div', { class: 'btn-row' },
+      h('button', { type: 'button', class: 'btn', text: 'Edit', onclick: () => openAddOwn(item.id) }),
+      h('button', { type: 'button', class: 'btn', text: 'Delete', onclick: () => deleteCustom(item.id) })));
+}
+
+let aoEditing = null;
+let aoRepeat = 'once';
+let aoDates = null;
+let aoDays = new Set();
+function setRepeat(v) {
+  aoRepeat = v;
+  for (const b of $('ao-repeat').children) b.setAttribute('aria-pressed', String(b.dataset.v === v));
+  $('ao-once').hidden = v !== 'once';
+  $('ao-weekly').hidden = v !== 'weekly';
+}
+function drawDays() {
+  $('ao-days').replaceChildren(...WD_SHORT.map((label, i) => h('button', {
+    type: 'button', 'aria-pressed': aoDays.has(i) ? 'true' : 'false', 'aria-label': WD_PLURAL[i], text: label.slice(0, 2),
+    onclick: () => { if (aoDays.has(i)) aoDays.delete(i); else aoDays.add(i); drawDays(); },
+  })));
+}
+function openAddOwn(editId = null) {
+  aoEditing = editId;
+  const c = editId ? state.saved[editId].custom : null;
+  $('add-own-h').textContent = c ? 'Edit your entry' : 'Add your own';
+  $('ao-title').value = c?.title || '';
+  $('ao-place').value = c?.place || '';
+  $('ao-date').value = c?.date || state.calDay || isoOf(new Date());
+  $('ao-first').value = c?.first || state.calDay || isoOf(new Date());
+  $('ao-last').value = c?.last || '';
+  $('ao-start').value = c?.start || '';
+  $('ao-end').value = c?.end || '';
+  $('ao-url').value = c?.url || '';
+  $('ao-notes').value = c?.notes || '';
+  aoDays = new Set(c?.weekdays || []);
+  aoDates = c?.repeat === 'dates' ? c.dates : null;
+  const fromFile = Boolean(aoDates);
+  $('ao-import').hidden = Boolean(editId);
+  document.querySelector('#add-own .or-line').hidden = Boolean(editId);
+  $('ao-repeat').hidden = fromFile;
+  $('ao-dates-note').hidden = !fromFile;
+  if (fromFile) { $('ao-dates-note').textContent = `Dates come from the imported calendar file: ${datesSummary(aoDates)}.`; $('ao-once').hidden = true; $('ao-weekly').hidden = true; aoRepeat = 'dates'; }
+  else setRepeat(c?.repeat || 'once');
+  drawDays();
+  $('ao-ics-status').textContent = '';
+  $('ao-error').hidden = true;
+  $('add-own').showModal();
+}
+function saveAddOwn(ev) {
+  ev.preventDefault();
+  const c = {
+    title: $('ao-title').value.trim(), place: $('ao-place').value.trim(), repeat: aoRepeat,
+    dates: aoRepeat === 'dates' ? aoDates : undefined,
+    date: aoRepeat === 'once' ? $('ao-date').value : null,
+    weekdays: aoRepeat === 'weekly' ? [...aoDays].sort() : [],
+    first: aoRepeat === 'weekly' ? $('ao-first').value : null,
+    last: aoRepeat === 'weekly' ? $('ao-last').value : null,
+    start: $('ao-start').value || null, end: $('ao-end').value || null,
+    url: $('ao-url').value.trim() || null, notes: $('ao-notes').value.trim() || null,
+  };
+  const problem = validateCustom(c);
+  if (problem) { $('ao-error').textContent = problem; $('ao-error').hidden = false; return; }
+  const id = aoEditing || `custom:${Date.now().toString(36)}`;
+  if (c.dates === undefined) delete c.dates;
+  const firstDay = c.repeat === 'once' ? c.date : occurrences({ kind: 'custom', c }).dates[0].date;
+  state.saved[id] = { kind: 'custom', custom: c, savedAt: state.saved[id]?.savedAt || new Date().toISOString(), event: { id, title: c.title, start: { date: firstDay } } };
+  store.set('saved', state.saved);
+  $('add-own').close();
+  state.calDay = firstDay; state.calOpen = null;
+  render();
+  toast(aoEditing ? 'Changes saved.' : 'Saved to your calendar.');
+}
+// ---------- Importing a calendar file (ActiveNet receipts and others) ----------
+let icsFound = [];
+function showImport(text, from) {
+  const { items, skipped } = readCalendarFile(text);
+  if (!items.length) {
+    $('ao-ics-status').textContent = skipped.length ? `Nothing could be added: ${skipped.map((x) => `${x.title}: ${x.why}`).join(' ')}` : 'The file had no events in it.';
+    return;
+  }
+  const existing = Object.values(state.saved).filter((v) => v.kind === 'custom').map((v) => `${v.custom.title}|${(v.custom.dates || []).join(',')}`);
+  icsFound = items.map((it) => ({ ...it, dupe: existing.includes(`${it.title}|${it.dates.join(',')}`) }));
+  $('ics-items').replaceChildren(...icsFound.map((it, i) => h('label', { class: `ics-item${it.dupe ? ' dupe' : ''}` },
+    h('input', { type: 'checkbox', 'data-i': String(i), checked: !it.dupe }),
+    h('div', {},
+      h('strong', { text: it.title }),
+      h('span', { text: `${datesSummary(it.dates)}${it.start ? `, ${timeRange(it.start, it.end || null)}` : ''}` }),
+      it.place ? h('span', { text: it.place }) : null,
+      it.dupe ? h('span', { text: 'Already in your calendar.' }) : null))));
+  $('ics-skipped').replaceChildren(...(skipped.length ? [h('p', { text: `Not added: ${skipped.map((x) => `${x.title}: ${x.why}`).join(' ')}` })] : []));
+  icsFound.from = from;
+  $('add-own').close();
+  $('ics-preview').showModal();
+}
+async function icsFromLink() {
+  const link = $('ao-ics-url').value.trim();
+  const helper = store.get('searchUrl', '').replace(/\/+$/, '');
+  const st = $('ao-ics-status');
+  if (!link) { st.textContent = 'Paste the calendar link from the receipt first.'; return; }
+  if (!helper) { st.textContent = 'Pasting a link needs the search helper (Settings, Live search). You can choose a saved calendar file instead.'; return; }
+  st.textContent = 'Getting the calendar...';
+  try {
+    const res = await fetch(`${helper}/ics?url=${encodeURIComponent(link)}`, { signal: AbortSignal.timeout(20000) });
+    if (!res.ok) { const d = await res.json().catch(() => ({})); throw new Error(d.error || `HTTP ${res.status}`); }
+    showImport(await res.text(), 'link');
+  } catch (err) {
+    st.textContent = /load failed|failed to fetch/i.test(err.message) ? 'Couldn\'t reach your helper. Update it with the new worker.js (version 3), then try again.' : `Couldn't get it: ${err.message}`;
+  }
+}
+function addImported(ev) {
+  ev.preventDefault();
+  const picked = [...$('ics-items').querySelectorAll('input[type=checkbox]')].filter((x) => x.checked).map((x) => icsFound[Number(x.dataset.i)]);
+  if (!picked.length) { $('ics-preview').close(); return; }
+  let firstDay = null;
+  const ids = [];
+  for (const it of picked) {
+    const c = { title: it.title, place: it.place || '', repeat: 'dates', dates: it.dates, weekdays: [], start: it.start || null, end: it.end || null, url: it.url || null, notes: 'Imported from a calendar file.' };
+    if (validateCustom(c)) continue;
+    const id = `custom:${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
+    state.saved[id] = { kind: 'custom', custom: c, savedAt: new Date().toISOString(), event: { id, title: c.title, start: { date: c.dates[0] } } };
+    ids.push(id);
+    if (!firstDay || c.dates[0] < firstDay) firstDay = c.dates[0];
+  }
+  store.set('saved', state.saved);
+  $('ics-preview').close();
+  if (firstDay) { state.calDay = firstDay; state.calOpen = null; }
+  render();
+  toast(`Added ${ids.length} to your calendar.`, { label: 'Undo', run: () => { for (const id of ids) delete state.saved[id]; store.set('saved', state.saved); render(); } });
+}
+
+function deleteCustom(id) {
+  const was = state.saved[id];
+  delete state.saved[id];
+  store.set('saved', state.saved);
+  state.calOpen = null;
+  render();
+  toast('Deleted.', { label: 'Undo', run: () => { state.saved[id] = was; store.set('saved', state.saved); render(); } });
+}
+
+// Swipe left or right on the grid to change month or week.
+function swipe(el, onLeft, onRight) {
+  let x0 = null; let y0 = null;
+  el.addEventListener('touchstart', (ev) => { x0 = ev.touches[0].clientX; y0 = ev.touches[0].clientY; }, { passive: true });
+  el.addEventListener('touchend', (ev) => {
+    if (x0 === null) return;
+    const dx = ev.changedTouches[0].clientX - x0; const dy = ev.changedTouches[0].clientY - y0;
+    x0 = null;
+    if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) (dx < 0 ? onLeft : onRight)();
+  });
 }
 
 function renderElsewhere() {
@@ -540,12 +835,17 @@ function renderElsewhere() {
     ['Kitchener Public Library', 'https://kpl.events.mylibrary.digital/', 'events calendar'],
     ['City of Kitchener', 'https://calendar.kitchener.ca/default/Index', 'community calendar'],
     ['City of Waterloo', 'https://events.waterloo.ca/default/Index', 'events calendar'],
-    ['Eventbrite', slug ? `https://www.eventbrite.ca/d/canada--kitchener/${slug}/` : 'https://www.eventbrite.ca/d/canada--kitchener/events/', q ? `searches for “${q}”` : 'Kitchener area'],
-    ['Meetup', q ? `https://www.meetup.com/find/?keywords=${enc}&location=ca--on--Kitchener&source=EVENTS` : 'https://www.meetup.com/find/ca--on--kitchener/', q ? `searches for “${q}”` : 'Kitchener area'],
-    ['Luma', 'https://lu.ma/discover', 'discover events'],
+    // These sites have phone apps. When the app is installed, iPhone opens it and the app drops
+    // the search words, so tapping also copies the search for pasting into the app.
+    ['Eventbrite', slug ? `https://www.eventbrite.ca/d/canada--kitchener/${slug}/` : 'https://www.eventbrite.ca/d/canada--kitchener/events/', q ? `searches for “${q}” (also copies it)` : 'Kitchener area', true],
+    ['Meetup', q ? `https://www.meetup.com/find/?keywords=${enc}&location=ca--on--Kitchener&source=EVENTS` : 'https://www.meetup.com/find/ca--on--kitchener/', q ? `searches for “${q}” (also copies it)` : 'Kitchener area', true],
+    ['Luma', 'https://lu.ma/discover', q ? `opens Luma and copies “${q}” to paste in its search` : 'discover events', true],
     ['Visit Stratford', 'https://visitstratford.ca/calendar/', 'Stratford events calendar'],
   ];
-  $('elsewhere').replaceChildren(...links.map(([name, href, sub]) => h('a', { class: 'btn', href, target: '_blank', rel: 'noopener noreferrer' }, h('span', { text: name }), h('small', { text: sub }))));
+  $('elsewhere').replaceChildren(...links.map(([name, href, sub, copies]) => h('a', {
+    class: 'btn', href, target: '_blank', rel: 'noopener noreferrer',
+    onclick: copies && q ? () => { navigator.clipboard?.writeText(q).then(() => toast(`“${q}” copied. If the ${name} app opens, paste it into its search.`), () => {}); } : null,
+  }, h('span', { text: name }), h('small', { text: sub }))));
 }
 
 // ---------- Programs ----------
@@ -663,7 +963,8 @@ function programCard(g) {
       h('ul', { class: 'sessions' }, g.sessions.map((x) => h('li', {},
         h('div', { text: sessionLine(x) }),
         h('div', { text: `${x.facility}. ${x.sessions} class${x.sessions === 1 ? '' : 'es'}, ${feeText(x.fee)}${x.otherFees ? ` (also ${x.otherFees})` : ''}.${x.instructor ? ` Instructor: ${x.instructor}.` : ''}` }),
-        h('div', { class: 'code', text: `Registration code ${x.code}. ${programStatus(x, today).text}.` })))),
+        h('div', { class: 'code', text: `Registration code ${x.code}. ${programStatus(x, today).text}.` }),
+        g.sessions.length > 1 ? h('button', { type: 'button', class: 'btn session-save', 'aria-pressed': state.saved[x.id] ? 'true' : 'false', text: state.saved[x.id] ? 'Saved to your calendar' : 'Save this session', onclick: () => toggleSaveSession(x) }) : null))),
       h('h4', { text: 'Good to know' }),
       h('ul', {},
         h('li', { text: programStatus(p, today).key === 'running' ? 'Already started. ActiveWaterloo shows whether late registration is still open.' : 'Not started yet. ActiveWaterloo shows whether spots are left.' }),
@@ -672,7 +973,9 @@ function programCard(g) {
       h('div', { class: 'card-actions' },
         h('a', { class: 'btn primary', href: p.url, target: '_blank', rel: 'noopener noreferrer', text: `Register on ActiveWaterloo (code ${g.sessions[0].code})` }),
         h('div', { class: 'pair' },
-          h('button', { type: 'button', class: 'btn', text: saved ? 'Saved' : 'Save', onclick: () => toggleSaveProgram(g) }),
+          g.sessions.length === 1
+            ? h('button', { type: 'button', class: 'btn', text: state.saved[p.id] || saved ? 'Saved' : 'Save', onclick: () => (saved ? toggleSaveProgram(g) : toggleSaveSession(p)) })
+            : null,
           h('a', { class: 'btn', href: p.guideUrl, target: '_blank', rel: 'noopener noreferrer', text: 'Open the guide' })))));
   }
   return el;
@@ -703,6 +1006,17 @@ function renderPrograms() {
     ['City of Stratford programs', 'https://www.stratford.ca/en/play-here/recconnect.aspx', 'recreation registration'],
   ];
   $('pelsewhere').replaceChildren(...links.map(([name, href, sub]) => h('a', { class: 'btn', href, target: '_blank', rel: 'noopener noreferrer' }, h('span', { text: name }), h('small', { text: sub }))));
+}
+
+// A City of Waterloo program can have several sessions (different days or times);
+// each is saved on its own so the calendar shows only the one you picked.
+function toggleSaveSession(x) {
+  const was = state.saved[x.id];
+  if (was) delete state.saved[x.id];
+  else state.saved[x.id] = { kind: 'program', program: x, sessions: [x], savedAt: new Date().toISOString(), event: { id: x.id, title: baseTitle(x.title), start: x.start } };
+  store.set('saved', state.saved);
+  render();
+  toast(was ? 'Removed from your calendar.' : 'Saved to your calendar.', { label: 'Undo', run: () => { if (was) state.saved[x.id] = was; else delete state.saved[x.id]; store.set('saved', state.saved); render(); } });
 }
 
 function toggleSaveProgram(g) {
@@ -880,11 +1194,12 @@ async function importSaved(file) {
     if (data.app !== 'Grand Calendar' || typeof data.saved !== 'object') throw new Error('not a Grand Calendar export');
     let n = 0;
     for (const [id, v] of Object.entries(data.saved)) {
-      if (v && v.event && typeof v.event.title === 'string' && v.event.start?.date && !state.saved[id]) { state.saved[id] = v; n++; }
+      const customOk = v?.kind !== 'custom' || (v.custom && !validateCustom(v.custom));
+      if (v && v.event && typeof v.event.title === 'string' && v.event.start?.date && customOk && !state.saved[id]) { state.saved[id] = v; n++; }
     }
     store.set('saved', state.saved);
     render();
-    toast(`Imported ${n} saved event${n === 1 ? '' : 's'}.`);
+    toast(`Imported ${n} saved item${n === 1 ? '' : 's'}.`);
   } catch (err) {
     toast(`Couldn't import that file: ${err.message}. Choose a file exported from Grand Calendar.`);
   }
@@ -998,6 +1313,19 @@ function wire() {
   $('pq').addEventListener('input', (ev) => { clearTimeout(pqTimer); pqTimer = setTimeout(() => { state.pq = ev.target.value; render(); }, 200); });
   $('seg-pwho').addEventListener('click', (ev) => { const v = ev.target.closest('button')?.dataset.v; if (v) { state.pwho = v; render(); } });
   $('p-upcoming').addEventListener('change', (ev) => { state.pUpcoming = ev.target.checked; render(); });
+  state.calView = store.get('calView', 'month');
+  $('seg-calview').addEventListener('click', (ev) => { const v = ev.target.closest('button')?.dataset.v; if (v) { state.calView = v; state.calOpen = null; store.set('calView', v); render(); } });
+  $('add-own-open').addEventListener('click', () => openAddOwn());
+  $('ao-repeat').addEventListener('click', (ev) => { const v = ev.target.closest('button')?.dataset.v; if (v) setRepeat(v); });
+  $('add-own-form').addEventListener('submit', saveAddOwn);
+  // Clear a shown problem as soon as anything in the form changes.
+  for (const t of ['input', 'click']) $('add-own-form').addEventListener(t, (ev) => { if (ev.target.id !== 'ao-save') $('ao-error').hidden = true; });
+  $('ao-cancel').addEventListener('click', () => $('add-own').close());
+  $('ao-ics-get').addEventListener('click', icsFromLink);
+  $('ao-ics-file-btn').addEventListener('click', () => $('ao-ics-file').click());
+  $('ao-ics-file').addEventListener('change', async (ev) => { const f = ev.target.files[0]; ev.target.value = ''; if (f) showImport(await f.text(), 'file'); });
+  $('ics-preview-form').addEventListener('submit', addImported);
+  $('ics-cancel').addEventListener('click', () => $('ics-preview').close());
   $('push-on').addEventListener('click', turnOnPush);
   $('pweb-go').addEventListener('click', () => webSearch(false));
   $('search-url').value = store.get('searchUrl', '');
@@ -1027,7 +1355,7 @@ function wire() {
     }
     // A working address is saved, so searches use the same one the test used.
     store.set('searchUrl', v);
-    out.textContent = `Helper works (version ${health.version}). Tavily key: ${health.hasKey ? 'set' : 'MISSING, add TAVILY_KEY under the running Worker’s Variables and Secrets'}. Search path: ${searchPath}. Monthly cap: ${health.capOn ? `on, ${health.usedThisMonth} of ${health.cap} searches used` : 'off'}. Saved address: ${v}`;
+    out.textContent = `Helper works (version ${health.version}${health.calendarLinks ? '' : ', update worker.js to version 3 for receipt calendar links'}). Tavily key: ${health.hasKey ? 'set' : 'MISSING, add TAVILY_KEY under the running Worker’s Variables and Secrets'}. Search path: ${searchPath}. Monthly cap: ${health.capOn ? `on, ${health.usedThisMonth} of ${health.cap} searches used` : 'off'}. Saved address: ${v}`;
   });
   $('search-url-save').addEventListener('click', () => {
     const v = $('search-url').value.trim();
@@ -1055,4 +1383,4 @@ loadPrograms();
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => { /* alerts just won't be available */ });
 
 // For testing in a headless browser.
-window.__gc = { state, filtered, load, render, filteredPrograms, makePushKeys };
+window.__gc = { state, filtered, load, render, filteredPrograms, makePushKeys, savedItems };

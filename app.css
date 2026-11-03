@@ -96,7 +96,7 @@ a { color: var(--river-700); }
 
 /* ---------- Controls ---------- */
 .controls { display: grid; gap: var(--s3); margin-top: var(--s3); }
-.search input, .place-row input, input[type="date"], select {
+.search input, .place-row input, input[type="date"], input[type="time"], .field input, .field textarea, select {
   width: 100%; min-height: var(--btn-h); font: inherit; font-size: 16px; color: var(--ink);
   background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-md); padding: 0 var(--s3);
 }
@@ -252,3 +252,86 @@ label.select { display: grid; gap: var(--s1); font-size: 14px; color: var(--ink-
 .web-site > .domain { font-size: 14px; font-weight: 700; color: var(--ink-2); }
 .websearch > .btn { margin-top: var(--s3); }
 #pweb-results > .btn { margin-top: var(--s4); width: 100%; }
+
+/* ---------- Calendar (saved items only) ---------- */
+.cal-views { margin-top: var(--s4); }
+.cal-nav { display: flex; align-items: center; gap: var(--s2); margin-top: var(--s5); }
+.cal-nav .cal-title { flex: 1; text-align: center; font-size: 18px; color: var(--river-900); }
+.btn.icon { width: var(--btn-h); min-width: var(--btn-h); padding: 0; font-size: 24px; line-height: 1; justify-content: center; }
+.btn.cal-today { padding-left: var(--s3); padding-right: var(--s3); }
+
+.cal-month { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; margin-top: var(--s3); touch-action: pan-y; }
+.cal-head { text-align: center; font-size: 13px; font-weight: 700; color: var(--ink-2); padding: var(--s1) 0; }
+.cal-day {
+  position: relative; display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
+  min-height: 48px; padding: 6px 0 4px; border: 0; border-radius: var(--r-sm);
+  background: transparent; color: var(--ink); font: inherit; cursor: pointer;
+}
+.cal-day .cal-num { font-size: 16px; line-height: 22px; min-width: 28px; border-radius: 14px; }
+.cal-day.other-month { color: var(--ink-2); opacity: 0.55; }
+.cal-day.is-today .cal-num { box-shadow: inset 0 0 0 2px var(--river-500); font-weight: 700; }
+.cal-day.is-selected { background: var(--river-100); }
+.cal-day.is-selected .cal-num { background: var(--river-700); color: var(--surface); font-weight: 700; box-shadow: none; }
+.cal-marks { display: flex; align-items: center; gap: 3px; height: 14px; margin-top: 3px; }
+.cal-marks b { font-size: 11px; color: var(--ink-2); font-weight: 700; }
+.mark { display: inline-block; width: 7px; height: 7px; border-radius: 50%; }
+.mark.event { background: var(--river-500); }
+.mark.program { background: var(--new); border-radius: 2px; } /* square, so shape differs as well as colour */
+@media (hover: hover) { .cal-day:hover { background: var(--river-100); } }
+
+.cal-week { display: flex; gap: 4px; margin-top: var(--s3); touch-action: pan-y; }
+.cal-week .cal-day { flex: 1; min-height: 72px; background: var(--surface); border: 1px solid var(--line); }
+.cal-week .cal-day.is-selected { background: var(--river-100); border-color: var(--river-500); }
+.cal-wd { font-size: 13px; color: var(--ink-2); margin-bottom: 2px; }
+
+.cal-legend { display: flex; align-items: center; gap: var(--s2); font-size: 14px; color: var(--ink-2); margin: var(--s3) 0 0; }
+.cal-agenda { margin-top: var(--s5); }
+.cal-agenda h3, .cal-unplaced h3 { font-size: 17px; color: var(--river-900); margin-bottom: var(--s2); }
+.cal-row-wrap { margin-top: var(--s2); }
+.cal-row {
+  display: flex; align-items: flex-start; gap: var(--s3); width: 100%; min-height: 56px; padding: var(--s3) var(--s4);
+  text-align: left; font: inherit; color: var(--ink); background: var(--surface);
+  border: 1px solid var(--line); border-radius: var(--r-md); cursor: pointer;
+}
+.cal-row .mark { margin-top: 7px; flex: none; }
+.cal-time { flex: none; width: 96px; font-size: 15px; color: var(--ink-2); }
+.cal-what { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.cal-what strong { font-size: 16px; }
+.cal-what span { font-size: 14px; color: var(--ink-2); }
+.cal-row[aria-expanded="true"] { border-color: var(--river-500); }
+.cal-row-wrap > .card { margin-top: var(--s2); }
+.cal-unplaced { margin-top: var(--s6); }
+.cal-unplaced p { font-size: 15px; color: var(--ink-2); }
+.session-save { margin-top: var(--s2); width: 100%; }
+.session-save[aria-pressed="true"] { background: var(--river-100); }
+
+/* ---------- Add your own ---------- */
+.add-own { width: 100%; margin-top: var(--s3); }
+.field { display: grid; gap: var(--s1); font-size: 15px; }
+.field > span { font-weight: 700; }
+.field .opt { font-weight: 400; color: var(--ink-2); }
+.field textarea { padding: var(--s2) var(--s3); min-height: 72px; resize: vertical; }
+.btn-row > .field { flex: 1; min-width: 0; }
+.weekday-pick { display: flex; gap: 4px; }
+.weekday-pick button {
+  flex: 1; min-height: var(--btn-h); padding: 0; font: inherit; font-size: 15px; cursor: pointer;
+  color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-sm);
+}
+.weekday-pick button[aria-pressed="true"] { background: var(--river-700); border-color: var(--river-700); color: var(--surface); font-weight: 700; }
+.form-error { color: var(--full); font-weight: 700; margin: 0; }
+.mark.custom { background: transparent; box-shadow: inset 0 0 0 2px var(--ink-2); } /* hollow ring: differs by shape too */
+.custom-card { padding: var(--s4); background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg); margin-top: var(--s2); }
+.custom-card h3 { font-size: 17px; }
+.custom-card p { margin: var(--s2) 0 0; }
+.custom-card .btn-row { margin-top: var(--s4); }
+
+.import-box { padding: var(--s4); background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg); display: grid; gap: var(--s2); }
+.import-box legend { float: left; width: 100%; margin-bottom: 0; }
+.import-box > .btn { width: 100%; }
+.or-line { text-align: center; color: var(--ink-2); font-size: 14px; margin: 0; }
+.ics-item { display: flex; gap: var(--s3); align-items: flex-start; padding: var(--s3) var(--s4); background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-md); margin-top: var(--s2); }
+.ics-item input { width: 22px; height: 22px; margin-top: 2px; accent-color: var(--river-700); flex: none; }
+.ics-item strong { display: block; font-size: 16px; }
+.ics-item span { display: block; font-size: 15px; color: var(--ink-2); margin-top: 2px; }
+.ics-item.dupe { opacity: 0.6; }
+#ics-skipped p { font-size: 15px; color: var(--ink-2); }
