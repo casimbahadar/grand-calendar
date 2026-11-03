@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self' https://explorewaterloo.ca https://nominatim.openstreetmap.org; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self' https://explorewaterloo.ca https://nominatim.openstreetmap.org https://kpl.events.mylibrary.digital https://calendar.kitchener.ca https://events.waterloo.ca; object-src 'none'; base-uri 'none'; form-action 'none'">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <title>Grand Calendar</title>
   <meta name="description" content="Events across Waterloo Region, for adults and kids, gathered from their sources.">
@@ -167,6 +167,12 @@
         <legend>Event lists</legend>
         <button type="button" class="btn" id="refresh-now">Refresh Explore Waterloo now</button>
         <p class="hint">Explore Waterloo is read on this phone and refreshed when your copy is over 6 hours old. Library events refresh on GitHub every hour.</p>
+      </fieldset>
+      <fieldset>
+        <legend>Test other sources</legend>
+        <button type="button" class="btn" id="test-sources">Test from this phone</button>
+        <p class="hint">Tries reading three calendars that blocked Grand Calendar's servers, from your phone instead. Takes a few seconds. Screenshot the result and send it.</p>
+        <ul class="test-results" id="test-results"></ul>
       </fieldset>
       <fieldset>
         <legend>About</legend>

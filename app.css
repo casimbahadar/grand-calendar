@@ -230,3 +230,7 @@ label.select { display: grid; gap: var(--s1); font-size: 14px; color: var(--ink-
 @media (min-width: 380px) {
   .seg button { font-size: 15px; }
 }
+
+.test-results { margin: var(--s3) 0 0; padding-left: var(--s5); font-size: 15px; }
+.test-results li { margin-top: var(--s1); }
+.card-actions > .btn.quiet { justify-content: center; }

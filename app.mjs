@@ -424,7 +424,8 @@ function cardBody(x, id) {
       e.url ? h('a', { class: 'btn primary', href: e.url, target: '_blank', rel: 'noopener noreferrer', text: `Open on ${SOURCE_NAMES[e.source] || 'source'}` }) : h('p', { class: 'how', text: 'The source gave no link for this event.' }),
       h('div', { class: 'pair' },
         h('button', { type: 'button', class: 'btn', text: saved ? 'Saved' : 'Save', 'aria-pressed': saved ? 'true' : 'false', onclick: () => toggleSave(e) }),
-        h('button', { type: 'button', class: 'btn', text: 'Add to calendar', onclick: () => downloadIcs(e) }))));
+        h('button', { type: 'button', class: 'btn', text: 'Add to calendar', onclick: () => downloadIcs(e) })),
+      h('button', { type: 'button', class: 'btn quiet', text: 'Download .ics file', onclick: () => downloadIcs(e, true) })));
 }
 
 function render() {
@@ -556,7 +557,7 @@ function toggleSave(e) {
 }
 
 const icsText = (s) => String(s || '').replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\r?\n/g, '\\n');
-function downloadIcs(e) {
+function downloadIcs(e, forceFile = false) {
   const d = (iso) => iso.replace(/-/g, '');
   const t = (hhmm) => `${hhmm.replace(':', '')}00`;
   const lines = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Grand Calendar//EN', 'BEGIN:VEVENT',
@@ -574,7 +575,15 @@ function downloadIcs(e) {
   if (e.location) lines.push(`LOCATION:${icsText(e.location)}`);
   if (e.url) lines.push(`URL:${e.url}`);
   lines.push(`DESCRIPTION:${icsText(`${note}Source: ${e.url || SOURCE_NAMES[e.source]}`)}`, 'END:VEVENT', 'END:VCALENDAR');
-  const blob = new Blob([lines.join('\r\n') + '\r\n'], { type: 'text/calendar' });
+  const ics = lines.join('\r\n') + '\r\n';
+  // iPhone and iPad: opening calendar data directly may show Calendar's "Add" screen
+  // instead of a file download. Other devices download the .ics file.
+  const ios = /iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  if (ios && !forceFile) {
+    const w = window.open(`data:text/calendar;charset=utf-8,${encodeURIComponent(ics)}`, '_blank');
+    if (w) { toast('If Calendar doesn\'t open, use "Download .ics file" below the button.'); return; }
+  }
+  const blob = new Blob([ics], { type: 'text/calendar' });
   const a = h('a', { href: URL.createObjectURL(blob), download: `${e.title.slice(0, 40).replace(/[^\w ]+/g, '').trim() || 'event'}.ics` });
   document.body.append(a); a.click(); a.remove();
 }
@@ -606,6 +615,35 @@ function setLoc(loc) {
   if (loc) store.set('loc', loc); else { try { localStorage.removeItem(`${NS}loc`); } catch { /* storage off */ } }
   render();
   lookupNewVenues();
+}
+
+// ---------- Source test (run from the phone) ----------
+// Reads each calendar the way the app would. Browsers hide the reason when a site
+// doesn't share its pages with other sites, so a failure can mean either a block or that.
+const TEST_SOURCES = [
+  ['Kitchener Public Library', 'https://kpl.events.mylibrary.digital/'],
+  ['City of Kitchener calendar', 'https://calendar.kitchener.ca/default/Index'],
+  ['City of Waterloo calendar', 'https://events.waterloo.ca/default/Index'],
+];
+async function testSources() {
+  const list = $('test-results');
+  list.replaceChildren(h('li', { text: 'Testing...' }));
+  const rows = [];
+  for (const [name, url] of TEST_SOURCES) {
+    let line;
+    try {
+      const res = await fetch(url, { cache: 'no-store', signal: AbortSignal.timeout(15000) });
+      const text = await res.text();
+      const kind = /BEGIN:VCALENDAR/.test(text) ? 'a calendar feed' : /<html/i.test(text) ? 'a web page' : 'something else';
+      line = res.ok ? `${name}: readable, HTTP ${res.status}, ${Math.round(text.length / 1024)} KB, looks like ${kind}.`
+        : `${name}: answered HTTP ${res.status} (refused).`;
+    } catch (err) {
+      line = `${name}: not readable from here (${err.name === 'TimeoutError' ? 'timed out' : 'blocked, or the site does not share its pages with other sites'}).`;
+    }
+    rows.push(h('li', { text: line }));
+    list.replaceChildren(...rows);
+  }
+  list.append(h('li', { class: 'how', text: `Tested ${fmtClock(new Date().toISOString())}.` }));
 }
 
 // ---------- Wiring ----------
@@ -661,6 +699,7 @@ function wire() {
   $('kid-min').addEventListener('change', kidChange); $('kid-max').addEventListener('change', kidChange);
   $('settings-open').addEventListener('click', () => $('settings').showModal());
   $('refresh-now').addEventListener('click', () => { $('settings').close(); load(true); });
+  $('test-sources').addEventListener('click', testSources);
 
   for (const b of document.querySelectorAll('.tabs button')) {
     b.addEventListener('click', () => {
