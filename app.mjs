@@ -111,6 +111,9 @@ function km(a, b) {
 let toastTimer = null;
 function toast(msg, action = null) {
   const t = $('toast');
+  // An open Settings or Filters panel sits above the page, so the message must live inside it to be seen.
+  const host = document.querySelector('dialog[open]') || document.body;
+  if (t.parentElement !== host) host.append(t);
   t.replaceChildren(h('span', { text: msg }));
   if (action) t.append(' ', h('button', { type: 'button', class: 'btn quiet', text: action.label, onclick: () => { action.run(); t.hidden = true; } }));
   t.hidden = false;
@@ -736,7 +739,7 @@ async function webSearch(more = false) {
     } catch (err) {
       // Safari says "Load failed" when the helper's reply can't be read at all (wrong address,
       // starter code still in place, or the Worker crashed before answering).
-      const msg = /load failed|failed to fetch|networkerror/i.test(err.message) ? 'couldn\'t reach your search helper'
+      const msg = /load failed|failed to fetch|networkerror/i.test(err.message) ? `couldn't reach your search helper at ${base}`
         : /JSON/i.test(err.message) ? 'your search helper replied with something other than search results (it may still have Cloudflare\'s starter code)'
           : err.message;
       return { part, error: msg };
@@ -1002,21 +1005,39 @@ function wire() {
     const v = ($('search-url').value || store.get('searchUrl', '')).trim().replace(/\/+$/, '');
     const out = $('search-test-result');
     if (!v) { out.textContent = 'Paste your helper address first.'; return; }
+    if (!/^https:\/\/[\w.-]+\.workers\.dev$/.test(v)) { out.textContent = `“${v}” doesn't look like a workers.dev address, so it can't be used.`; return; }
     out.textContent = 'Testing...';
+    let health;
     try {
       const res = await fetch(`${v}/health`, { signal: AbortSignal.timeout(15000) });
-      const d = await res.json();
-      out.textContent = d.ok
-        ? `Helper works (version ${d.version}). Tavily key: ${d.hasKey ? 'set' : 'MISSING, add the TAVILY_KEY secret'}. Monthly cap: ${d.capOn ? `on, ${d.usedThisMonth} of ${d.cap} searches used` : 'off (no USAGE storage connected)'}.`
-        : 'The helper answered but not as expected.';
+      health = await res.json();
     } catch {
       out.textContent = `Couldn't read a reply from ${v}/health. Open that address in Safari: if it says "Hello World", the Worker still has Cloudflare's starter code, so paste worker.js and deploy. If it shows an error page, send me a screenshot.`;
+      return;
     }
+    // Second check, free: the search path itself, with a too-short search that the helper
+    // refuses before contacting Tavily. This proves the site lock and permission header work.
+    let searchPath;
+    try {
+      const res = await fetch(`${v}/?q=x&part=0`, { signal: AbortSignal.timeout(15000) });
+      const d = await res.json();
+      searchPath = res.status === 400 && /2 characters/.test(d.error || '') ? 'works' : `answered “${d.error || res.status}”`;
+    } catch (err) {
+      searchPath = `failed (${err.message})`;
+    }
+    // A working address is saved, so searches use the same one the test used.
+    store.set('searchUrl', v);
+    out.textContent = `Helper works (version ${health.version}). Tavily key: ${health.hasKey ? 'set' : 'MISSING, add TAVILY_KEY under the running Worker’s Variables and Secrets'}. Search path: ${searchPath}. Monthly cap: ${health.capOn ? `on, ${health.usedThisMonth} of ${health.cap} searches used` : 'off'}. Saved address: ${v}`;
   });
   $('search-url-save').addEventListener('click', () => {
     const v = $('search-url').value.trim();
-    if (v && !/^https:\/\/[\w.-]+\.workers\.dev\/?$/.test(v)) { toast('That doesn\'t look like a workers.dev address.'); return; }
-    store.set('searchUrl', v); toast(v ? 'Search helper saved.' : 'Search helper removed.');
+    if (v && !/^https:\/\/[\w.-]+\.workers\.dev\/?$/.test(v)) {
+      $('search-test-result').textContent = `Not saved: “${v}” doesn't look like a workers.dev address. It should look like https://name.yourname.workers.dev`;
+      return;
+    }
+    store.set('searchUrl', v);
+    $('search-test-result').textContent = v ? `Saved: ${v}. Tap Test helper to check it.` : 'Search helper removed.';
+    toast(v ? 'Search helper saved.' : 'Search helper removed.');
   });
   $('push-copy').addEventListener('click', async () => {
     try { await navigator.clipboard.writeText($('push-code').value); toast('Code copied.'); } catch { $('push-code').select(); toast('Select the code and copy it.'); }
