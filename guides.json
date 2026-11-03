@@ -1,0 +1,18 @@
+{
+ "guides": {
+  "waterloo-guide": {
+   "name": "City of Waterloo program guide",
+   "url": "https://media-002-ca.cdn.govstack.com/waterloo-013-ca/media/v3uac3f2/activewaterloo-guide.pdf",
+   "edition": "FALL 2026",
+   "sha256": "f660637b6fd573ff035c4dbb3fc3f83b225a29ca3be2a16ab28247f702f2bea1",
+   "checkedAt": "2026-11-03T00:30:54.992Z",
+   "readAt": "2026-11-03T00:30:54.992Z",
+   "ok": true,
+   "programs": 254,
+   "registrationOpens": "Active Living, Aug 18 (Waterloo residents), Aug 21 (non-residents), Swim, Sept 8 (Waterloo residents), Sept 11 (non-residents)",
+   "newEditionAt": null,
+   "previousEdition": null,
+   "fileChangedAt": "2026-11-03T00:30:54.992Z"
+  }
+ }
+}
