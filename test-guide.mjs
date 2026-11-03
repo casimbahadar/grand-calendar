@@ -44,4 +44,5 @@ check('ages as printed in titles', () => {
   assert.equal(parseGuideAge('Aqua Cycle Waterfit (16+)').min, 16);
   assert.equal(parseGuideAge('Barre – All Levels'), null);
 });
+check('each registration code appears once', () => assert.equal(new Set(r.programs.map((p) => p.code)).size, r.programs.length));
 console.log(`\n${passed} guide checks passed`);

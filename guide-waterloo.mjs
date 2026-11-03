@@ -165,7 +165,9 @@ export function readWaterlooGuide(rawText, checkedAt) {
     if (inTable) closeTable();
     block.push(line);
   }
-  return { season, year, registrationOpens, programs, skipped };
+  // Some programs are printed in two sections (Preschool and Children); keep each code once.
+  const unique = [...new Map(programs.map((p) => [p.id, p])).values()];
+  return { season, year, registrationOpens, programs: unique, skipped };
 }
 
 const titleCase = (s) => s.toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase()).replace(/\bAnd\b/g, 'and');

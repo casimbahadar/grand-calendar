@@ -234,3 +234,9 @@ label.select { display: grid; gap: var(--s1); font-size: 14px; color: var(--ink-
 .test-results { margin: var(--s3) 0 0; padding-left: var(--s5); font-size: 15px; }
 .test-results li { margin-top: var(--s1); }
 .card-actions > .btn.quiet { justify-content: center; }
+
+#push-code { width: 100%; font: 13px/1.4 ui-monospace, Menlo, monospace; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-md); padding: var(--s2); margin: var(--s2) 0; word-break: break-all; }
+.card-body ul.sessions { margin: var(--s2) 0 0; padding: 0; list-style: none; }
+.sessions li { padding: var(--s3) 0; border-top: 1px solid var(--line); font-size: 15px; }
+.sessions li:first-child { border-top: 0; }
+.sessions .code { color: var(--ink-2); font-size: 14px; }

@@ -73,6 +73,30 @@
     </section>
   </main>
 
+  <main id="view-programs" hidden>
+    <h2 class="view-title">Programs</h2>
+    <p class="muted">Classes and lessons you register for, read from program guides. Times and fees are as the guide prints them; registration happens on the provider's site.</p>
+    <div class="controls">
+      <label class="search">
+        <span class="visually-hidden">Search programs</span>
+        <input id="pq" type="search" inputmode="search" autocomplete="off" placeholder="Search, e.g. dance or karate">
+      </label>
+      <div class="seg" role="group" aria-label="Who it's for" id="seg-pwho">
+        <button type="button" data-v="everyone">Everyone</button>
+        <button type="button" data-v="kids" id="pkids-btn">Kids 5 to 6</button>
+        <button type="button" data-v="adults">Adults</button>
+      </div>
+      <label class="check"><input type="checkbox" id="p-upcoming"> Only programs that haven't started yet</label>
+    </div>
+    <p class="summary" id="psummary" aria-live="polite"></p>
+    <div id="presults"></div>
+    <section class="elsewhere" aria-labelledby="pelsewhere-h">
+      <h2 id="pelsewhere-h">Search other program sites</h2>
+      <p class="muted">These sites can't be read automatically, so these links open their own search.</p>
+      <div class="link-list" id="pelsewhere"></div>
+    </section>
+  </main>
+
   <main id="view-saved" hidden>
     <h2 class="view-title">Saved events</h2>
     <p class="muted">Saved on this phone only. Export a copy now and then: removing the app from your Home Screen deletes them.</p>
@@ -86,6 +110,7 @@
 
   <nav class="tabs" aria-label="Views">
     <button type="button" data-view="events" aria-current="page">Events</button>
+    <button type="button" data-view="programs">Programs</button>
     <button type="button" data-view="saved">Saved <span id="saved-count"></span></button>
   </nav>
 
@@ -167,6 +192,16 @@
         <legend>Event lists</legend>
         <button type="button" class="btn" id="refresh-now">Refresh Explore Waterloo now</button>
         <p class="hint">Explore Waterloo is read on this phone and refreshed when your copy is over 6 hours old. Library events refresh on GitHub every hour.</p>
+      </fieldset>
+      <fieldset>
+        <legend>Season alerts</legend>
+        <p class="hint" id="push-status">Get a notification on this phone when a new program guide comes out.</p>
+        <button type="button" class="btn" id="push-on">Turn on alerts</button>
+        <div id="push-code-box" hidden>
+          <p class="hint">Last step: copy this code and save it in GitHub as a secret named PUSH_CONFIG (repo Settings, Secrets and variables, Actions). It lets only your repo send alerts to only this phone. Don't share it.</p>
+          <textarea id="push-code" rows="4" readonly></textarea>
+          <button type="button" class="btn" id="push-copy">Copy code</button>
+        </div>
       </fieldset>
       <fieldset>
         <legend>Test other sources</legend>

@@ -41,6 +41,9 @@ const state = {
   prevVisit: store.get('visit', null),
   expanded: new Set(),
   view: 'events',
+  programs: [],            // program sessions from programs.json
+  programsReady: null,     // null = loading, true, or an error message
+  pq: '', pwho: 'everyone', pUpcoming: false,
 };
 
 // ---------- Small helpers ----------
@@ -431,7 +434,9 @@ function cardBody(x, id) {
 function render() {
   renderStatus();
   renderControls();
-  if (state.view === 'events') renderEvents(); else renderSaved();
+  if (state.view === 'events') renderEvents();
+  else if (state.view === 'programs') renderPrograms();
+  else renderSaved();
   renderElsewhere();
   $('saved-count').textContent = Object.keys(state.saved).length ? `(${Object.keys(state.saved).length})` : '';
 }
@@ -513,6 +518,10 @@ function renderSaved() {
   }
   const today = isoOf(new Date());
   root.replaceChildren(...entries.map((s) => {
+    if (s.kind === 'program') {
+      const live = state.programs.filter((p) => `${p.source}|${p.title}` === s.event.id);
+      return programCard({ id: s.event.id, first: live[0] || s.program, sessions: live.length ? live : s.sessions });
+    }
     const live = state.events.find((e) => e.id === s.event.id);
     const e = live || s.event;
     const el = card({ e, tier: state.who === 'kids' ? kidTier(e) : null, push: [], dist: state.loc && e.geo ? km(state.loc, e.geo) : null }, { inSaved: true });
@@ -536,7 +545,185 @@ function renderElsewhere() {
   $('elsewhere').replaceChildren(...links.map(([name, href, sub]) => h('a', { class: 'btn', href, target: '_blank', rel: 'noopener noreferrer' }, h('span', { text: name }), h('small', { text: sub }))));
 }
 
-// ---------- Actions ----------
+// ---------- Programs ----------
+async function loadPrograms() {
+  try {
+    const d = await loadJson('programs.json');
+    state.programs = d.programs || [];
+    state.programsReady = true;
+  } catch {
+    state.programsReady = 'The programs list isn\'t ready yet. The GitHub job builds it once a day.';
+  }
+  if (state.view === 'programs') render();
+}
+
+const DAY_NAMES = { Mon: 'Mondays', Tue: 'Tuesdays', Wed: 'Wednesdays', Thu: 'Thursdays', Fri: 'Fridays', Sat: 'Saturdays', Sun: 'Sundays' };
+const shortDate = (iso) => dateOf(iso).toLocaleDateString('en-CA', { month: 'short', day: 'numeric' });
+const timeRange = (a, b) => fmtWhen({ derived: { timeListed: true }, start: { date: 'x', time: a }, end: { date: 'x', time: b } });
+const baseTitle = (t) => t.replace(/\s*\((?:\d|[^)]*years|[^)]*\+)[^)]*\)\s*$/, '').trim();
+
+function sessionLine(p) {
+  const single = p.start.date === p.end.date;
+  const day = single ? dateOf(p.start.date).toLocaleDateString('en-CA', { weekday: 'long', month: 'short', day: 'numeric' }) : `${DAY_NAMES[p.days] || p.days}, ${shortDate(p.start.date)} to ${shortDate(p.end.date)}`;
+  return `${day}, ${timeRange(p.start.time, p.end.time)}`;
+}
+
+function programStatus(p, today) {
+  if (p.end.date < today) return { key: 'ended', text: 'Ended' };
+  if (p.start.date > today) return { key: 'upcoming', text: `Starts ${shortDate(p.start.date)}` };
+  return { key: 'running', text: `Started ${shortDate(p.start.date)}` };
+}
+
+// Kids mode for programs: the guide states an age range or minimum; keep those that include the kid ages.
+function programFits(p) {
+  const a = p.derived?.age;
+  if (!a) return false;
+  const { min, max } = state.kid;
+  if (a.kind === 'range') return a.min <= max && a.max >= min;
+  if (a.kind === 'minimum') return a.min <= max;
+  return false;
+}
+const programIsAdult = (p) => !p.derived?.age || (p.derived.age.kind === 'minimum' && p.derived.age.min >= 13) || (p.derived.age.kind === 'range' && p.derived.age.min >= 13);
+
+function filteredPrograms() {
+  const today = isoOf(new Date());
+  const groups = new Map();
+  let hiddenEnded = 0;
+  for (const p of state.programs) {
+    if (p.end.date < today) { hiddenEnded++; continue; }
+    if (state.pUpcoming && p.start.date <= today) continue;
+    if (state.pwho === 'kids' && !programFits(p)) continue;
+    if (state.pwho === 'adults' && !programIsAdult(p)) continue;
+    if (state.pq && !searchMatch({ title: p.title, description: `${p.description} ${p.category || ''} ${p.facility}`, categories: [] }, state.pq)) continue;
+    const key = `${p.source}|${p.title}`;
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key).push(p);
+  }
+  const list = [...groups.values()].map((sessions) => {
+    sessions.sort((a, b) => a.start.date.localeCompare(b.start.date) || a.start.time.localeCompare(b.start.time));
+    return { id: `${sessions[0].source}|${sessions[0].title}`, first: sessions[0], sessions };
+  });
+  list.sort((a, b) => {
+    const sa = programStatus(a.first, today).key === 'upcoming' ? 0 : 1;
+    const sb = programStatus(b.first, today).key === 'upcoming' ? 0 : 1;
+    return sa - sb || a.first.start.date.localeCompare(b.first.start.date) || a.first.title.localeCompare(b.first.title);
+  });
+  return { list, hiddenEnded };
+}
+
+function programCard(g) {
+  const p = g.first;
+  const today = isoOf(new Date());
+  const open = state.expanded.has(g.id);
+  const a = p.derived?.age;
+  const ageText = a ? `Ages ${a.text.replace(/ years?/, '').replace(/^(\d+)\+$/, '$1 and up')}` : 'Age not listed';
+  const feeText = (f) => (f === '$0.00' ? 'Free ($0.00)' : f);
+  const statuses = [...new Set(g.sessions.map((x) => programStatus(x, today).text))];
+  const saved = Boolean(state.saved[g.id]);
+  const head = h('button', {
+    type: 'button', class: 'card-head', 'aria-expanded': open ? 'true' : 'false',
+    onclick: () => { if (open) state.expanded.delete(g.id); else state.expanded.add(g.id); render(); },
+  },
+  h('div', { class: 'when', text: g.sessions.length === 1 ? sessionLine(p) : `${g.sessions.length} sessions to choose from` }),
+  h('h3', { text: p.title }),
+  h('div', { class: 'where', text: [...new Set(g.sessions.map((x) => x.facility))].join(' or ') + ', Waterloo' }),
+  h('div', { class: `age${programFits(p) ? ' fit' : ''}`, text: ageText }),
+  h('div', { class: 'tags' },
+    statuses.map((t) => h('span', { class: `tag${t.startsWith('Starts') ? ' open' : ' soft'}`, text: t })),
+    h('span', { class: 'tag soft', text: [...new Set(g.sessions.map((x) => feeText(x.fee)))].join(' or ') }),
+    p.category ? h('span', { class: 'tag', text: p.category }) : null),
+  h('div', { class: 'source', text: `From the ${p.guideSeason || ''} City of Waterloo program guide, checked ${fmtClock(p.lastChecked)}` }));
+  const el = h('article', { class: 'card' }, head);
+  if (open) {
+    el.append(h('div', { class: 'card-body' },
+      p.description ? h('div', {}, h('h4', { text: 'About' }), h('p', { text: p.description })) : null,
+      h('h4', { text: g.sessions.length === 1 ? 'When and where' : 'Sessions' }),
+      h('ul', { class: 'sessions' }, g.sessions.map((x) => h('li', {},
+        h('div', { text: sessionLine(x) }),
+        h('div', { text: `${x.facility}. ${x.sessions} class${x.sessions === 1 ? '' : 'es'}, ${feeText(x.fee)}${x.otherFees ? ` (also ${x.otherFees})` : ''}.${x.instructor ? ` Instructor: ${x.instructor}.` : ''}` }),
+        h('div', { class: 'code', text: `Registration code ${x.code}. ${programStatus(x, today).text}.` })))),
+      h('h4', { text: 'Good to know' }),
+      h('ul', {},
+        h('li', { text: programStatus(p, today).key === 'running' ? 'Already started. ActiveWaterloo shows whether late registration is still open.' : 'Not started yet. ActiveWaterloo shows whether spots are left.' }),
+        p.registrationOpens ? h('li', { text: `This guide's registration opened: ${p.registrationOpens}.` }) : null,
+        h('li', { class: 'how', text: 'Read from the guide (PDF). The guide doesn\'t say whether a program is full.' })),
+      h('div', { class: 'card-actions' },
+        h('a', { class: 'btn primary', href: p.url, target: '_blank', rel: 'noopener noreferrer', text: `Register on ActiveWaterloo (code ${g.sessions[0].code})` }),
+        h('div', { class: 'pair' },
+          h('button', { type: 'button', class: 'btn', text: saved ? 'Saved' : 'Save', onclick: () => toggleSaveProgram(g) }),
+          h('a', { class: 'btn', href: p.guideUrl, target: '_blank', rel: 'noopener noreferrer', text: 'Open the guide' })))));
+  }
+  return el;
+}
+
+function renderPrograms() {
+  $('pkids-btn').textContent = $('kids-btn').textContent;
+  for (const b of $('seg-pwho').children) b.setAttribute('aria-pressed', String(b.dataset.v === state.pwho));
+  $('p-upcoming').checked = state.pUpcoming;
+  const root = $('presults');
+  if (state.programsReady !== true) {
+    $('psummary').textContent = '';
+    root.replaceChildren(h('div', { class: 'empty' }, h('p', { text: state.programsReady || 'Loading programs...' })));
+  } else {
+    const { list, hiddenEnded } = filteredPrograms();
+    $('psummary').textContent = `${list.length} program${list.length === 1 ? '' : 's'}${state.pwho === 'kids' ? ` stated for ages ${state.kid.min} to ${state.kid.max}` : ''}, not yet ended.${hiddenEnded ? ` ${hiddenEnded} ended sessions hidden.` : ''}`;
+    root.replaceChildren(...(list.length ? list.map(programCard) : [h('div', { class: 'empty' }, h('p', { text: 'No programs match. Try a different search or "Everyone".' }))]));
+  }
+  const q = state.pq.trim();
+  const enc = encodeURIComponent(q);
+  const links = [
+    ['City of Kitchener programs', `https://anc.ca.apm.activecommunities.com/activekitchener/activity/search?onlineSiteId=0&activity_select_param=2${q ? `&activity_keyword=${enc}` : ''}&viewMode=list`, q ? `searches ActiveNet for “${q}”` : 'ActiveNet program search'],
+    ['City of Waterloo programs', 'https://www.waterloo.ca/activewaterloo', 'ActiveWaterloo (also has swim and drop-in)'],
+  ];
+  $('pelsewhere').replaceChildren(...links.map(([name, href, sub]) => h('a', { class: 'btn', href, target: '_blank', rel: 'noopener noreferrer' }, h('span', { text: name }), h('small', { text: sub }))));
+}
+
+function toggleSaveProgram(g) {
+  const was = state.saved[g.id];
+  if (was) delete state.saved[g.id];
+  else state.saved[g.id] = { kind: 'program', program: g.first, sessions: g.sessions, savedAt: new Date().toISOString(), event: { id: g.id, title: baseTitle(g.first.title), start: g.first.start } };
+  store.set('saved', state.saved);
+  render();
+  toast(was ? 'Removed from saved.' : 'Saved on this phone.', { label: 'Undo', run: () => { if (was) state.saved[g.id] = was; else delete state.saved[g.id]; store.set('saved', state.saved); render(); } });
+}
+
+// ---------- Season alerts (web push) ----------
+// The phone makes its own key pair. The public half is given to the phone's push service;
+// the private half goes, with the subscription, into one code the user saves as a GitHub
+// secret. Only the GitHub job can then send alerts, and only to this phone.
+const b64u = (buf) => btoa(String.fromCharCode(...new Uint8Array(buf))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+const fromB64u = (s) => Uint8Array.from(atob(s.replace(/-/g, '+').replace(/_/g, '/')), (c) => c.charCodeAt(0));
+const isStandalone = () => window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+
+export async function makePushKeys() {
+  const pair = await crypto.subtle.generateKey({ name: 'ECDSA', namedCurve: 'P-256' }, true, ['sign', 'verify']);
+  const publicKey = b64u(await crypto.subtle.exportKey('raw', pair.publicKey));
+  const privateKey = (await crypto.subtle.exportKey('jwk', pair.privateKey)).d;
+  return { publicKey, privateKey };
+}
+
+async function turnOnPush() {
+  const status = $('push-status');
+  if (!('serviceWorker' in navigator) || !('PushManager' in window)) { status.textContent = 'This browser can\'t receive alerts. On iPhone, open Grand Calendar from its Home Screen icon (iOS 16.4 or later).'; return; }
+  if (!isStandalone()) { status.textContent = 'Open Grand Calendar from its Home Screen icon first, then turn on alerts there. iPhone only allows alerts for Home Screen apps.'; return; }
+  const perm = await Notification.requestPermission();
+  if (perm !== 'granted') { status.textContent = 'Alerts not allowed. You can allow them later in iPhone Settings, Notifications, Grand Calendar.'; return; }
+  try {
+    const reg = await navigator.serviceWorker.ready;
+    const old = await reg.pushManager.getSubscription();
+    if (old) await old.unsubscribe();
+    const keys = await makePushKeys();
+    const sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: fromB64u(keys.publicKey) });
+    const code = btoa(JSON.stringify({ v: 1, subscription: sub.toJSON(), vapid: keys }));
+    $('push-code').value = code;
+    $('push-code-box').hidden = false;
+    store.set('push', { on: true, at: new Date().toISOString() });
+    status.textContent = 'Alerts allowed on this phone. One step left:';
+  } catch (err) {
+    status.textContent = `Couldn't set up alerts: ${err.message}`;
+  }
+}
+
 function clearAll() {
   Object.assign(state, { q: '', cost: 'any', setting: 'any', reg: 'any', hideFull: false, radius: '' });
   state.topics.clear();
@@ -708,11 +895,21 @@ function wire() {
         if (x === b) x.setAttribute('aria-current', 'page'); else x.removeAttribute('aria-current');
       }
       $('view-events').hidden = state.view !== 'events';
+      $('view-programs').hidden = state.view !== 'programs';
       $('view-saved').hidden = state.view !== 'saved';
       render();
       window.scrollTo(0, 0);
     });
   }
+  let pqTimer = null;
+  $('pq').addEventListener('input', (ev) => { clearTimeout(pqTimer); pqTimer = setTimeout(() => { state.pq = ev.target.value; render(); }, 200); });
+  $('seg-pwho').addEventListener('click', (ev) => { const v = ev.target.closest('button')?.dataset.v; if (v) { state.pwho = v; render(); } });
+  $('p-upcoming').addEventListener('change', (ev) => { state.pUpcoming = ev.target.checked; render(); });
+  $('push-on').addEventListener('click', turnOnPush);
+  $('push-copy').addEventListener('click', async () => {
+    try { await navigator.clipboard.writeText($('push-code').value); toast('Code copied.'); } catch { $('push-code').select(); toast('Select the code and copy it.'); }
+  });
+  if (store.get('push', null)?.on) $('push-status').textContent = 'Alerts were turned on for this phone. Tap again only if alerts stop arriving.';
   $('export').addEventListener('click', exportSaved);
   $('import-btn').addEventListener('click', () => $('import').click());
   $('import').addEventListener('change', (ev) => { if (ev.target.files[0]) importSaved(ev.target.files[0]); ev.target.value = ''; });
@@ -721,6 +918,8 @@ function wire() {
 wire();
 render();
 load();
+loadPrograms();
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => { /* alerts just won't be available */ });
 
 // For testing in a headless browser.
-window.__gc = { state, filtered, load, render };
+window.__gc = { state, filtered, load, render, filteredPrograms, makePushKeys };
