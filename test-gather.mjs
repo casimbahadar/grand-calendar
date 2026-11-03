@@ -30,8 +30,9 @@ check('region: Waterloo, Baden, Kitchener, St. Jacobs, Elmira, "Cambridge " are 
     assert.equal(r.place.toLowerCase(), place.toLowerCase().replace(/\./g, ''), t);
   }
 });
-check('region: Stratford is out, no address is unknown', () => {
-  assert.equal(byTitle('SYNTHETIC TEST Stratford').derived.region.status, 'out');
+check('region: Stratford is now in the area, Guelph is out, no address is unknown', () => {
+  assert.equal(byTitle('SYNTHETIC TEST Stratford').derived.region.status, 'in');
+  assert.equal(regionOf('A Hall, 1 Main St, Guelph, ON, Canada').status, 'out');
   assert.equal(byTitle('SYNTHETIC TEST UTC').derived.region.status, 'unknown');
   assert.equal(regionOf('Some Hall, 1 Main St, Nowhereville, ON').status, 'unknown');
 });

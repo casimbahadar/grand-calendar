@@ -36,9 +36,11 @@ export const IN_REGION = [
   'mannheim', 'haysville',
   'wellesley', 'st clements', 'linwood', 'hawkesville', 'crosshill',
   'north dumfries', 'ayr', 'roseville', 'branchton',
+  // Added Nov 2026 at the user's request: Stratford (Perth County), outside Waterloo Region.
+  'stratford',
 ];
 export const OUT_OF_REGION = [
-  'guelph', 'stratford', 'brantford', 'paris', 'toronto', 'fergus', 'elora',
+  'guelph', 'brantford', 'paris', 'toronto', 'fergus', 'elora',
   'woodstock', 'london', 'hamilton', 'mississauga', 'milton', 'burlington',
   'drayton', 'listowel', 'st marys', 'tavistock', 'mitchell', 'arthur',
   'rockwood', 'puslinch', 'shakespeare',

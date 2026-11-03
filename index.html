@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self' https://explorewaterloo.ca https://nominatim.openstreetmap.org https://kpl.events.mylibrary.digital https://calendar.kitchener.ca https://events.waterloo.ca; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self' https://explorewaterloo.ca https://nominatim.openstreetmap.org https://kpl.events.mylibrary.digital https://calendar.kitchener.ca https://events.waterloo.ca https://*.workers.dev; object-src 'none'; base-uri 'none'; form-action 'none'">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <title>Grand Calendar</title>
   <meta name="description" content="Events across Waterloo Region, for adults and kids, gathered from their sources.">
@@ -90,6 +90,12 @@
     </div>
     <p class="summary" id="psummary" aria-live="polite"></p>
     <div id="presults"></div>
+    <section class="websearch" aria-labelledby="pweb-h">
+      <h2 id="pweb-h">From a web search</h2>
+      <p class="muted" id="pweb-note">Type a search above, then search the web for providers in the area. Results are not checked by Grand Calendar, so details may be out of date.</p>
+      <button type="button" class="btn" id="pweb-go">Search the web</button>
+      <div id="pweb-results"></div>
+    </section>
     <section class="elsewhere" aria-labelledby="pelsewhere-h">
       <h2 id="pelsewhere-h">Search other program sites</h2>
       <p class="muted">These sites can't be read automatically, so these links open their own search.</p>
@@ -201,6 +207,15 @@
           <p class="hint">Last step: copy this code and save it in GitHub as a secret named PUSH_CONFIG (repo Settings, Secrets and variables, Actions). It lets only your repo send alerts to only this phone. Don't share it.</p>
           <textarea id="push-code" rows="4" readonly></textarea>
           <button type="button" class="btn" id="push-copy">Copy code</button>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>Live search</legend>
+        <p class="hint">The address of your search helper (a Cloudflare Worker), for example https://grand-calendar-search.yourname.workers.dev</p>
+        <div class="place-row">
+          <label class="visually-hidden" for="search-url">Search helper address</label>
+          <input id="search-url" type="url" inputmode="url" autocomplete="off" placeholder="https://...workers.dev">
+          <button type="button" class="btn" id="search-url-save">Save</button>
         </div>
       </fieldset>
       <fieldset>

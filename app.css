@@ -240,3 +240,15 @@ label.select { display: grid; gap: var(--s1); font-size: 14px; color: var(--ink-
 .sessions li { padding: var(--s3) 0; border-top: 1px solid var(--line); font-size: 15px; }
 .sessions li:first-child { border-top: 0; }
 .sessions .code { color: var(--ink-2); font-size: 14px; }
+
+.websearch { margin-top: var(--s7); }
+.websearch h2 { font-size: 17px; color: var(--river-900); }
+.websearch > .muted { font-size: 14px; margin: var(--s1) 0 var(--s3); }
+.web-result { display: block; text-decoration: none; color: inherit; padding: var(--s4); margin-top: var(--s2); background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg); }
+.web-result h3 { font-size: 16px; color: var(--river-700); }
+.web-result .domain { font-size: 14px; color: var(--ink-2); margin-top: var(--s1); }
+.web-result p { font-size: 15px; margin: var(--s2) 0 0; }
+.web-site { margin-top: var(--s4); }
+.web-site > .domain { font-size: 14px; font-weight: 700; color: var(--ink-2); }
+.websearch > .btn { margin-top: var(--s3); }
+#pweb-results > .btn { margin-top: var(--s4); width: 100%; }

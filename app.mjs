@@ -540,6 +540,7 @@ function renderElsewhere() {
     ['Eventbrite', slug ? `https://www.eventbrite.ca/d/canada--kitchener/${slug}/` : 'https://www.eventbrite.ca/d/canada--kitchener/events/', q ? `searches for “${q}”` : 'Kitchener area'],
     ['Meetup', q ? `https://www.meetup.com/find/?keywords=${enc}&location=ca--on--Kitchener&source=EVENTS` : 'https://www.meetup.com/find/ca--on--kitchener/', q ? `searches for “${q}”` : 'Kitchener area'],
     ['Luma', 'https://lu.ma/discover', 'discover events'],
+    ['Visit Stratford', 'https://visitstratford.ca/calendar/', 'Stratford events calendar'],
   ];
   $('elsewhere').replaceChildren(...links.map(([name, href, sub]) => h('a', { class: 'btn', href, target: '_blank', rel: 'noopener noreferrer' }, h('span', { text: name }), h('small', { text: sub }))));
 }
@@ -562,12 +563,14 @@ const timeRange = (a, b) => fmtWhen({ derived: { timeListed: true }, start: { da
 const baseTitle = (t) => t.replace(/\s*\((?:\d|[^)]*years|[^)]*\+)[^)]*\)\s*$/, '').trim();
 
 function sessionLine(p) {
+  if (p.schedule) return p.schedule.filter((l) => /\d/.test(l)).slice(0, 2).join(', ') || 'Schedule on the township page';
   const single = p.start.date === p.end.date;
   const day = single ? dateOf(p.start.date).toLocaleDateString('en-CA', { weekday: 'long', month: 'short', day: 'numeric' }) : `${DAY_NAMES[p.days] || p.days}, ${shortDate(p.start.date)} to ${shortDate(p.end.date)}`;
   return `${day}, ${timeRange(p.start.time, p.end.time)}`;
 }
 
 function programStatus(p, today) {
+  if (!p.start) return { key: 'listed', text: 'Ongoing or dates not given' };
   if (p.end.date < today) return { key: 'ended', text: 'Ended' };
   if (p.start.date > today) return { key: 'upcoming', text: `Starts ${shortDate(p.start.date)}` };
   return { key: 'running', text: `Started ${shortDate(p.start.date)}` };
@@ -589,8 +592,8 @@ function filteredPrograms() {
   const groups = new Map();
   let hiddenEnded = 0;
   for (const p of state.programs) {
-    if (p.end.date < today) { hiddenEnded++; continue; }
-    if (state.pUpcoming && p.start.date <= today) continue;
+    if (p.end && p.end.date < today) { hiddenEnded++; continue; }
+    if (state.pUpcoming && p.start && p.start.date <= today) continue;
     if (state.pwho === 'kids' && !programFits(p)) continue;
     if (state.pwho === 'adults' && !programIsAdult(p)) continue;
     if (state.pq && !searchMatch({ title: p.title, description: `${p.description} ${p.category || ''} ${p.facility}`, categories: [] }, state.pq)) continue;
@@ -599,13 +602,15 @@ function filteredPrograms() {
     groups.get(key).push(p);
   }
   const list = [...groups.values()].map((sessions) => {
-    sessions.sort((a, b) => a.start.date.localeCompare(b.start.date) || a.start.time.localeCompare(b.start.time));
+    const key = (x) => `${x.start ? x.start.date : '9999'}${x.start?.time || ''}`;
+    sessions.sort((a, b) => key(a).localeCompare(key(b)));
     return { id: `${sessions[0].source}|${sessions[0].title}`, first: sessions[0], sessions };
   });
   list.sort((a, b) => {
     const sa = programStatus(a.first, today).key === 'upcoming' ? 0 : 1;
     const sb = programStatus(b.first, today).key === 'upcoming' ? 0 : 1;
-    return sa - sb || a.first.start.date.localeCompare(b.first.start.date) || a.first.title.localeCompare(b.first.title);
+    const da = a.first.start ? a.first.start.date : '9999'; const db = b.first.start ? b.first.start.date : '9999';
+    return sa - sb || da.localeCompare(db) || a.first.title.localeCompare(b.first.title);
   });
   return { list, hiddenEnded };
 }
@@ -625,15 +630,30 @@ function programCard(g) {
   },
   h('div', { class: 'when', text: g.sessions.length === 1 ? sessionLine(p) : `${g.sessions.length} sessions to choose from` }),
   h('h3', { text: p.title }),
-  h('div', { class: 'where', text: [...new Set(g.sessions.map((x) => x.facility))].join(' or ') + ', Waterloo' }),
+  h('div', { class: 'where', text: p.source === 'waterloo-guide' ? `${[...new Set(g.sessions.map((x) => x.facility))].join(' or ')}, Waterloo` : (p.location || 'Location not listed') }),
   h('div', { class: `age${programFits(p) ? ' fit' : ''}`, text: ageText }),
   h('div', { class: 'tags' },
     statuses.map((t) => h('span', { class: `tag${t.startsWith('Starts') ? ' open' : ' soft'}`, text: t })),
-    h('span', { class: 'tag soft', text: [...new Set(g.sessions.map((x) => feeText(x.fee)))].join(' or ') }),
+    p.fee ? h('span', { class: 'tag soft', text: [...new Set(g.sessions.map((x) => feeText(x.fee)))].join(' or ') }) : null,
     p.category ? h('span', { class: 'tag', text: p.category }) : null),
-  h('div', { class: 'source', text: `From the ${p.guideSeason || ''} City of Waterloo program guide, checked ${fmtClock(p.lastChecked)}` }));
+  h('div', { class: 'source', text: `From ${p.sourceName ? `the ${p.sourceName} programs page` : `the ${p.guideSeason || ''} City of Waterloo program guide`}, checked ${fmtClock(p.lastChecked)}` }));
   const el = h('article', { class: 'card' }, head);
-  if (open) {
+  if (open && p.schedule) {
+    const regLinks = p.registerLinks || [];
+    el.append(h('div', { class: 'card-body' },
+      p.description ? h('div', {}, h('h4', { text: 'About' }), h('p', { text: p.description })) : null,
+      h('h4', { text: 'When and where, as the township lists it' }),
+      h('ul', {}, p.schedule.map((l) => h('li', { text: l }))),
+      h('h4', { text: 'Good to know' }),
+      h('ul', {}, (p.derived?.notes || []).map((n) => h('li', { class: 'how', text: n }))),
+      h('div', { class: 'card-actions' },
+        regLinks.length
+          ? regLinks.slice(0, 4).map((r) => h('a', { class: regLinks.length === 1 ? 'btn primary' : 'btn', href: r.url, target: '_blank', rel: 'noopener noreferrer', text: /register|save|spot/i.test(r.label) || !r.label ? 'Register with the township' : `Register: ${r.label}` }))
+          : h('a', { class: 'btn primary', href: p.guideUrl, target: '_blank', rel: 'noopener noreferrer', text: 'Open the township page' }),
+        h('div', { class: 'pair' },
+          h('button', { type: 'button', class: 'btn', text: saved ? 'Saved' : 'Save', onclick: () => toggleSaveProgram(g) }),
+          h('a', { class: 'btn', href: p.guideUrl, target: '_blank', rel: 'noopener noreferrer', text: 'Township page' })))));
+  } else if (open) {
     el.append(h('div', { class: 'card-body' },
       p.description ? h('div', {}, h('h4', { text: 'About' }), h('p', { text: p.description })) : null,
       h('h4', { text: g.sessions.length === 1 ? 'When and where' : 'Sessions' }),
@@ -673,6 +693,11 @@ function renderPrograms() {
   const links = [
     ['City of Kitchener programs', `https://anc.ca.apm.activecommunities.com/activekitchener/activity/search?onlineSiteId=0&activity_select_param=2${q ? `&activity_keyword=${enc}` : ''}&viewMode=list`, q ? `searches ActiveNet for “${q}”` : 'ActiveNet program search'],
     ['City of Waterloo programs', 'https://www.waterloo.ca/activewaterloo', 'ActiveWaterloo (also has swim and drop-in)'],
+    ['Township of Wilmot programs', `https://anc.ca.apm.activecommunities.com/wilmotrecweb/activity/search?onlineSiteId=0${q ? `&activity_keyword=${enc}` : ''}&viewMode=list`, q ? `searches recWeb for “${q}”` : 'recWeb program search'],
+    ['Township of Wellesley programs', `https://anc.ca.apm.activecommunities.com/wellesley/activity/search?onlineSiteId=0${q ? `&activity_keyword=${enc}` : ''}&viewMode=list`, q ? `searches for “${q}”` : 'registration site'],
+    ['Township of Woolwich programs', `https://anc.ca.apm.activecommunities.com/woolwich/activity/search?onlineSiteId=0&activity_select_param=2${q ? `&activity_keyword=${enc}` : ''}&viewMode=list`, q ? `searches for “${q}”` : 'Elmira, St. Jacobs, Breslau'],
+    ['Township of North Dumfries programs', 'https://www.northdumfries.ca/play-and-explore/recreation-and-programs/programs/', 'Live Well North Dumfries (Ayr)'],
+    ['City of Stratford programs', 'https://www.stratford.ca/en/play-here/recconnect.aspx', 'recreation registration'],
   ];
   $('pelsewhere').replaceChildren(...links.map(([name, href, sub]) => h('a', { class: 'btn', href, target: '_blank', rel: 'noopener noreferrer' }, h('span', { text: name }), h('small', { text: sub }))));
 }
@@ -684,6 +709,63 @@ function toggleSaveProgram(g) {
   store.set('saved', state.saved);
   render();
   toast(was ? 'Removed from saved.' : 'Saved on this phone.', { label: 'Undo', run: () => { if (was) state.saved[g.id] = was; else delete state.saved[g.id]; store.set('saved', state.saved); render(); } });
+}
+
+// ---------- Live web search (via the user's own Cloudflare Worker) ----------
+// Results from several searches are merged: the same page appears once, and pages from
+// one website are grouped under that site so providers are easy to scan.
+const web = { q: '', byUrl: new Map(), partsDone: new Set(), credits: 0 };
+const normUrl = (u) => { try { const x = new URL(u); x.hash = ''; ['utm_source', 'utm_medium', 'utm_campaign', 'fbclid'].forEach((k) => x.searchParams.delete(k)); return x.href.replace(/\/$/, ''); } catch { return u; } };
+
+async function webSearch(more = false) {
+  const q = state.pq.trim();
+  const helper = store.get('searchUrl', '');
+  if (!helper) { $('pweb-note').textContent = 'Live search isn\'t set up yet. Add your search helper address in Settings, Live search.'; return; }
+  if (q.length < 2) { $('pweb-note').textContent = 'Type what you\'re looking for above first, for example piano lessons.'; return; }
+  if (web.q !== q.toLowerCase()) Object.assign(web, { q: q.toLowerCase(), byUrl: new Map(), partsDone: new Set(), credits: 0 });
+  const wanted = (more ? [3, 4, 5, 6] : [0, 1, 2]).filter((p) => !web.partsDone.has(p));
+  if (!wanted.length) { renderWeb(q); return; }
+  $('pweb-note').textContent = `Searching the web for “${q}”${more ? ' in more places' : ''}...`;
+  const base = helper.replace(/\/+$/, '');
+  const replies = await Promise.all(wanted.map(async (part) => {
+    try {
+      const res = await fetch(`${base}/?q=${encodeURIComponent(q)}&part=${part}`, { signal: AbortSignal.timeout(25000) });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
+      return { part, data, cached: res.headers.get('X-Cache') === 'hit' };
+    } catch (err) { return { part, error: err.message }; }
+  }));
+  const errors = replies.filter((r) => r.error).map((r) => r.error);
+  for (const r of replies.filter((x) => x.data)) {
+    web.partsDone.add(r.part);
+    if (!r.cached) web.credits++;
+    for (const item of r.data.results) {
+      const k = normUrl(item.url);
+      const prev = web.byUrl.get(k);
+      if (prev) prev.areas.add(r.data.area); else web.byUrl.set(k, { ...item, areas: new Set([r.data.area]), fetchedAt: r.data.fetchedAt });
+    }
+  }
+  renderWeb(q, errors);
+}
+
+function renderWeb(q, errors = []) {
+  const groups = new Map();
+  for (const r of web.byUrl.values()) {
+    if (!groups.has(r.domain)) groups.set(r.domain, []);
+    groups.get(r.domain).push(r);
+  }
+  // Sites found by more of the searches come first: they are likelier to be local and relevant.
+  const ordered = [...groups.entries()].sort((a, b) => Math.max(...b[1].map((x) => x.areas.size)) - Math.max(...a[1].map((x) => x.areas.size)) || b[1].length - a[1].length);
+  const pagesN = web.byUrl.size;
+  const left = 7 - web.partsDone.size;
+  $('pweb-note').textContent = `${pagesN} page${pagesN === 1 ? '' : 's'} from ${groups.size} website${groups.size === 1 ? '' : 's'} for “${q}”, from ${web.partsDone.size} of 7 area searches. Not checked by Grand Calendar: open a page to confirm times, ages and prices.${errors.length ? ` Some searches failed: ${[...new Set(errors)].join('; ')}` : ''}`;
+  $('pweb-results').replaceChildren(
+    ...ordered.map(([domain, pages]) => h('div', { class: 'web-site' },
+      h('div', { class: 'domain', text: `${domain}${pages.length > 1 ? `, ${pages.length} pages` : ''}` }),
+      pages.slice(0, 4).map((r) => h('a', { class: 'web-result', href: r.url, target: '_blank', rel: 'noopener noreferrer' },
+        h('h3', { text: r.title || domain }), r.snippet ? h('p', { text: r.snippet }) : null)),
+      pages.length > 4 ? h('p', { class: 'how', text: `${pages.length - 4} more page${pages.length - 4 === 1 ? '' : 's'} from this site.` }) : null)),
+    left > 0 ? h('button', { type: 'button', class: 'btn', text: `Search ${left} more places (Elmira, Baden, Wellesley, Ayr, Stratford)`, onclick: () => webSearch(true) }) : null);
 }
 
 // ---------- Season alerts (web push) ----------
@@ -901,6 +983,13 @@ function wire() {
   $('seg-pwho').addEventListener('click', (ev) => { const v = ev.target.closest('button')?.dataset.v; if (v) { state.pwho = v; render(); } });
   $('p-upcoming').addEventListener('change', (ev) => { state.pUpcoming = ev.target.checked; render(); });
   $('push-on').addEventListener('click', turnOnPush);
+  $('pweb-go').addEventListener('click', () => webSearch(false));
+  $('search-url').value = store.get('searchUrl', '');
+  $('search-url-save').addEventListener('click', () => {
+    const v = $('search-url').value.trim();
+    if (v && !/^https:\/\/[\w.-]+\.workers\.dev\/?$/.test(v)) { toast('That doesn\'t look like a workers.dev address.'); return; }
+    store.set('searchUrl', v); toast(v ? 'Search helper saved.' : 'Search helper removed.');
+  });
   $('push-copy').addEventListener('click', async () => {
     try { await navigator.clipboard.writeText($('push-code').value); toast('Code copied.'); } catch { $('push-code').select(); toast('Select the code and copy it.'); }
   });

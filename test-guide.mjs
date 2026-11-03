@@ -2,6 +2,7 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { readWaterlooGuide, parseDates, parseGuideAge } from './guide-waterloo.mjs';
+import { readWellesleyPage, wellesleySeason, looseDates } from './guide-wellesley.mjs';
 
 let passed = 0;
 const check = (name, fn) => { fn(); passed++; console.log(`ok  ${name}`); };
@@ -45,4 +46,33 @@ check('ages as printed in titles', () => {
   assert.equal(parseGuideAge('Barre – All Levels'), null);
 });
 check('each registration code appears once', () => assert.equal(new Set(r.programs.map((p) => p.code)).size, r.programs.length));
+// ---------- Township of Wellesley page (saved copy of the real page, Nov 2026) ----------
+const wHtml = await readFile(new URL('./wellesley-page-sample.html', import.meta.url), 'utf8');
+const w = readWellesleyPage(wHtml, '2026-11-03T12:00:00Z');
+const W = (t) => w.find((p) => p.title === t);
+check('Wellesley: programs read, info-only sections left out, repeats kept once', () => {
+  assert.ok(w.length >= 25, `only ${w.length}`);
+  assert.equal(w.filter((p) => p.title === 'Chair Yoga+').length, 1);
+  assert.ok(!w.some((p) => /Transfers/.test(p.title)));
+  assert.equal(wellesleySeason(wHtml), 'Fall session');
+});
+check('Wellesley: schedule lines and both session links for Dance Sculpt', () => {
+  const p = W('Dance Sculpt');
+  assert.ok(p.schedule.includes('Mondays 6:30pm-7:30pm'));
+  assert.equal(p.registerLinks.length, 2);
+  assert.match(p.registerLinks[1].label, /Session 2: November 2nd/);
+  assert.equal(p.facility, 'St. Clements CC');
+  assert.deepEqual([p.start.date, p.end.date], ['2026-09-07', '2026-12-18']); // spans both sessions
+});
+check('Wellesley: long sentences stay in the description, dates worked out with the year labelled', () => {
+  const a = W('Artshine');
+  assert.ok(a.schedule.every((l) => l.length <= 90));
+  assert.deepEqual([a.start.date, a.end.date], ['2026-10-10', '2026-11-28']);
+  assert.ok(a.derived.notes.some((n) => /doesn't print the year/.test(n)));
+  assert.equal(a.derived.age.kind, 'all-ages');
+});
+check('loose dates: a winter session read in the fall goes to next year', () => {
+  assert.deepEqual(looseDates('January 12th - March 2nd', '2026-11-03T00:00:00Z'), { start: '2027-01-12', end: '2027-03-02', text: 'January 12th - March 2nd' });
+  assert.deepEqual(looseDates('November 2nd - December 18th', '2026-11-03T00:00:00Z').end, '2026-12-18');
+});
 console.log(`\n${passed} guide checks passed`);

@@ -10,33 +10,30 @@ import { createHash } from 'node:crypto';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { readWaterlooGuide, WATERLOO_GUIDE } from './guide-waterloo.mjs';
+import { readWellesleyPage, wellesleySeason, WELLESLEY } from './guide-wellesley.mjs';
 
 const UA = 'GrandCalendar/0.1 (personal events digest; https://github.com/casimbahadar/grand-calendar)';
 const CHECK_EVERY_MS = 20 * 60 * 60 * 1000; // about once a day
 const readJson = async (p, fallback) => { try { return JSON.parse(await readFile(p, 'utf8')); } catch { return fallback; } };
 
-async function main() {
-  const now = new Date().toISOString();
-  const guides = await readJson('guides.json', { guides: {} });
+async function waterloo(guides, now) {
   const state = guides.guides[WATERLOO_GUIDE.id] || {};
   if (state.checkedAt && Date.now() - Date.parse(state.checkedAt) < CHECK_EVERY_MS && !process.argv.includes('--force')) {
     console.log(`Waterloo guide checked ${state.checkedAt}; next check tomorrow.`);
-    return;
+    return null;
   }
   const res = await fetch(WATERLOO_GUIDE.pdf, { headers: { 'User-Agent': UA }, signal: AbortSignal.timeout(60000) });
   if (!res.ok) {
     guides.guides[WATERLOO_GUIDE.id] = { ...state, checkedAt: now, ok: false, error: `HTTP ${res.status}` };
-    await writeFile('guides.json', JSON.stringify(guides, null, 1));
     console.log(`Waterloo guide: HTTP ${res.status}; keeping the programs already read.`);
-    return;
+    return null;
   }
   const pdf = Buffer.from(await res.arrayBuffer());
   const sha = createHash('sha256').update(pdf).digest('hex');
   if (sha === state.sha256) {
     guides.guides[WATERLOO_GUIDE.id] = { ...state, checkedAt: now, ok: true };
-    await writeFile('guides.json', JSON.stringify(guides, null, 1));
     console.log('Waterloo guide unchanged.');
-    return;
+    return null;
   }
   const dir = await mkdtemp(join(tmpdir(), 'guide-'));
   await writeFile(join(dir, 'g.pdf'), pdf);
@@ -45,10 +42,8 @@ async function main() {
   if (parsed.programs.length < 20) {
     // A layout change would show up as almost nothing read: keep the old programs and say so.
     guides.guides[WATERLOO_GUIDE.id] = { ...state, checkedAt: now, ok: false, error: `new file read only ${parsed.programs.length} programs; layout may have changed` };
-    await writeFile('guides.json', JSON.stringify(guides, null, 1));
     console.log(guides.guides[WATERLOO_GUIDE.id].error);
-    process.exitCode = 1;
-    return;
+    return null;
   }
   const edition = parsed.season && parsed.year ? `${parsed.season} ${parsed.year}` : 'unknown';
   const isNewSeason = Boolean(state.edition) && state.edition !== edition;
@@ -60,11 +55,38 @@ async function main() {
     previousEdition: isNewSeason ? state.edition : state.previousEdition || null,
     fileChangedAt: now,
   };
-  const programs = await readJson('programs.json', { programs: [] });
-  const others = (programs.programs || []).filter((p) => p.source !== WATERLOO_GUIDE.id);
-  await writeFile('programs.json', JSON.stringify({ generatedAt: now, programs: [...others, ...parsed.programs] }));
-  await writeFile('guides.json', JSON.stringify(guides, null, 1));
   console.log(`Waterloo guide (${edition}): read ${parsed.programs.length} program sessions${isNewSeason ? ', NEW EDITION' : ''}.`);
+  return parsed.programs;
+}
+
+async function wellesley(guides, now) {
+  const state = guides.guides[WELLESLEY.id] || {};
+  if (state.checkedAt && Date.now() - Date.parse(state.checkedAt) < CHECK_EVERY_MS && !process.argv.includes('--force')) return null;
+  const res = await fetch(WELLESLEY.page, { headers: { 'User-Agent': UA }, signal: AbortSignal.timeout(30000) });
+  if (!res.ok) { guides.guides[WELLESLEY.id] = { ...state, checkedAt: now, ok: false, error: `HTTP ${res.status}` }; console.log(`Wellesley: HTTP ${res.status}`); return null; }
+  const html = await res.text();
+  const programs = readWellesleyPage(html, now);
+  if (programs.length < 5) { guides.guides[WELLESLEY.id] = { ...state, checkedAt: now, ok: false, error: `read only ${programs.length} programs; page layout may have changed` }; return null; }
+  const edition = wellesleySeason(html) || 'current';
+  const isNew = Boolean(state.edition) && state.edition !== edition;
+  guides.guides[WELLESLEY.id] = {
+    name: 'Township of Wellesley programs', url: WELLESLEY.page, edition, checkedAt: now, readAt: now, ok: true, programs: programs.length,
+    newEditionAt: isNew ? now : state.newEditionAt || null, previousEdition: isNew ? state.edition : state.previousEdition || null,
+  };
+  console.log(`Wellesley (${edition}): read ${programs.length} programs${isNew ? ', NEW SEASON' : ''}.`);
+  return programs;
+}
+
+async function main() {
+  const now = new Date().toISOString();
+  const guides = await readJson('guides.json', { guides: {} });
+  const store = await readJson('programs.json', { programs: [] });
+  let list = store.programs || [];
+  const fresh = { [WATERLOO_GUIDE.id]: await waterloo(guides, now).catch((e) => { console.log(`Waterloo guide failed: ${e.message}`); return null; }),
+    [WELLESLEY.id]: await wellesley(guides, now).catch((e) => { console.log(`Wellesley failed: ${e.message}`); return null; }) };
+  for (const [id, programs] of Object.entries(fresh)) if (programs) list = [...list.filter((p) => p.source !== id), ...programs];
+  await writeFile('programs.json', JSON.stringify({ generatedAt: now, programs: list }));
+  await writeFile('guides.json', JSON.stringify(guides, null, 1));
 }
 
 main();
