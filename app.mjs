@@ -733,7 +733,14 @@ async function webSearch(more = false) {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
       return { part, data, cached: res.headers.get('X-Cache') === 'hit' };
-    } catch (err) { return { part, error: err.message }; }
+    } catch (err) {
+      // Safari says "Load failed" when the helper's reply can't be read at all (wrong address,
+      // starter code still in place, or the Worker crashed before answering).
+      const msg = /load failed|failed to fetch|networkerror/i.test(err.message) ? 'couldn\'t reach your search helper'
+        : /JSON/i.test(err.message) ? 'your search helper replied with something other than search results (it may still have Cloudflare\'s starter code)'
+          : err.message;
+      return { part, error: msg };
+    }
   }));
   const errors = replies.filter((r) => r.error).map((r) => r.error);
   for (const r of replies.filter((x) => x.data)) {
@@ -757,7 +764,13 @@ function renderWeb(q, errors = []) {
   // Sites found by more of the searches come first: they are likelier to be local and relevant.
   const ordered = [...groups.entries()].sort((a, b) => Math.max(...b[1].map((x) => x.areas.size)) - Math.max(...a[1].map((x) => x.areas.size)) || b[1].length - a[1].length);
   const pagesN = web.byUrl.size;
-  const left = 7 - web.partsDone.size;
+  const firstDone = [0, 1, 2].some((p) => web.partsDone.has(p));
+  const left = [3, 4, 5, 6].filter((p) => !web.partsDone.has(p)).length;
+  if (!pagesN && errors.length) {
+    $('pweb-note').textContent = `Web search didn't work: ${[...new Set(errors)].join('; ')}. In Settings, Live search, tap Test helper to see why.`;
+    $('pweb-results').replaceChildren();
+    return;
+  }
   $('pweb-note').textContent = `${pagesN} page${pagesN === 1 ? '' : 's'} from ${groups.size} website${groups.size === 1 ? '' : 's'} for “${q}”, from ${web.partsDone.size} of 7 area searches. Not checked by Grand Calendar: open a page to confirm times, ages and prices.${errors.length ? ` Some searches failed: ${[...new Set(errors)].join('; ')}` : ''}`;
   $('pweb-results').replaceChildren(
     ...ordered.map(([domain, pages]) => h('div', { class: 'web-site' },
@@ -765,7 +778,7 @@ function renderWeb(q, errors = []) {
       pages.slice(0, 4).map((r) => h('a', { class: 'web-result', href: r.url, target: '_blank', rel: 'noopener noreferrer' },
         h('h3', { text: r.title || domain }), r.snippet ? h('p', { text: r.snippet }) : null)),
       pages.length > 4 ? h('p', { class: 'how', text: `${pages.length - 4} more page${pages.length - 4 === 1 ? '' : 's'} from this site.` }) : null)),
-    left > 0 ? h('button', { type: 'button', class: 'btn', text: `Search ${left} more places (Elmira, Baden, Wellesley, Ayr, Stratford)`, onclick: () => webSearch(true) }) : null);
+    firstDone && left > 0 ? h('button', { type: 'button', class: 'btn', text: `Search ${left} more places (Elmira, Baden, Wellesley, Ayr, Stratford)`, onclick: () => webSearch(true) }) : null);
 }
 
 // ---------- Season alerts (web push) ----------
@@ -985,6 +998,21 @@ function wire() {
   $('push-on').addEventListener('click', turnOnPush);
   $('pweb-go').addEventListener('click', () => webSearch(false));
   $('search-url').value = store.get('searchUrl', '');
+  $('search-test').addEventListener('click', async () => {
+    const v = ($('search-url').value || store.get('searchUrl', '')).trim().replace(/\/+$/, '');
+    const out = $('search-test-result');
+    if (!v) { out.textContent = 'Paste your helper address first.'; return; }
+    out.textContent = 'Testing...';
+    try {
+      const res = await fetch(`${v}/health`, { signal: AbortSignal.timeout(15000) });
+      const d = await res.json();
+      out.textContent = d.ok
+        ? `Helper works (version ${d.version}). Tavily key: ${d.hasKey ? 'set' : 'MISSING, add the TAVILY_KEY secret'}. Monthly cap: ${d.capOn ? `on, ${d.usedThisMonth} of ${d.cap} searches used` : 'off (no USAGE storage connected)'}.`
+        : 'The helper answered but not as expected.';
+    } catch {
+      out.textContent = `Couldn't read a reply from ${v}/health. Open that address in Safari: if it says "Hello World", the Worker still has Cloudflare's starter code, so paste worker.js and deploy. If it shows an error page, send me a screenshot.`;
+    }
+  });
   $('search-url-save').addEventListener('click', () => {
     const v = $('search-url').value.trim();
     if (v && !/^https:\/\/[\w.-]+\.workers\.dev\/?$/.test(v)) { toast('That doesn\'t look like a workers.dev address.'); return; }
