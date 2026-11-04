@@ -89,6 +89,13 @@ async function main() {
       for (const u of pages) { texts.push(await pageText(u)); await sleep(800); }
       const text = texts.join('\n');
       const r = checkProvider(p, text, prev);
+      // A trial or drop-in offer is checked on its own page, kept out of the fingerprint so the
+      // baseline stays comparable: if the offer's wording is gone, it's flagged as missing.
+      if (p.tryFirst?.stated) {
+        let tt = text;
+        if (p.tryFirst.page && !pages.includes(p.tryFirst.page)) { try { tt = await pageText(p.tryFirst.page); } catch { tt = ''; } }
+        if (!loose(tt).includes(loose(p.tryFirst.stated))) { r.missing.push(`trial offer “${p.tryFirst.stated}”`); r.status = 'missing'; }
+      }
       // A flag stays until someone re-checks the provider (its "checked" date moves past the flag).
       const stillFlagged = prev && prev.status !== 'ok' && prev.flaggedAt && p.checked < prev.flaggedAt.slice(0, 10);
       const status = r.status !== 'ok' ? r.status : stillFlagged ? prev.status : 'ok';

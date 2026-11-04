@@ -33,7 +33,16 @@ check('instructor-only group keeps the program title', () => {
   assert.equal(P('103233').instructor, 'Kurtis');
   assert.equal(P('104542').instructor, 'Brittany');
 });
-check('reading stops at the Drop-in section', () => assert.ok(r.programs.every((p) => ['Preschool', 'Adult'].includes(p.section))));
+check('reading stops at the Drop-in section', () => assert.ok(r.programs.every((p) => ['Preschool', 'Adult', 'Swim'].includes(p.section))));
+check('swim: notes skipped, pool area kept, sessions match the guide', () => {
+  const t = P('103947');
+  assert.equal(t.title, 'Tykes (3 to 5 years)');
+  assert.equal(t.facility, 'Waterloo Memorial Recreation Complex (Swimplex), swirlpool');
+  assert.deepEqual([t.sessions, t.fee, t.days, t.start.date, t.start.time], [10, '$97.70', 'Fri', '2026-10-02', '16:30']);
+  assert.equal(P('103932').facility, 'Waterloo Memorial Recreation Complex (Swimplex), tot area');
+  assert.equal(t.category, 'Swimming');
+  assert.ok(!r.programs.some((p) => /Lockers|showers|Previously in/i.test(`${p.title} ${p.description}`)));
+});
 check('dates: fall guide puts January in the next year', () => {
   assert.deepEqual(parseDates('Dec 28', 'FALL', 2026), { start: '2026-12-28', end: '2026-12-28' });
   assert.deepEqual(parseDates('Jan 2', 'FALL', 2026), { start: '2027-01-02', end: '2027-01-02' });

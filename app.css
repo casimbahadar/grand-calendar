@@ -390,3 +390,17 @@ input[type="date"]::-webkit-date-and-time-value, input[type="time"]::-webkit-dat
 /* An empty time field on iPhone shows the current time as a placeholder; dim it so it doesn't look set. */
 input.is-empty { color: var(--ink-2); opacity: 0.6; }
 .clear-times { justify-self: start; margin-top: calc(-1 * var(--s2)); }
+
+.prov-row .badge.try-b { background: var(--open-bg, rgba(40,140,90,.14)); color: var(--ink); margin-right: 6px; }
+.try-box { margin-top: var(--s3); padding: var(--s3); border-radius: var(--r-md); background: var(--river-100); }
+.try-box strong { display: block; font-size: 15px; }
+.try-box p { margin: var(--s1) 0 var(--s2); font-size: 14px; }
+
+/* ---------- "This weekend" shortcut ---------- */
+.preset { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; width: 100%; min-height: 64px; padding: var(--s3) var(--s4);
+  text-align: left; font: inherit; cursor: pointer; color: var(--ink); background: var(--river-100); border: 1px solid var(--river-500); border-radius: var(--r-lg); }
+.preset > span { font-size: 17px; font-weight: 700; color: var(--river-900); }
+.preset small { font-size: 14px; color: var(--ink-2); }
+.preset[aria-pressed="true"] { background: var(--river-700); border-color: var(--river-700); }
+.preset[aria-pressed="true"] > span, .preset[aria-pressed="true"] small { color: var(--surface); }
+.preset-programs { width: 100%; justify-content: flex-start; text-align: left; }

@@ -2,8 +2,8 @@
 // Input is the guide's text from `pdftotext -raw`. Output is one entry per program
 // session (one registration code), with only what the guide states.
 //
-// v1 covers the Preschool, Children's, Youth and Adult sections. Drop-in, Leadership
-// and Swim use different table layouts and are left out for now (the app links to the guide).
+// Covers the Preschool, Children's, Youth, Adult and Swim sections. Drop-in and Leadership
+// use different table layouts and are left out (the app links to the guide).
 
 export const WATERLOO_GUIDE = {
   id: 'waterloo-guide',
@@ -22,11 +22,14 @@ export const FACILITIES = {
   Zoom: 'Online (Zoom)',
 };
 
-const SECTIONS = { 'Preschool Programs': 'Preschool', 'Children’s Programs': 'Children', "Children's Programs": 'Children', 'Youth Programs': 'Youth', 'Adult Programs': 'Adult' };
-const STOP_SECTIONS = /^(Drop-in Programs|Leadership Programs|Swim Programs|CARL)$/;
-const FEE_LINE = /^(RIM|WMRC Swimplex|WMRC Pavilion|WMRC|AMCC|Zoom)\s+(\d+)\/\$(\d+(?:\.\d{2})?)(.*?)(?:\s*CODE DAY DATES TIME)?$/;
+const SECTIONS = { 'Preschool Programs': 'Preschool', 'Children’s Programs': 'Children', "Children's Programs": 'Children', 'Youth Programs': 'Youth', 'Adult Programs': 'Adult', 'Swim Programs': 'Swim' };
+const STOP_SECTIONS = /^(Drop-in Programs|Leadership Programs|CARL)$/;
+// Facility, then (in the swim section) the pool area: "WMRC Swimplex - swirlpool 10/$97.70"
+const FEE_LINE = /^(RIM|WMRC Swimplex|WMRC Pavilion|WMRC|AMCC|Zoom)(?: - ([a-z ]+?))?\s+(\d+)\/\$(\d+(?:\.\d{2})?)(.*?)(?:\s*CODE DAY DATES TIME)?$/;
+// A swim class title always ends with its stated ages: "Preschool A (3 to 5 years)", "Private Lessons (6+)"
+const SWIM_TITLE = /\((?:\d+(?:\.\d)?\s*(?:months?|years?)?\s*to\s*\d+(?:\.\d)?\s*(?:months|years)(?: with [a-z ]+)?|\d+\+)\)$/;
 const ROW = /^(\d{5,6})\s+((?:Mon|Tue|Wed|Thu|Fri|Sat|Sun)[A-Za-z/]*)\s+(.+?)\s+(\d{1,2}:\d{2}[ap]m)-(\d{1,2}:\d{2}[ap]m)$/;
-const PAGE_HEADER = /^(Preschool|Children|Children’s|Youth|Adult) Programs \| (FALL|WINTER|SPRING|SUMMER) \d{4}$/;
+const PAGE_HEADER = /^(Preschool|Children|Children’s|Youth|Adult|Swim) Programs \| (FALL|WINTER|SPRING|SUMMER) \d{4}$/;
 const CATEGORY = /^[A-Z][A-Z &/–-]{3,}$/;
 const MONTHS = { Jan: 1, Feb: 2, Mar: 3, Apr: 4, May: 5, Jun: 6, Jul: 7, Aug: 8, Sep: 9, Oct: 10, Nov: 11, Dec: 12 };
 
@@ -110,7 +113,7 @@ export function readWaterlooGuide(rawText, checkedAt) {
         last = current;
         block = [];
       }
-      if (current) current.group = { facility: fee[1], sessions: Number(fee[2]), fee: `$${fee[3]}`, otherFees: fee[4].trim() || null };
+      if (current) current.group = { facility: fee[1], area: fee[2] || null, sessions: Number(fee[3]), fee: `$${fee[4]}`, otherFees: fee[5].trim() || null };
       inTable = Boolean(current);
       continue;
     }
@@ -134,7 +137,7 @@ export function readWaterlooGuide(rawText, checkedAt) {
         description: current.description,
         instructor: current.instructor,
         section: current.section,
-        category: current.category ? titleCase(current.category) : null,
+        category: current.section === 'Swim' ? 'Swimming' : current.category ? titleCase(current.category) : null,
         code: row[1],
         days: row[2],
         datesText: row[3],
@@ -143,7 +146,7 @@ export function readWaterlooGuide(rawText, checkedAt) {
         sessions: g.sessions,
         fee: g.fee,
         otherFees: g.otherFees,
-        facility: FACILITIES[g.facility] || g.facility,
+        facility: `${FACILITIES[g.facility] || g.facility}${g.area ? `, ${g.area}` : ''}`,
         facilityCode: g.facility,
         location: `${FACILITIES[g.facility] || g.facility}, Waterloo`,
         url: WATERLOO_GUIDE.register,
@@ -161,6 +164,13 @@ export function readWaterlooGuide(rawText, checkedAt) {
       continue;
     }
     if (CATEGORY.test(line) && !/\d/.test(line)) { category = line; block = []; closeTable(); continue; }
+    if (section === 'Swim' && SWIM_TITLE.test(line)) {
+      // "(5 to 12 years)" alone on a line belongs to the title line just before it.
+      const prev = block[block.length - 1];
+      block = line.startsWith('(') && prev && prev.length < 40 && !/[.!?]$/.test(prev) ? [prev, line] : [line];
+      if (inTable) closeTable();
+      continue;
+    }
     // Any other line is part of the next program's title and description.
     if (inTable) closeTable();
     block.push(line);

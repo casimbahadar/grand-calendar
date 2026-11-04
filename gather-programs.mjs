@@ -14,11 +14,15 @@ import { readWellesleyPage, wellesleySeason, WELLESLEY } from './guide-wellesley
 
 const UA = 'GrandCalendar/0.1 (personal events digest; https://github.com/casimbahadar/grand-calendar)';
 const CHECK_EVERY_MS = 20 * 60 * 60 * 1000; // about once a day
+// Bump when a guide reader changes, so the next run re-reads the guide even if the PDF hasn't changed.
+// 2: Waterloo swim section added.
+const READER_VERSION = 2;
 const readJson = async (p, fallback) => { try { return JSON.parse(await readFile(p, 'utf8')); } catch { return fallback; } };
 
 async function waterloo(guides, now) {
   const state = guides.guides[WATERLOO_GUIDE.id] || {};
-  if (state.checkedAt && Date.now() - Date.parse(state.checkedAt) < CHECK_EVERY_MS && !process.argv.includes('--force')) {
+  const readerChanged = state.readerVersion !== READER_VERSION;
+  if (!readerChanged && state.checkedAt && Date.now() - Date.parse(state.checkedAt) < CHECK_EVERY_MS && !process.argv.includes('--force')) {
     console.log(`Waterloo guide checked ${state.checkedAt}; next check tomorrow.`);
     return null;
   }
@@ -30,7 +34,7 @@ async function waterloo(guides, now) {
   }
   const pdf = Buffer.from(await res.arrayBuffer());
   const sha = createHash('sha256').update(pdf).digest('hex');
-  if (sha === state.sha256) {
+  if (sha === state.sha256 && !readerChanged) {
     guides.guides[WATERLOO_GUIDE.id] = { ...state, checkedAt: now, ok: true };
     console.log('Waterloo guide unchanged.');
     return null;
@@ -49,7 +53,7 @@ async function waterloo(guides, now) {
   const isNewSeason = Boolean(state.edition) && state.edition !== edition;
   guides.guides[WATERLOO_GUIDE.id] = {
     name: WATERLOO_GUIDE.name, url: WATERLOO_GUIDE.pdf, edition, sha256: sha, checkedAt: now, readAt: now, ok: true,
-    programs: parsed.programs.length, registrationOpens: parsed.registrationOpens,
+    programs: parsed.programs.length, registrationOpens: parsed.registrationOpens, readerVersion: READER_VERSION,
     // newEditionAt marks when a different season's guide appeared (the alert trigger).
     newEditionAt: isNewSeason ? now : state.newEditionAt || null,
     previousEdition: isNewSeason ? state.edition : state.previousEdition || null,

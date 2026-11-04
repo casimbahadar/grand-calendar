@@ -35,7 +35,14 @@
     }
    ],
    "checked": "2026-11-03",
-   "source": "https://kwgymnastics.ca/classes-and-passes/classes/"
+   "source": "https://kwgymnastics.ca/classes-and-passes/classes/",
+   "tryFirst": {
+    "kind": "pass",
+    "stated": "Preschool Play Pass (Ages 6 months - 6 years)",
+    "detail": "A pass for one-on-one play time at the gym with your little one. Their schedule also lists one-time events.",
+    "page": "https://kwgymnastics.ca/classes-and-passes/gym-passes/",
+    "checked": "2026-11-03"
+   }
   },
   {
    "id": "dynamo-gymnastics",
@@ -77,7 +84,14 @@
     }
    ],
    "checked": "2026-11-03",
-   "source": "https://dynamogymnastics.ca/recreational-2/recreational/"
+   "source": "https://dynamogymnastics.ca/recreational-2/recreational/",
+   "tryFirst": {
+    "kind": "drop-in",
+    "stated": "Kinder Drop-In",
+    "detail": "Drop-in class specifically for younger athletes, $20 + HST per class (Girls/Boys 3-5 years old); Co-Ed Drop-In for 6 years +.",
+    "page": "https://dynamogymnastics.ca/recreational-2/recreational/",
+    "checked": "2026-11-03"
+   }
   },
   {
    "id": "woolwich-gymnastics",
@@ -479,7 +493,14 @@
     }
    ],
    "checked": "2026-11-03",
-   "source": "https://movewithgrace.ca/dance-programs-and-classes/"
+   "source": "https://movewithgrace.ca/dance-programs-and-classes/",
+   "tryFirst": {
+    "kind": "free",
+    "stated": "FREE CLASS",
+    "detail": "Listed on their classes page.",
+    "page": "https://movewithgrace.ca/dance-programs-and-classes/",
+    "checked": "2026-11-03"
+   }
   },
   {
    "id": "element-dance-arts",
@@ -513,7 +534,14 @@
    "note": "Their Kinder Dance page still shows some older season dates; check current classes when registering.",
    "pages": [
     "https://elementdancearts.com/classes/recreational/"
-   ]
+   ],
+   "tryFirst": {
+    "kind": "free",
+    "stated": "FREE Trial Class",
+    "detail": "Listed on their site.",
+    "page": "https://elementdancearts.com/kinder-dance/",
+    "checked": "2026-11-03"
+   }
   },
   {
    "id": "five-rings-tkd",
@@ -540,7 +568,14 @@
    "source": "https://5rings.ca/tiny-tigers/",
    "pages": [
     "https://5rings.ca/childrens-6-12/"
-   ]
+   ],
+   "tryFirst": {
+    "kind": "free",
+    "stated": "book a free trial",
+    "detail": "For Tiny Tigers (3-5) and Children’s (6-12).",
+    "page": "https://5rings.ca/childrens-6-12/",
+    "checked": "2026-11-03"
+   }
   },
   {
    "id": "volpe-martial-arts",
@@ -565,7 +600,14 @@
    ],
    "checked": "2026-11-03",
    "source": "https://www.volpemartialarts.com/",
-   "note": "Hapkido and kung fu based programs."
+   "note": "Hapkido and kung fu based programs.",
+   "tryFirst": {
+    "kind": "free",
+    "stated": "FREE TRIAL",
+    "detail": "Listed on their site.",
+    "page": "https://www.volpemartialarts.com/",
+    "checked": "2026-11-03"
+   }
   },
   {
    "id": "black-belt-world-kitchener",
@@ -590,7 +632,14 @@
    ],
    "checked": "2026-11-03",
    "source": "https://blackbeltworld.ca/locations/kitchener/",
-   "note": "Taekwondo. The page lists other locations too; this entry is the Kitchener one."
+   "note": "Taekwondo. The page lists other locations too; this entry is the Kitchener one.",
+   "tryFirst": {
+    "kind": "free",
+    "stated": "Sign up for a FREE CLASS",
+    "detail": "On their Kitchener page.",
+    "page": "https://blackbeltworld.ca/locations/kitchener/",
+    "checked": "2026-11-03"
+   }
   },
   {
    "id": "karate-olympic-centre",
@@ -641,7 +690,14 @@
    ],
    "checked": "2026-11-03",
    "source": "https://www.asahijudoclub.ca/classes",
-   "note": "Judo. The club says it's the only city-affiliated judo club in Kitchener-Waterloo. Age groups count age as of December."
+   "note": "Judo. The club says it's the only city-affiliated judo club in Kitchener-Waterloo. Age groups count age as of December.",
+   "tryFirst": {
+    "kind": "trial",
+    "stated": "Contact the club if you are interested in a trial class.",
+    "detail": "Ask the club to arrange it.",
+    "page": "https://www.asahijudoclub.ca/classes",
+    "checked": "2026-11-03"
+   }
   },
   {
    "id": "waterloo-kung-fu",
@@ -666,7 +722,14 @@
    ],
    "checked": "2026-11-03",
    "source": "https://www.waterlookungfu.com/programs-classes/",
-   "note": "Shaolin Five Animal kung fu."
+   "note": "Shaolin Five Animal kung fu.",
+   "tryFirst": {
+    "kind": "free",
+    "stated": "Free Trial Class",
+    "detail": "They welcome new students throughout the year.",
+    "page": "https://www.waterlookungfu.com/join-waterloo-kung-fu-academy/free-trial/",
+    "checked": "2026-11-03"
+   }
   },
   {
    "id": "generation-ma",
@@ -693,7 +756,14 @@
    "source": "https://www.generationma.com/youth-program",
    "pages": [
     "https://www.generationma.com/"
-   ]
+   ],
+   "tryFirst": {
+    "kind": "free",
+    "stated": "Book Your Free Trial Lesson Today!",
+    "detail": "Listed on their site.",
+    "page": "https://www.generationma.com/",
+    "checked": "2026-11-03"
+   }
   },
   {
    "id": "hotshot-athletic",
@@ -717,7 +787,14 @@
     }
    ],
    "checked": "2026-11-03",
-   "source": "https://www.hotshotathletic.com/programs"
+   "source": "https://www.hotshotathletic.com/programs",
+   "tryFirst": {
+    "kind": "free",
+    "stated": "Get Your Free Trial",
+    "detail": "Listed on their programs page.",
+    "page": "https://www.hotshotathletic.com/programs",
+    "checked": "2026-11-03"
+   }
   },
   {
    "id": "return-of-the-dragon",
@@ -729,7 +806,14 @@
    "classes": [],
    "agesNote": "They run Kids Kung Fu, plus Brazilian jiu-jitsu, Muay Thai and kickboxing, but their pages don't state ages for the kids' class. Ask them.",
    "checked": "2026-11-03",
-   "source": "https://rotdma.com/classes/kids-kung-fu/"
+   "source": "https://rotdma.com/classes/kids-kung-fu/",
+   "tryFirst": {
+    "kind": "free",
+    "stated": "Book a Free Class",
+    "detail": "Includes Kids Beginner Kung Fu.",
+    "page": "https://rotdma.com/book-a-free-class/",
+    "checked": "2026-11-03"
+   }
   },
   {
    "id": "code-ninjas-waterloo",
@@ -759,7 +843,14 @@
     }
    ],
    "checked": "2026-11-03",
-   "source": "https://www.codeninjas.com/waterloo-on-ca"
+   "source": "https://www.codeninjas.com/waterloo-on-ca",
+   "tryFirst": {
+    "kind": "free",
+    "stated": "BOOK FREE SESSION",
+    "detail": "Listed on their Waterloo page.",
+    "page": "https://www.codeninjas.com/waterloo-on-ca",
+    "checked": "2026-11-03"
+   }
   },
   {
    "id": "zebra-robotics-kitchener",
@@ -778,7 +869,14 @@
    ],
    "checked": "2026-11-03",
    "source": "https://zebrarobotics.com/kitchener",
-   "note": "They group classes by school grade, not age, so Grand Calendar can't match them to an age. Grade 1 is usually age 6; ask which class fits."
+   "note": "They group classes by school grade, not age, so Grand Calendar can't match them to an age. Grade 1 is usually age 6; ask which class fits.",
+   "tryFirst": {
+    "kind": "free",
+    "stated": "Free one-hour Trial class",
+    "detail": "On their Kitchener page.",
+    "page": "https://zebrarobotics.com/kitchener",
+    "checked": "2026-11-03"
+   }
   },
   {
    "id": "stemotics",
@@ -840,7 +938,14 @@
    ],
    "checked": "2026-11-03",
    "source": "https://www.ultimatecoders.com/kitchener-on-ca",
-   "note": "Coding, robotics and AI. They also run small-group math classes for grades 1 to 8."
+   "note": "Coding, robotics and AI. They also run small-group math classes for grades 1 to 8.",
+   "tryFirst": {
+    "kind": "free",
+    "stated": "Free Trial Class",
+    "detail": "They say no credit card is required.",
+    "page": "https://www.ultimatecoders.com/kitchener-on-ca/free-trial-class",
+    "checked": "2026-11-03"
+   }
   },
   {
    "id": "kre8ive-coderz",
@@ -984,7 +1089,14 @@
    ],
    "checked": "2026-11-03",
    "source": "https://cambridgeconservatory.com/",
-   "note": "Also private lessons in piano, guitar, violin, voice and drums; those pages don't list ages."
+   "note": "Also private lessons in piano, guitar, violin, voice and drums; those pages don't list ages.",
+   "tryFirst": {
+    "kind": "trial",
+    "stated": "New Student Trial",
+    "detail": "A trial for new students (their 6-week trial page).",
+    "page": "https://cambridgeconservatory.com/home/registration/6-week-trial/",
+    "checked": "2026-11-03"
+   }
   },
   {
    "id": "long-mcquade-stratford",
@@ -1155,7 +1267,14 @@
    "checked": "2026-11-03",
    "source": "https://topleveltkd.ca/",
    "note": "Ages and addresses are from their own site as shown in a web search; the live page didn't show readable text when checked. Confirm on their site.",
-   "check": "Their page builds its text in a way the checker can't read; re-check by hand."
+   "check": "Their page builds its text in a way the checker can't read; re-check by hand.",
+   "tryFirst": {
+    "kind": "free",
+    "stated": "One Week Free Trial",
+    "detail": "Listed on their site.",
+    "page": "https://topleveltkd.ca/",
+    "checked": "2026-11-03"
+   }
   },
   {
    "id": "kick-masters",
@@ -1638,7 +1757,14 @@
    "note": "Indoor and outdoor programs, grouped by age.",
    "pages": [
     "https://sportball.com/location/sportball-kitchener-waterloo/multi-sport/"
-   ]
+   ],
+   "tryFirst": {
+    "kind": "trial",
+    "stated": "Try a Class",
+    "detail": "Listed on their Kitchener-Waterloo pages.",
+    "page": "https://sportball.com/location/sportball-kitchener-waterloo/multi-sport/",
+    "checked": "2026-11-03"
+   }
   },
   {
    "id": "kitchener-minor-hockey",
@@ -1753,10 +1879,23 @@
    "area": "Cambridge",
    "address": "Cambridge arenas (see their site)",
    "url": "https://www.cambridgeringette.ca/",
-   "classes": [],
-   "agesNote": "Their site doesn't show the youngest division's ages in a form Grand Calendar could read. Ringette's youngest level is usually called Bunnies. Check their house league page.",
+   "classes": [
+    {
+     "name": "FUN1 (Fundamentals 1, beginners)",
+     "stated": "FUN1",
+     "min": 5,
+     "max": 7
+    },
+    {
+     "name": "FUN2 (Fundamentals 2)",
+     "stated": "FUN2",
+     "min": 6,
+     "max": 8
+    }
+   ],
    "checked": "2026-11-03",
-   "source": "https://www.cambridgeringette.ca/"
+   "source": "https://www.cambridgeringette.ca/",
+   "note": "Ringette Canada places FUN1 at U6 to U8 and FUN2 at U7 to U9, and groups children by skill rather than age, so a 5 or 6 year old new to skating usually starts in FUN1. The association places each child."
   },
   {
    "id": "jump-basketball-kw",
@@ -1922,6 +2061,71 @@
    "checked": "2026-11-03",
    "source": "https://waterlooravens.com/",
    "note": "Hockey Canada's Timbits U7 is for children who are 5 or 6 by December 31 of the season. Ages here come from the association's own labels."
+  },
+  {
+   "id": "waterloo-ringette",
+   "name": "Waterloo Ringette Association (Wildfire)",
+   "type": "sports",
+   "sport": "Ringette",
+   "area": "Waterloo",
+   "address": "Waterloo arenas (see their site)",
+   "url": "https://www.waterlooringette.com/",
+   "classes": [
+    {
+     "name": "FUN1 (Fundamentals 1, beginners; Timbits FUN1 teams)",
+     "stated": "FUN1",
+     "min": 5,
+     "max": 7
+    },
+    {
+     "name": "FUN2 (Fundamentals 2)",
+     "stated": "FUN2",
+     "min": 6,
+     "max": 8
+    }
+   ],
+   "checked": "2026-11-03",
+   "source": "https://www.waterlooringette.com/",
+   "note": "Ringette Canada places FUN1 at U6 to U8 and FUN2 at U7 to U9, and groups children by skill rather than age, so a 5 or 6 year old new to skating usually starts in FUN1. The association places each child. They have an equipment loan program."
+  },
+  {
+   "id": "kitchener-ringette",
+   "name": "Kitchener Ringette Association",
+   "type": "sports",
+   "sport": "Ringette",
+   "area": "Kitchener",
+   "address": "Kitchener arenas (see their site)",
+   "url": "https://www.kitchenerringette.com/",
+   "classes": [
+    {
+     "name": "FUN1 (Fundamentals 1, beginners)",
+     "stated": "FUN1",
+     "min": 5,
+     "max": 7
+    },
+    {
+     "name": "FUN2 (Fundamentals 2)",
+     "stated": "FUN2",
+     "min": 6,
+     "max": 8
+    }
+   ],
+   "checked": "2026-11-03",
+   "source": "https://www.kitchenerringette.com/",
+   "note": "Ringette Canada places FUN1 at U6 to U8 and FUN2 at U7 to U9, and groups children by skill rather than age, so a 5 or 6 year old new to skating usually starts in FUN1. The association places each child."
+  },
+  {
+   "id": "cambridge-youth-soccer",
+   "name": "Cambridge Youth Soccer",
+   "type": "sports",
+   "sport": "Soccer",
+   "area": "Cambridge",
+   "address": "Cambridge (see their site for fields)",
+   "url": "https://www.cambridgesoccer.ca/",
+   "classes": [],
+   "agesNote": "The Cambridge, Ontario club (its competitive teams play as Cambridge United). Their site doesn't state house league ages in a form Grand Calendar could read. Check their site.",
+   "checked": "2026-11-03",
+   "source": "https://www.cambridgesoccer.ca/"
   }
  ]
 }

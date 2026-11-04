@@ -10,9 +10,11 @@ Live at: https://casimbahadar.github.io/grand-calendar/
 - **Who it's for:** Everyone, Family, or Kids (ages set in Settings, 5 to 6 by default).
 - **Topics and search:** one-tap topic groups (Board games, Socializing, Crafts & STEM, and others) plus free-text search.
 - **Filters:** cost, indoor or outdoor, drop-in or registration, hide full events, and distance from your location or a typed place.
-- **Programs:** classes and lessons read from the City of Waterloo program guide and the Township of Wellesley programs page, plus a live web search for other providers.
-- **Providers:** a tab listing clubs, schools and lessons across nine kinds of activity, checked by hand on each provider's own website. Filter by who it's for, activity and town; cards show matching classes in one line and expand on tap.
+- **Programs:** classes and lessons read from the City of Waterloo program guide and the Township of Wellesley programs page, plus a live web search for other providers. Activity chips, and a one-time-class filter for trying something without committing.
+- **Providers:** a tab listing clubs, schools and lessons across nine kinds of activity, checked by hand on each provider's own website. Filter by who it's for, activity and town; cards show matching classes in one line and expand on tap. **Try it first** shows providers whose own site states a free trial, trial class, drop-in or pass, in their words with a link.
+- **This weekend, one tap:** a shortcut at the top of Events shows this weekend for the kid ages in Settings, nearest first when a location is set, with a link to programs starting soon.
 - **Less effort:** the app remembers your last tab and filter choices, and long link lists fold into one row.
+- **Fast and offline:** the app opens with its saved copy of the events and refreshes in the background; with no signal it opens from the copy the service worker keeps.
 - **Your calendar:** a Calendar tab showing only what you saved, as a month grid or a week strip, with the chosen day's items below. Weekly programs appear on every class day the source states. **Add your own** covers things the app can't read, like an ActiveNet registration or private lessons: one day, or chosen weekdays between a first and last date. It can also import a calendar file, or the calendar link from an ActiveNet receipt, with a check-before-adding preview. A List view keeps export, import and Add to Calendar.
 - **Season alerts:** a phone notification when a new program guide season appears.
 
@@ -33,14 +35,15 @@ These rules shape every part of the code:
 |---|---|---|
 | Waterloo Public Library events | iCal feed, hourly; event pages for registration status | GitHub job |
 | Explore Waterloo Region events | iCal feed, read on the phone (it blocks GitHub's servers) | Phone |
-| City of Waterloo program guide | PDF, checked daily, read again only when the file changes | GitHub job |
+| City of Waterloo program guide | PDF, checked daily, read again only when the file changes. Preschool, Children's, Youth, Adult and Swim sections | GitHub job |
 | Township of Wellesley programs | Programs web page, checked daily | GitHub job |
 | Web search for other providers | Tavily, through your own Cloudflare Worker | Phone, on request |
 
 **Not read automatically,** shown as links instead:
 
 - Kitchener Public Library, and the Kitchener, Waterloo, Wilmot, Woolwich, North Dumfries and Stratford municipal calendars. These block automated requests.
-- Program registration on ActiveNet (Kitchener, Wilmot, Wellesley, Woolwich). Its terms don't allow automated access.
+- Program registration on ActiveNet (Kitchener, Wilmot, Wellesley, Woolwich, Cambridge) and PerfectMind (Stratford). Their terms don't allow automated access.
+- Cambridge's Activities Guide. It's published only as a BlueToad flipbook whose text comes out scrambled (ages and times separate from their classes), so it can't be read reliably. A PDF from the city would fix this.
 - Eventbrite, Meetup and Luma. There's no free search access for these. Meetup's API needs a paid Meetup Pro subscription to get a key, so it isn't used. Live search can still find Meetup pages.
 - Visit Stratford. Its robots.txt disallows all automated access.
 
@@ -62,7 +65,7 @@ All files sit at the repo root except the workflow.
 
 **App (runs on the phone)**
 - `index.html`, `app.css`, `app.mjs`: the screens and their logic.
-- `sw.js`: service worker that shows season alerts.
+- `sw.js`: service worker that shows season alerts and keeps a copy of the app and its data for offline use (always fetched fresh when online).
 - `manifest.webmanifest`, `icon.svg`, `icon-*.png`: Home Screen app details.
 - `atkinson-regular.woff2`, `atkinson-bold.woff2`: the Atkinson Hyperlegible typeface (licence in `atkinson-OFL.txt`).
 
@@ -82,7 +85,7 @@ All files sit at the repo root except the workflow.
 - `gather.mjs`: library events and their registration status.
 - `gather-programs.mjs`, `guide-waterloo.mjs`, `guide-wellesley.mjs`: programs.
 - `notify.mjs`: season alerts, and an alert when the monthly provider check flags pages.
-- `check-providers.mjs`: once a month, revisits each provider's own page, confirms each recorded age still appears in their words, and flags pages whose stated ages changed. Results go to `provider-checks.json`; flagged cards show "May be out of date".
+- `check-providers.mjs`: once a month, revisits each provider's own page, confirms each recorded age and any trial offer still appear in their words, and flags pages whose stated ages changed. Results go to `provider-checks.json`; flagged cards show "May be out of date".
 
 **Data the job writes** (don't edit by hand)
 - `events.json`, `programs.json`, `guides.json`, `notify-state.json`, `provider-checks.json`.

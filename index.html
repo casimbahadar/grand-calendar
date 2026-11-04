@@ -37,6 +37,8 @@
 
   <main id="view-events">
     <div class="controls">
+      <button type="button" class="preset" id="preset-weekend" aria-pressed="false"><span>This weekend for ages 5 to 6</span><small id="preset-sub"></small></button>
+      <button type="button" class="btn quiet preset-programs" id="preset-programs" hidden></button>
       <label class="search">
         <span class="visually-hidden">Search events</span>
         <input id="q" type="search" inputmode="search" autocomplete="off" placeholder="Search, e.g. chess or storytime">
@@ -86,7 +88,9 @@
         <button type="button" data-v="kids" id="pkids-btn">Kids 5 to 6</button>
         <button type="button" data-v="adults">Adults</button>
       </div>
+      <div class="chips" id="p-cats" role="group" aria-label="Kind of program"></div>
       <label class="check"><input type="checkbox" id="p-upcoming"> Only programs that haven't started yet</label>
+      <label class="check"><input type="checkbox" id="p-try"> Try it first: one-time classes only</label>
     </div>
     <p class="summary" id="psummary" aria-live="polite"></p>
     <div id="presults"></div>
@@ -116,6 +120,7 @@
         <button type="button" data-v="kids" id="provkids-btn">Kids 5 to 6</button>
       </div>
       <div class="chips" id="prov-types" role="group" aria-label="Kind of activity"></div>
+      <label class="check"><input type="checkbox" id="prov-try"> Try it first: free trials, trial classes, drop-ins and passes</label>
       <label class="town-pick"><span>Town</span>
         <select id="prov-town"><option value="">Anywhere</option></select>
       </label>

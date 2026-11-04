@@ -40,6 +40,13 @@ await check('wordings met while widening the directory are noticed', () => {
   for (const want of ['aged 5-14', 'kids 4+', '5+ years', 'ages 7-8', '6-year-old']) assert.ok(phrases.some((p) => p.includes(want)), `missed "${want}" in ${JSON.stringify(phrases)}`);
   assert.ok(!phrases.some((p) => /u7/i.test(p)), 'team labels must not count');
 });
+await check('every try-first offer is recorded with its wording and page', async () => {
+  const { providers } = JSON.parse(await readFile(new URL('./providers.json', import.meta.url), 'utf8'));
+  for (const p of providers.filter((x) => x.tryFirst)) {
+    assert.ok(['free', 'trial', 'drop-in', 'pass'].includes(p.tryFirst.kind), `${p.name} kind`);
+    assert.ok(p.tryFirst.stated && /^https?:/.test(p.tryFirst.page), `${p.name} needs stated text and a page`);
+  }
+});
 await check('one phone alert for new flags, not repeated', () => {
   const checks = { flagged: 2, newFlagsAt: '2026-12-03T10:00:00Z' };
   const a = alertsToSend({ guides: {} }, { notified: {} }, false, checks);
