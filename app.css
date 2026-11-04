@@ -352,3 +352,24 @@ label.select { display: grid; gap: var(--s1); font-size: 14px; color: var(--ink-
 .prov-card > .btn { width: 100%; margin-top: var(--s3); }
 
 .prov-card .stale { margin-top: var(--s2); padding: var(--s2) var(--s3); border-radius: var(--r-sm); background: var(--full-bg, rgba(180,60,40,.10)); color: var(--ink); font-size: 14px; }
+
+/* ---------- Folded sections (less scrolling) ---------- */
+details.fold { margin-top: var(--s6); border: 1px solid var(--line); border-radius: var(--r-lg); background: var(--surface); }
+details.fold > summary { display: flex; align-items: center; justify-content: space-between; gap: var(--s3); min-height: 52px; padding: 0 var(--s4); cursor: pointer; list-style: none; font-weight: 700; color: var(--river-900); }
+details.fold > summary::-webkit-details-marker { display: none; }
+details.fold > summary::after { content: '›'; font-size: 22px; color: var(--ink-2); transition: transform .15s; }
+details.fold[open] > summary::after { transform: rotate(90deg); }
+details.fold .fold-count { margin-left: auto; font-weight: 400; color: var(--ink-2); font-size: 14px; }
+details.fold > :not(summary) { margin-left: var(--s4); margin-right: var(--s4); }
+details.fold > .link-list { margin-bottom: var(--s4); }
+
+/* ---------- Providers tab ---------- */
+.town-pick { display: flex; align-items: center; gap: var(--s3); font-weight: 700; font-size: 15px; }
+.town-pick select { flex: 1; min-height: var(--btn-h); }
+.prov-row { display: block; width: 100%; text-align: left; font: inherit; color: var(--ink); background: none; border: 0; padding: 0; cursor: pointer; }
+.prov-row .meta { font-size: 14px; color: var(--ink-2); margin-top: 2px; }
+.prov-row .fits { font-size: 15px; margin-top: var(--s2); }
+.prov-row .badge { display: inline-block; margin-top: var(--s2); font-size: 13px; padding: 2px 8px; border-radius: 999px; background: var(--river-100); color: var(--ink-2); }
+.prov-row .badge.stale-b { background: rgba(180,60,40,.12); color: var(--ink); }
+.prov-card.open { border-color: var(--river-500); }
+.prov-card .prov-more { margin-top: var(--s3); border-top: 1px solid var(--line); padding-top: var(--s3); }

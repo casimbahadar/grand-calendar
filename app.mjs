@@ -46,7 +46,7 @@ const state = {
   programs: [],            // program sessions from programs.json
   programsReady: null,     // null = loading, true, or an error message
   pq: '', pwho: 'everyone', pUpcoming: false,
-  providers: [], provType: null,
+  providers: [], provType: null, provQ: '', provWho: 'everyone', provTown: '', provOpen: new Set(),
   calView: 'month',        // month | week | list (remembered)
   calDay: null,            // selected day in the calendar, ISO
   calOpen: null,           // calendar entry opened to show its full card
@@ -99,7 +99,8 @@ function ago(iso) {
   if (mins < 1) return 'just now';
   if (mins < 60) return `${mins} min ago`;
   const hrs = Math.round(mins / 60);
-  return hrs < 24 ? `${hrs} hour${hrs === 1 ? '' : 's'} ago` : `${Math.round(hrs / 24)} days ago`;
+  const days = Math.round(hrs / 24);
+  return hrs < 24 ? `${hrs} hour${hrs === 1 ? '' : 's'} ago` : `${days} day${days === 1 ? '' : 's'} ago`;
 }
 function dayLabel(iso) {
   const today = isoOf(new Date());
@@ -444,6 +445,7 @@ function render() {
   renderControls();
   if (state.view === 'events') renderEvents();
   else if (state.view === 'programs') renderPrograms();
+  else if (state.view === 'providers') renderProviders();
   else renderSaved();
   renderElsewhere();
   $('saved-count').textContent = Object.keys(state.saved).length ? `(${Object.keys(state.saved).length})` : '';
@@ -843,6 +845,7 @@ function renderElsewhere() {
     ['Luma', 'https://lu.ma/discover', q ? `opens Luma and copies “${q}” to paste in its search` : 'discover events', true],
     ['Visit Stratford', 'https://visitstratford.ca/calendar/', 'Stratford events calendar'],
   ];
+  $('elsewhere-count').textContent = `${links.length} sites`;
   $('elsewhere').replaceChildren(...links.map(([name, href, sub, copies]) => h('a', {
     class: 'btn', href, target: '_blank', rel: 'noopener noreferrer',
     onclick: copies && q ? () => { navigator.clipboard?.writeText(q).then(() => toast(`“${q}” copied. If the ${name} app opens, paste it into its search.`), () => {}); } : null,
@@ -854,39 +857,69 @@ const PROVIDER_TYPES = { gymnastics: 'Gymnastics', swimming: 'Swimming lessons',
 async function loadProviders() {
   try { state.providers = (await loadJson('providers.json')).providers || []; } catch { state.providers = []; }
   try { state.providerChecks = (await loadJson('provider-checks.json')).results || {}; } catch { state.providerChecks = {}; }
-  if (state.view === 'programs') render();
+  if (state.view === 'providers') render();
 }
 const classFits = (c) => typeof c.min === 'number' && c.min <= state.kid.max && (c.max === null || c.max === undefined || c.max >= state.kid.min);
+// Towns a provider can be filtered by; matched against its area and address.
+const PROVIDER_TOWNS = ['Kitchener', 'Waterloo', 'Cambridge', 'Elmira', 'St. Jacobs', 'Breslau', 'New Hamburg', 'Baden', 'Wilmot', 'Ayr', 'Wellesley', 'Stratford'];
+const savePrefs = () => store.set('prefs', { pwho: state.pwho, provWho: state.provWho, provType: state.provType, provTown: state.provTown, view: state.view });
+
+function providerFlag(p) {
+  const ck = state.providerChecks?.[p.id];
+  if (!ck || ck.status === 'ok' || ck.status === 'manual') return null;
+  const when = ck.flaggedAt ? dateOf(ck.flaggedAt.slice(0, 10)).toLocaleDateString('en-CA', { month: 'short', day: 'numeric' }) : '';
+  const why = ck.status === 'missing' ? `Some ages listed here are no longer on their page (${ck.missing.join('; ')}).`
+    : ck.status === 'changed' ? 'Their page lists different ages than when this was checked, often a new season.'
+      : 'Their page couldn\'t be reached at the last monthly check.';
+  return `May be out of date: ${why} Flagged ${when}.`;
+}
+
 function renderProviders() {
-  const types = [...new Set(state.providers.map((p) => p.type))];
-  $('prov-types').replaceChildren(...types.map((t) => h('button', { type: 'button', class: 'chip', 'aria-pressed': state.provType === t ? 'true' : 'false', text: PROVIDER_TYPES[t] || t, onclick: () => { state.provType = state.provType === t ? null : t; render(); } })));
-  const q = state.pq.trim().toLowerCase();
-  const kids = state.pwho === 'kids';
+  $('provkids-btn').textContent = $('kids-btn').textContent;
+  for (const b of $('seg-provwho').children) b.setAttribute('aria-pressed', String(b.dataset.v === state.provWho));
+  const types = [...new Set(state.providers.map((p) => p.type))].sort((a, b) => (PROVIDER_TYPES[a] || a).localeCompare(PROVIDER_TYPES[b] || b));
+  $('prov-types').replaceChildren(
+    h('button', { type: 'button', class: 'chip', 'aria-pressed': state.provType ? 'false' : 'true', text: 'All', onclick: () => { state.provType = null; savePrefs(); render(); } }),
+    ...types.map((t) => h('button', { type: 'button', class: 'chip', 'aria-pressed': state.provType === t ? 'true' : 'false', text: PROVIDER_TYPES[t] || t, onclick: () => { state.provType = state.provType === t ? null : t; savePrefs(); render(); } })));
+  // Keep the chosen activity chip in view in its sideways-scrolling row.
+  requestAnimationFrame(() => { const c = $('prov-types').querySelector('[aria-pressed="true"]'); const row = $('prov-types'); if (c) row.scrollLeft = c.offsetLeft - row.clientWidth / 2 + c.offsetWidth / 2; });
+  const sel = $('prov-town');
+  if (sel.options.length === 1) for (const t of PROVIDER_TOWNS) sel.append(h('option', { value: t, text: t }));
+  sel.value = state.provTown;
+  const q = state.provQ.trim().toLowerCase();
+  const kids = state.provWho === 'kids';
   let list = state.providers.filter((p) => !state.provType || p.type === state.provType);
-  if (q) list = list.filter((p) => `${p.name} ${p.sport || ''} ${PROVIDER_TYPES[p.type] || p.type} ${p.area} ${p.classes.map((c) => c.name).join(' ')}`.toLowerCase().includes(q) || q.split(/\s+/).some((w) => w.length > 3 && (PROVIDER_TYPES[p.type] || '').toLowerCase().includes(w)));
+  if (state.provTown) list = list.filter((p) => `${p.area} ${p.address}`.toLowerCase().includes(state.provTown.toLowerCase()));
+  if (q) list = list.filter((p) => `${p.name} ${p.sport || ''} ${PROVIDER_TYPES[p.type] || p.type} ${p.area} ${p.classes.map((c) => c.name).join(' ')}`.toLowerCase().includes(q) || q.split(/\s+/).some((w) => w.length > 3 && `${PROVIDER_TYPES[p.type] || ''} ${p.sport || ''}`.toLowerCase().includes(w)));
   if (kids) list = list.filter((p) => p.classes.some(classFits));
-  list.sort((a, b) => (kids ? 0 : 0) || a.area.localeCompare(b.area) || a.name.localeCompare(b.name));
+  list.sort((a, b) => a.name.localeCompare(b.name));
+  const who = kids ? ` with classes for ages ${state.kid.min} to ${state.kid.max}` : '';
+  $('prov-summary').textContent = state.providers.length ? `${list.length} provider${list.length === 1 ? '' : 's'}${who}${state.provTown ? ` in ${state.provTown}` : ''}. Tap one for details.` : '';
   if (!state.providers.length) { $('prov-list').replaceChildren(); return; }
   $('prov-list').replaceChildren(...(list.length ? list.map((p) => {
-    const shown = kids ? p.classes.filter(classFits) : p.classes;
-    return h('article', { class: 'prov-card' },
+    const open = state.provOpen.has(p.id);
+    const fitting = p.classes.filter(classFits);
+    const shown = kids ? fitting : p.classes;
+    const flag = providerFlag(p);
+    // One line of the classes that matter most: the fitting ones in Kids mode, otherwise the first few.
+    const label = (c) => (c.stated.toLowerCase().includes(c.name.toLowerCase().split(' (')[0]) ? c.stated : `${c.name} (${c.stated})`);
+    const line = shown.slice(0, 2).map(label).join(' · ') + (shown.length > 2 ? ` · +${shown.length - 2} more` : '');
+    const row = h('button', { type: 'button', class: 'prov-row', 'aria-expanded': open ? 'true' : 'false', onclick: () => { if (open) state.provOpen.delete(p.id); else state.provOpen.add(p.id); render(); } },
       h('h3', { text: p.name }),
-      h('div', { class: 'where', text: `${p.sport || PROVIDER_TYPES[p.type] || p.type}. ${p.address}` }),
-      shown.length ? h('ul', {}, shown.map((c) => h('li', { class: !kids && classFits(c) ? 'fit' : '' }, h('span', { text: c.name }), h('span', { class: 'stated', text: `Ages as stated: ${c.stated}` })))) : null,
+      h('div', { class: 'meta', text: `${p.sport || PROVIDER_TYPES[p.type] || p.type} · ${p.area}` }),
+      line ? h('div', { class: 'fits', text: line }) : h('span', { class: 'badge', text: 'Ages not confirmed' }),
+      flag ? h('span', { class: 'badge stale-b', text: 'May be out of date' }) : null);
+    const card = h('article', { class: `prov-card${open ? ' open' : ''}` }, row);
+    if (open) card.append(h('div', { class: 'prov-more' },
+      h('div', { class: 'where', text: p.address }),
+      p.classes.length ? h('ul', {}, p.classes.map((c) => h('li', { class: !kids && classFits(c) ? 'fit' : '' }, h('span', { text: c.name }), h('span', { class: 'stated', text: `Ages as stated: ${c.stated}` })))) : null,
       !p.classes.length ? h('p', { class: 'how', text: p.agesNote || 'Ages not confirmed.' }) : null,
       p.note ? h('p', { class: 'how', text: p.note }) : null,
-      (() => {
-        const ck = state.providerChecks?.[p.id];
-        if (!ck || ck.status === 'ok' || ck.status === 'manual') return null;
-        const when = ck.flaggedAt ? dateOf(ck.flaggedAt.slice(0, 10)).toLocaleDateString('en-CA', { month: 'short', day: 'numeric' }) : '';
-        const why = ck.status === 'missing' ? `Some ages listed here are no longer on their page (${ck.missing.join('; ')}).`
-          : ck.status === 'changed' ? 'Their page lists different ages than when this was checked, often a new season.'
-            : 'Their page couldn\'t be reached at the last monthly check.';
-        return h('p', { class: 'stale', text: `May be out of date: ${why} Flagged ${when}.` });
-      })(),
+      flag ? h('p', { class: 'stale', text: flag }) : null,
       h('p', { class: 'how', text: `Checked ${/^https?:/.test(p.source) ? 'on their website' : `in the ${p.source}`} ${dateOf(p.checked).toLocaleDateString('en-CA', { month: 'short', day: 'numeric', year: 'numeric' })}. Classes change each season.` }),
-      h('a', { class: 'btn', href: p.url, target: '_blank', rel: 'noopener noreferrer', text: 'Open their site' }));
-  }) : [h('p', { class: 'muted', text: kids ? `No checked providers list classes for ages ${state.kid.min} to ${state.kid.max} in this group yet.` : 'No checked providers match.' })]));
+      h('a', { class: 'btn primary', href: p.url, target: '_blank', rel: 'noopener noreferrer', text: 'Open their site' })));
+    return card;
+  }) : [h('div', { class: 'empty' }, h('p', { text: kids ? `No checked providers here list classes for ages ${state.kid.min} to ${state.kid.max}. Try "Everyone" or another town.` : 'No providers match. Try another town or search.' }))]));
 }
 
 async function loadPrograms() {
@@ -1022,7 +1055,6 @@ function programCard(g) {
 }
 
 function renderPrograms() {
-  renderProviders();
   $('pkids-btn').textContent = $('kids-btn').textContent;
   for (const b of $('seg-pwho').children) b.setAttribute('aria-pressed', String(b.dataset.v === state.pwho));
   $('p-upcoming').checked = state.pUpcoming;
@@ -1046,6 +1078,7 @@ function renderPrograms() {
     ['Township of North Dumfries programs', 'https://www.northdumfries.ca/play-and-explore/recreation-and-programs/programs/', 'Live Well North Dumfries (Ayr)'],
     ['City of Stratford programs', 'https://www.stratford.ca/en/play-here/recconnect.aspx', 'recreation registration'],
   ];
+  $('pelsewhere-count').textContent = `${links.length} sites`;
   $('pelsewhere').replaceChildren(...links.map(([name, href, sub]) => h('a', { class: 'btn', href, target: '_blank', rel: 'noopener noreferrer' }, h('span', { text: name }), h('small', { text: sub }))));
 }
 
@@ -1343,17 +1376,27 @@ function wire() {
       for (const x of document.querySelectorAll('.tabs button')) {
         if (x === b) x.setAttribute('aria-current', 'page'); else x.removeAttribute('aria-current');
       }
-      $('view-events').hidden = state.view !== 'events';
-      $('view-programs').hidden = state.view !== 'programs';
-      $('view-saved').hidden = state.view !== 'saved';
+      for (const v of ['events', 'programs', 'providers', 'saved']) $(`view-${v}`).hidden = state.view !== v;
+      savePrefs();
       render();
       window.scrollTo(0, 0);
     });
   }
   let pqTimer = null;
   $('pq').addEventListener('input', (ev) => { clearTimeout(pqTimer); pqTimer = setTimeout(() => { state.pq = ev.target.value; render(); }, 200); });
-  $('seg-pwho').addEventListener('click', (ev) => { const v = ev.target.closest('button')?.dataset.v; if (v) { state.pwho = v; render(); } });
+  $('seg-pwho').addEventListener('click', (ev) => { const v = ev.target.closest('button')?.dataset.v; if (v) { state.pwho = v; savePrefs(); render(); } });
   $('p-upcoming').addEventListener('change', (ev) => { state.pUpcoming = ev.target.checked; render(); });
+  let provTimer = null;
+  $('provq').addEventListener('input', (ev) => { clearTimeout(provTimer); provTimer = setTimeout(() => { state.provQ = ev.target.value; render(); }, 200); });
+  $('seg-provwho').addEventListener('click', (ev) => { const v = ev.target.closest('button')?.dataset.v; if (v) { state.provWho = v; savePrefs(); render(); } });
+  $('prov-town').addEventListener('change', (ev) => { state.provTown = ev.target.value; savePrefs(); render(); });
+  // Remember last choices, so reopening the app needs no setup.
+  const prefs = store.get('prefs', {});
+  if (prefs.pwho) state.pwho = prefs.pwho;
+  if (prefs.provWho) state.provWho = prefs.provWho;
+  if (prefs.provType !== undefined) state.provType = prefs.provType;
+  if (prefs.provTown) state.provTown = prefs.provTown;
+  if (prefs.view && prefs.view !== 'events') document.querySelector(`.tabs button[data-view="${prefs.view}"]`)?.click();
   state.calView = store.get('calView', 'month');
   $('seg-calview').addEventListener('click', (ev) => { const v = ev.target.closest('button')?.dataset.v; if (v) { state.calView = v; state.calOpen = null; store.set('calView', v); render(); } });
   $('add-own-open').addEventListener('click', () => openAddOwn());

@@ -10,7 +10,9 @@ Live at: https://casimbahadar.github.io/grand-calendar/
 - **Who it's for:** Everyone, Family, or Kids (ages set in Settings, 5 to 6 by default).
 - **Topics and search:** one-tap topic groups (Board games, Socializing, Crafts & STEM, and others) plus free-text search.
 - **Filters:** cost, indoor or outdoor, drop-in or registration, hide full events, and distance from your location or a typed place.
-- **Programs:** classes and lessons read from the City of Waterloo program guide and the Township of Wellesley programs page, a hand-checked directory of providers (gymnastics, swimming, music, dance, martial arts, coding and robotics, art, skating and kids' sports (soccer, baseball, hockey, ringette, basketball, tennis and multi-sport)), plus a live web search for other providers.
+- **Programs:** classes and lessons read from the City of Waterloo program guide and the Township of Wellesley programs page, plus a live web search for other providers.
+- **Providers:** a tab listing clubs, schools and lessons across nine kinds of activity, checked by hand on each provider's own website. Filter by who it's for, activity and town; cards show matching classes in one line and expand on tap.
+- **Less effort:** the app remembers your last tab and filter choices, and long link lists fold into one row.
 - **Your calendar:** a Calendar tab showing only what you saved, as a month grid or a week strip, with the chosen day's items below. Weekly programs appear on every class day the source states. **Add your own** covers things the app can't read, like an ActiveNet registration or private lessons: one day, or chosen weekdays between a first and last date. It can also import a calendar file, or the calendar link from an ActiveNet receipt, with a check-before-adding preview. A List view keeps export, import and Add to Calendar.
 - **Season alerts:** a phone notification when a new program guide season appears.
 
