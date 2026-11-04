@@ -214,7 +214,8 @@ async function load(forceEw = false) {
       });
     }
     const hrs = (Date.now() - new Date(lib.d.generatedAt).getTime()) / 3600000;
-    if (hrs > 3) status.push({ name: 'GitHub job', ok: false, at: lib.d.generatedAt, detail: `last ran ${ago(lib.d.generatedAt)}; the hourly update may be paused` });
+    // GitHub starts scheduled jobs when it has capacity: often every few hours, not every hour.
+    if (hrs > 12) status.push({ name: 'GitHub job', ok: false, at: lib.d.generatedAt, detail: `last ran ${ago(lib.d.generatedAt)}; the scheduled update may be paused` });
   } else {
     status.push({ name: 'Library events', ok: false, detail: `couldn't load the events file (${lib.err.message})` });
   }
@@ -1394,6 +1395,24 @@ async function testSources() {
   list.append(h('li', { class: 'how', text: `Tested ${fmtClock(new Date().toISOString())}.` }));
 }
 
+// ---------- Open links in Chrome ----------
+// On iPhone, links opened from a Home Screen web app go wherever iOS decides (often a Safari
+// view). With this setting on, outside links open in Chrome through its own link scheme.
+// It's per phone and off by default, so anyone else using the app keeps their own browser.
+const isIPhone = () => /iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+const toChromeURL = (url) => (/^https:\/\//i.test(url) ? url.replace(/^https:/i, 'googlechromes:') : /^http:\/\//i.test(url) ? url.replace(/^http:/i, 'googlechrome:') : null);
+document.addEventListener('click', (ev) => {
+  if (!store.get('openInChrome', false) || !isIPhone() || ev.defaultPrevented) return;
+  const a = ev.target.closest && ev.target.closest('a[href]');
+  if (!a || a.hasAttribute('download')) return;
+  let url; try { url = new URL(a.href); } catch { return; }
+  if (url.origin === location.origin) return; // the app's own pages stay in the app
+  const chrome = toChromeURL(url.href);
+  if (!chrome) return; // mailto:, tel: and the like are left alone
+  ev.preventDefault();
+  window.location.href = chrome;
+});
+
 // ---------- Wiring ----------
 function wire() {
   $('topics').replaceChildren(...TOPICS.map((t) => h('button', {
@@ -1490,6 +1509,8 @@ function wire() {
   if (prefs.view && prefs.view !== 'events') document.querySelector(`.tabs button[data-view="${prefs.view}"]`)?.click();
   state.calView = store.get('calView', 'month');
   $('seg-calview').addEventListener('click', (ev) => { const v = ev.target.closest('button')?.dataset.v; if (v) { state.calView = v; state.calOpen = null; store.set('calView', v); render(); } });
+  $('open-chrome').checked = store.get('openInChrome', false);
+  $('open-chrome').addEventListener('change', (ev) => { store.set('openInChrome', ev.target.checked); toast(ev.target.checked ? 'Links will open in Chrome.' : 'Links will open the usual way.'); });
   $('add-own-open').addEventListener('click', () => openAddOwn());
   $('ao-repeat').addEventListener('click', (ev) => { const v = ev.target.closest('button')?.dataset.v; if (v) setRepeat(v); });
   $('add-own-form').addEventListener('submit', saveAddOwn);

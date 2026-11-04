@@ -14,6 +14,7 @@ Live at: https://casimbahadar.github.io/grand-calendar/
 - **Providers:** a tab listing clubs, schools and lessons across nine kinds of activity, checked by hand on each provider's own website. Filter by who it's for, activity and town; cards show matching classes in one line and expand on tap. **Try it first** shows providers whose own site states a free trial, trial class, drop-in or pass, in their words with a link.
 - **This weekend, one tap:** a shortcut at the top of Events shows this weekend for the kid ages in Settings, nearest first when a location is set, with a link to programs starting soon.
 - **Less effort:** the app remembers your last tab and filter choices, and long link lists fold into one row.
+- **Links in Chrome:** a per-phone setting opens outside links in the Chrome app on iPhone (off by default, so others keep their own browser).
 - **Fast and offline:** the app opens with its saved copy of the events and refreshes in the background; with no signal it opens from the copy the service worker keeps.
 - **Your calendar:** a Calendar tab showing only what you saved, as a month grid or a week strip, with the chosen day's items below. Weekly programs appear on every class day the source states. **Add your own** covers things the app can't read, like an ActiveNet registration or private lessons: one day, or chosen weekdays between a first and last date. It can also import a calendar file, or the calendar link from an ActiveNet receipt, with a check-before-adding preview. A List view keeps export, import and Add to Calendar.
 - **Season alerts:** a phone notification when a new program guide season appears.
@@ -142,7 +143,7 @@ The workflow runs these before every gather. If any fail, nothing is published a
 
 ## Maintenance notes
 
-- **Paused schedules.** GitHub disables scheduled workflows in a public repo after 60 days with no activity. The app shows "the hourly update may be paused" when the data is more than 3 hours old. Re-enable the workflow in the Actions tab.
+- **Schedule timing.** GitHub starts scheduled workflows when it has capacity, so the hourly job often runs every few hours instead. It also disables scheduled workflows in a public repo after 60 days with no activity. The app shows "the scheduled update may be paused" only when the data is more than 12 hours old; then check the Actions tab.
 - **Program guide layout changes.** If a new guide reads as almost empty, the job keeps the previous programs and records an error in `guides.json`. The guide readers then need updating.
 - **Re-checking a flagged provider.** Read their page again, update the entry in `providers.json`, and set its `checked` date to the day you looked. The flag clears at the next monthly check once that date is after the flag. Entries with a `check` reason (a PDF flyer, a page the checker can't read) are re-checked by hand.
 - **Places in the area.** The list of town and village names that count as in the area is in `core.mjs` (`IN_REGION`).

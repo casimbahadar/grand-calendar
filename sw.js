@@ -2,10 +2,22 @@
 // the app and its data so it opens with no signal.
 // Online: always fetch fresh (so updates appear right away) and keep a copy.
 // Offline: use the last copy. Other sites' requests (Explore Waterloo, maps) are left alone.
-const CACHE = 'grandcal-v1';
+const CACHE = 'grandcal-v2';
 const LONG_LIVED = /\.(woff2|png|svg)$/; // fonts and icons rarely change: copy first, refresh behind
 
-self.addEventListener('install', () => self.skipWaiting());
+// Everything the app needs to open with no signal, saved as soon as this worker installs
+// (the first visit's own page loads before the worker takes over, so it can't wait for that).
+const APP_FILES = ['./', 'index.html', 'app.css', 'app.mjs', 'calendar.mjs', 'ics-import.mjs', 'core.mjs', 'ages.mjs', 'ical.mjs',
+  'ew-reader.mjs', 'suitability.mjs', 'topics.mjs', 'merge.mjs', 'guide-wellesley.mjs', 'manifest.webmanifest',
+  'atkinson-regular.woff2', 'atkinson-bold.woff2', 'icon.svg', 'icon-180.png', 'icon-192.png',
+  'events.json', 'venues.json', 'programs.json', 'providers.json', 'provider-checks.json'];
+self.addEventListener('install', (event) => event.waitUntil((async () => {
+  const cache = await caches.open(CACHE);
+  await Promise.all(APP_FILES.map(async (f) => {
+    try { const url = new URL(f, self.registration.scope); const res = await fetch(url, { cache: 'no-store' }); if (res.ok) await cache.put(new Request(url.origin + url.pathname), res); } catch { /* saved on a later visit */ }
+  }));
+  await self.skipWaiting();
+})()));
 self.addEventListener('activate', (event) => event.waitUntil((async () => {
   for (const k of await caches.keys()) if (k !== CACHE) await caches.delete(k);
   await self.clients.claim();
