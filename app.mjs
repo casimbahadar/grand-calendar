@@ -726,8 +726,23 @@ function openAddOwn(editId = null) {
   drawDays();
   $('ao-ics-status').textContent = '';
   $('ao-error').hidden = true;
+  markEmptyTimes();
   $('add-own').showModal();
 }
+// Dim time fields that have no value, since iPhone shows the current time in an empty one.
+function markEmptyTimes() {
+  for (const id of ['ao-start', 'ao-end']) $(id).classList.toggle('is-empty', !$(id).value);
+  $('ao-clear-times').hidden = !$('ao-start').value && !$('ao-end').value;
+}
+// Tapping an empty time field on iPhone fills in the current time, so both fields can end up equal.
+// When the start changes and the end is empty or not after it, set the end an hour later.
+const plusHour = (t) => { const [hh, mm] = t.split(':').map(Number); const m = Math.min(hh * 60 + mm + 60, 23 * 60 + 59); return `${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`; };
+function startChanged() {
+  const st = $('ao-start').value; const en = $('ao-end').value;
+  if (st && (!en || en <= st)) $('ao-end').value = plusHour(st);
+  markEmptyTimes();
+}
+
 function saveAddOwn(ev) {
   ev.preventDefault();
   const c = {
@@ -1414,6 +1429,8 @@ function wire() {
   $('add-own-open').addEventListener('click', () => openAddOwn());
   $('ao-repeat').addEventListener('click', (ev) => { const v = ev.target.closest('button')?.dataset.v; if (v) setRepeat(v); });
   $('add-own-form').addEventListener('submit', saveAddOwn);
+  for (const t of ['input', 'change']) { $('ao-start').addEventListener(t, startChanged); $('ao-end').addEventListener(t, markEmptyTimes); }
+  $('ao-clear-times').addEventListener('click', () => { $('ao-start').value = ''; $('ao-end').value = ''; markEmptyTimes(); });
   // Clear a shown problem as soon as anything in the form changes.
   for (const t of ['input', 'click']) $('add-own-form').addEventListener(t, (ev) => { if (ev.target.id !== 'ao-save') $('ao-error').hidden = true; });
   $('ao-cancel').addEventListener('click', () => $('add-own').close());

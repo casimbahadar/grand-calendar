@@ -380,5 +380,13 @@ html, body, button, a, input, select, textarea, label { touch-action: manipulati
 /* iPhone gives date and time fields a built-in minimum width that pushes them past the edge. */
 .field { min-width: 0; }
 .field input, .field textarea, .field select { width: 100%; min-width: 0; max-width: 100%; box-sizing: border-box; }
-input[type="date"], input[type="time"] { -webkit-appearance: none; appearance: none; display: block; min-width: 0; text-align: left; }
+/* Without iPhone's built-in styling the text sat at the top; a fixed height with flex
+   centring puts it in the middle, the same as the other fields. */
+input[type="date"], input[type="time"] {
+  -webkit-appearance: none; appearance: none; min-width: 0; text-align: left;
+  display: flex; align-items: center; height: var(--btn-h); padding-top: 0; padding-bottom: 0; line-height: normal;
+}
 input[type="date"]::-webkit-date-and-time-value, input[type="time"]::-webkit-date-and-time-value { text-align: left; margin: 0; }
+/* An empty time field on iPhone shows the current time as a placeholder; dim it so it doesn't look set. */
+input.is-empty { color: var(--ink-2); opacity: 0.6; }
+.clear-times { justify-self: start; margin-top: calc(-1 * var(--s2)); }
