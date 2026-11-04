@@ -3,6 +3,7 @@
 
 import { occurrences, monthGrid, weekOf, addDays as calAddDays, validateCustom } from './calendar.mjs';
 import { readCalendarFile } from './ics-import.mjs';
+import { buildCalendarFile, parseTimeRange } from './export-ics.mjs';
 import { fetchEw } from './ew-reader.mjs';
 import { suitabilityOf } from './suitability.mjs';
 import { TOPICS, topicsOf, searchMatch } from './topics.mjs';
@@ -572,6 +573,7 @@ function savedCard(item) {
 }
 
 function renderSaved() {
+  backupNudge();
   const firstDate = (x) => (x.kind === 'event' ? x.e.start.date : x.kind === 'custom' ? (x.c.repeat === 'once' ? x.c.date : x.c.first) : x.sessions[0].start?.date) || '9999';
   const entries = savedItems().sort((a, b) => firstDate(a).localeCompare(firstDate(b)));
   for (const b of $('seg-calview').children) b.setAttribute('aria-pressed', String(b.dataset.v === state.calView));
@@ -1336,10 +1338,69 @@ function downloadIcs(e) {
   toast('Calendar file ready. Tap Save, then open it to add the event to Calendar.');
 }
 
+// ---------- Add everything on "Your calendar" to iPhone Calendar ----------
+function calendarEntries() {
+  const out = [];
+  for (const item of savedItems()) {
+    const occ = occurrences(item.kind === 'event' ? { kind: 'event', e: item.e } : item.kind === 'custom' ? { kind: 'custom', c: item.c } : { kind: 'program', sessions: item.sessions });
+    if (!occ.dates.length) continue;
+    let title; let place; let url; let note = '';
+    if (item.kind === 'event') { title = item.e.title; place = item.e.location; url = item.e.url; note = `From ${SOURCE_NAMES[item.e.source] || 'Grand Calendar'}.`; }
+    else if (item.kind === 'custom') { title = item.c.title; place = item.c.place; url = item.c.url; note = item.c.notes || ''; }
+    else { const p = item.sessions[0]; title = baseTitle(p.title); place = p.facility || p.location; url = p.url; note = p.code ? `Registration code ${p.code}.` : ''; }
+    const endFor = (o) => o.endTime || (item.kind === 'program' ? o.session?.end?.time : item.kind === 'event' && item.e.derived?.timeListed ? item.e.end?.time : null) || null;
+    const days = occ.dates.map((o) => {
+      if (o.time) return { date: o.date, start: o.time, end: endFor(o) };
+      const r = parseTimeRange(o.timeText); // township wording, e.g. "7:15-8:15pm"
+      return { date: o.date, start: r ? r.start : null, end: r ? r.end : null };
+    });
+    out.push({ uid: item.id.replace(/[^\w:.-]/g, '-'), title, place, url, note, days });
+  }
+  return out;
+}
+let addAllRemind = 60;
+function openAddAll() {
+  const entries = calendarEntries(); const today = isoOf(new Date());
+  const days = entries.flatMap((e) => e.days).filter((d) => d.date >= today);
+  $('add-all-summary').textContent = days.length
+    ? `${days.length} calendar entr${days.length === 1 ? 'y' : 'ies'} from ${entries.length} saved item${entries.length === 1 ? '' : 's'}, from today on. Weekly classes get one entry per class day.`
+    : 'Nothing upcoming on your calendar yet. Save events or programs first.';
+  $('add-all-go').disabled = !days.length;
+  for (const b of $('add-all-remind').children) b.setAttribute('aria-pressed', String(Number(b.dataset.v) === addAllRemind));
+  $('add-all').showModal();
+}
+function makeAddAll(ev) {
+  ev.preventDefault();
+  const { text, count } = buildCalendarFile(calendarEntries(), { from: isoOf(new Date()), reminderMinutes: addAllRemind });
+  const a = h('a', { href: URL.createObjectURL(new Blob([text], { type: 'text/calendar' })), download: `grand-calendar-${isoOf(new Date())}.ics` });
+  document.body.append(a); a.click(); a.remove();
+  $('add-all').close();
+  toast(`Calendar file with ${count} entr${count === 1 ? 'y' : 'ies'} ready. Tap Save, then open it and choose Add All.`);
+}
+
+// ---------- Backup reminder ----------
+// Saved items live only on this phone. Remind once a month (when there's something new to back up).
+const savedFingerprint = () => Object.keys(state.saved).sort().join('|');
+function backupNudge() {
+  const n = Object.keys(state.saved).length;
+  const box = $('backup-nudge');
+  const b = store.get('backup', {});
+  const due = n >= 3 && b.fingerprint !== savedFingerprint() && (!b.at || Date.now() - Date.parse(b.at) > 30 * 86400000) && !(b.snoozeUntil && Date.now() < Date.parse(b.snoozeUntil));
+  if (!due) { box.replaceChildren(); return; }
+  box.replaceChildren(h('div', { class: 'nudge', role: 'status' },
+    h('p', { text: `You have ${n} saved items, kept only on this phone. Removing the app from the Home Screen would delete them. Save a backup file?` }),
+    h('div', { class: 'btn-row' },
+      h('button', { type: 'button', class: 'btn primary', text: 'Back up now', onclick: () => exportSaved() }),
+      h('button', { type: 'button', class: 'btn', text: 'Later', onclick: () => { store.set('backup', { ...b, snoozeUntil: new Date(Date.now() + 14 * 86400000).toISOString() }); backupNudge(); } }))));
+}
+
 function exportSaved() {
   const blob = new Blob([JSON.stringify({ app: 'Grand Calendar', version: 1, exportedAt: new Date().toISOString(), saved: state.saved }, null, 1)], { type: 'application/json' });
   const a = h('a', { href: URL.createObjectURL(blob), download: `grand-calendar-saved-${isoOf(new Date())}.json` });
   document.body.append(a); a.click(); a.remove();
+  store.set('backup', { at: new Date().toISOString(), fingerprint: savedFingerprint() });
+  backupNudge();
+  toast('Backup file ready. Tap Save and keep it in Files or iCloud Drive. Import it from Calendar, List to restore.');
 }
 
 async function importSaved(file) {
@@ -1412,6 +1473,23 @@ document.addEventListener('click', (ev) => {
   ev.preventDefault();
   window.location.href = chrome;
 });
+
+// ---------- Larger text ----------
+// When the iPhone Text Size setting is well above the default (17px), switch on a layout
+// designed for it, instead of letting the normal layout wrap wherever it happens to break.
+function markTextSize() {
+  const px = parseFloat(getComputedStyle(document.documentElement).fontSize) || 17;
+  const big = px >= 20;
+  document.documentElement.classList.toggle('big-text', big);
+  // Shorter search hints, so large text isn't cut off mid-word.
+  for (const el of document.querySelectorAll('input[data-short]')) {
+    if (!el.dataset.long) el.dataset.long = el.placeholder;
+    el.placeholder = big ? el.dataset.short : el.dataset.long;
+  }
+}
+markTextSize();
+window.addEventListener('resize', markTextSize);
+document.addEventListener('visibilitychange', () => { if (!document.hidden) markTextSize(); });
 
 // ---------- Wiring ----------
 function wire() {
@@ -1512,6 +1590,10 @@ function wire() {
   $('open-chrome').checked = store.get('openInChrome', false);
   $('open-chrome').addEventListener('change', (ev) => { store.set('openInChrome', ev.target.checked); toast(ev.target.checked ? 'Links will open in Chrome.' : 'Links will open the usual way.'); });
   $('add-own-open').addEventListener('click', () => openAddOwn());
+  $('add-all-open').addEventListener('click', openAddAll);
+  $('add-all-cancel').addEventListener('click', () => $('add-all').close());
+  $('add-all-form').addEventListener('submit', makeAddAll);
+  $('add-all-remind').addEventListener('click', (ev) => { const v = ev.target.closest('button')?.dataset.v; if (v !== undefined) { addAllRemind = Number(v); for (const b of $('add-all-remind').children) b.setAttribute('aria-pressed', String(b.dataset.v === v)); } });
   $('ao-repeat').addEventListener('click', (ev) => { const v = ev.target.closest('button')?.dataset.v; if (v) setRepeat(v); });
   $('add-own-form').addEventListener('submit', saveAddOwn);
   for (const t of ['input', 'change']) { $('ao-start').addEventListener(t, startChanged); $('ao-end').addEventListener(t, markEmptyTimes); }
@@ -1582,4 +1664,4 @@ loadProviders();
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => { /* alerts just won't be available */ });
 
 // For testing in a headless browser.
-window.__gc = { state, filtered, load, render, filteredPrograms, makePushKeys, savedItems };
+window.__gc = { markTextSize, state, filtered, load, render, filteredPrograms, makePushKeys, savedItems };

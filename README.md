@@ -16,7 +16,7 @@ Live at: https://casimbahadar.github.io/grand-calendar/
 - **Less effort:** the app remembers your last tab and filter choices, and long link lists fold into one row.
 - **Links in Chrome:** a per-phone setting opens outside links in the Chrome app on iPhone (off by default, so others keep their own browser).
 - **Fast and offline:** the app opens with its saved copy of the events and refreshes in the background; with no signal it opens from the copy the service worker keeps.
-- **Your calendar:** a Calendar tab showing only what you saved, as a month grid or a week strip, with the chosen day's items below. Weekly programs appear on every class day the source states. **Add your own** covers things the app can't read, like an ActiveNet registration or private lessons: one day, or chosen weekdays between a first and last date. It can also import a calendar file, or the calendar link from an ActiveNet receipt, with a check-before-adding preview. A List view keeps export, import and Add to Calendar.
+- **Your calendar:** a Calendar tab showing only what you saved, as a month grid or a week strip, with the chosen day's items below. Weekly programs appear on every class day the source states. **Add your own** covers things the app can't read, like an ActiveNet registration or private lessons: one day, or chosen weekdays between a first and last date. It can also import a calendar file, or the calendar link from an ActiveNet receipt, with a check-before-adding preview. A List view keeps export, import and Add to Calendar. **Add all to iPhone Calendar** makes one calendar file with every upcoming class day and event, with an optional reminder. A monthly reminder offers a backup of saved items, which live only on the phone.
 - **Season alerts:** a phone notification when a new program guide season appears.
 
 ## Accuracy rules
@@ -79,6 +79,7 @@ All files sit at the repo root except the workflow.
 - `topics.mjs`: topic groups and search.
 - `merge.mjs`: merges duplicate listings.
 - `calendar.mjs`: works out which days each saved item happens on, from stated days only.
+- `export-ics.mjs`: builds the "Add all to iPhone Calendar" file (one entry per day, stable IDs, optional reminders).
 - `ics-import.mjs`: reads calendar files you import (weekly and daily repeats, skipped dates); patterns it can't read are reported, not guessed.
 
 **GitHub job**
@@ -99,7 +100,7 @@ All files sit at the repo root except the workflow.
 - `worker.js`: paste this into a Cloudflare Worker. It isn't used from the repo itself.
 
 **Tests**
-- `test-ages.mjs`, `test-gather.mjs`, `test-rules.mjs`, `test-guide.mjs`, `test-calendar.mjs`, `test-import.mjs`, `test-providers.mjs`, with saved copies of real source data (`*-sample.*`, `wpl-page-*.html`).
+- `test-ages.mjs`, `test-gather.mjs`, `test-rules.mjs`, `test-guide.mjs`, `test-calendar.mjs`, `test-import.mjs`, `test-providers.mjs`, `test-export.mjs`, with saved copies of real source data (`*-sample.*`, `wpl-page-*.html`).
 
 ## Setup
 
@@ -137,6 +138,7 @@ node test-guide.mjs
 node test-calendar.mjs
 node test-import.mjs
 node test-providers.mjs
+node test-export.mjs
 ```
 
 The workflow runs these before every gather. If any fail, nothing is published and the previous data stays in place.
@@ -149,6 +151,11 @@ The workflow runs these before every gather. If any fail, nothing is published a
 - **Places in the area.** The list of town and village names that count as in the area is in `core.mjs` (`IN_REGION`).
 - **Topic words.** Each topic's word list is in `topics.mjs`.
 - **Polite requests.** The job identifies itself as GrandCalendar, checks the library's robots.txt before reading its feed, and pauses between page requests. Explore Waterloo is read from the phone, at most every 6 hours.
+
+## Accessibility
+
+- Text follows the iPhone's Text Size setting (Settings, Display & Brightness, Text Size, or Accessibility, Larger Text); the default size looks as designed. Well above the default, a larger-text layout switches on: one-line title, selectors as tidy grids, the month name on its own line, stacked buttons and shorter search hints. Checked at four sizes up to a large accessibility size with nothing cut off or running off the screen.
+- Checked with the axe accessibility checker on every tab, card and dialog in light and dark mode: no violations (labels, button names, roles, colour contrast).
 
 ## Privacy
 

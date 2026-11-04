@@ -41,7 +41,7 @@
       <button type="button" class="btn quiet preset-programs" id="preset-programs" hidden></button>
       <label class="search">
         <span class="visually-hidden">Search events</span>
-        <input id="q" type="search" inputmode="search" autocomplete="off" placeholder="Search, e.g. chess or storytime">
+        <input id="q" type="search" inputmode="search" autocomplete="off" placeholder="Search, e.g. chess or storytime" data-short="Search events">
       </label>
       <div class="chips" id="topics" role="group" aria-label="Topics"></div>
 
@@ -81,7 +81,7 @@
     <div class="controls">
       <label class="search">
         <span class="visually-hidden">Search programs</span>
-        <input id="pq" type="search" inputmode="search" autocomplete="off" placeholder="Search, e.g. dance or karate">
+        <input id="pq" type="search" inputmode="search" autocomplete="off" placeholder="Search, e.g. dance or karate" data-short="Search programs">
       </label>
       <div class="seg" role="group" aria-label="Who it's for" id="seg-pwho">
         <button type="button" data-v="everyone">Everyone</button>
@@ -113,7 +113,7 @@
     <div class="controls">
       <label class="search">
         <span class="visually-hidden">Search providers</span>
-        <input id="provq" type="search" inputmode="search" autocomplete="off" placeholder="Search, e.g. ballet or swim">
+        <input id="provq" type="search" inputmode="search" autocomplete="off" placeholder="Search, e.g. ballet or swim" data-short="Search providers">
       </label>
       <div class="seg" role="group" aria-label="Who it's for" id="seg-provwho">
         <button type="button" data-v="everyone">Everyone</button>
@@ -137,7 +137,11 @@
       <button type="button" data-v="week">Week</button>
       <button type="button" data-v="list">List</button>
     </div>
-    <button type="button" class="btn add-own" id="add-own-open">Add your own</button>
+    <div id="backup-nudge"></div>
+    <div class="btn-row cal-actions">
+      <button type="button" class="btn add-own" id="add-own-open">Add your own</button>
+      <button type="button" class="btn add-own" id="add-all-open">Add all to iPhone Calendar</button>
+    </div>
     <div id="cal-body"></div>
     <div id="cal-list" hidden>
       <p class="muted">Saved on this phone only. Export a copy now and then: removing the app from your Home Screen deletes them.</p>
@@ -271,6 +275,26 @@
       <div class="btn-row">
         <button type="button" class="btn" id="ao-cancel">Cancel</button>
         <button type="submit" class="btn primary" id="ao-save">Save to calendar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="add-all" aria-labelledby="add-all-h">
+    <form class="sheet" id="add-all-form">
+      <h2 id="add-all-h">Add all to iPhone Calendar</h2>
+      <p class="hint" id="add-all-summary"></p>
+      <fieldset>
+        <legend>Reminder</legend>
+        <div class="seg" role="group" aria-label="Reminder" id="add-all-remind">
+          <button type="button" data-v="0" aria-pressed="false">None</button>
+          <button type="button" data-v="60" aria-pressed="true">1 hour before</button>
+          <button type="button" data-v="1440" aria-pressed="false">1 day before</button>
+        </div>
+      </fieldset>
+      <p class="hint">You'll get one calendar file. Tap Save, then open it and choose Add All. Adding it again later may create copies in some calendars, so it's best to add once after planning.</p>
+      <div class="btn-row">
+        <button type="button" class="btn" id="add-all-cancel">Cancel</button>
+        <button type="submit" class="btn primary" id="add-all-go">Make calendar file</button>
       </div>
     </form>
   </dialog>

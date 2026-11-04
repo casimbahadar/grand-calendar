@@ -7,7 +7,7 @@ const LONG_LIVED = /\.(woff2|png|svg)$/; // fonts and icons rarely change: copy 
 
 // Everything the app needs to open with no signal, saved as soon as this worker installs
 // (the first visit's own page loads before the worker takes over, so it can't wait for that).
-const APP_FILES = ['./', 'index.html', 'app.css', 'app.mjs', 'calendar.mjs', 'ics-import.mjs', 'core.mjs', 'ages.mjs', 'ical.mjs',
+const APP_FILES = ['./', 'index.html', 'app.css', 'app.mjs', 'calendar.mjs', 'ics-import.mjs', 'export-ics.mjs', 'core.mjs', 'ages.mjs', 'ical.mjs',
   'ew-reader.mjs', 'suitability.mjs', 'topics.mjs', 'merge.mjs', 'guide-wellesley.mjs', 'manifest.webmanifest',
   'atkinson-regular.woff2', 'atkinson-bold.woff2', 'icon.svg', 'icon-180.png', 'icon-192.png',
   'events.json', 'venues.json', 'programs.json', 'providers.json', 'provider-checks.json'];
