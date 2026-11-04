@@ -260,7 +260,7 @@ label.select { display: grid; gap: var(--s1); font-size: 14px; color: var(--ink-
 .btn.icon { width: var(--btn-h); min-width: var(--btn-h); padding: 0; font-size: 24px; line-height: 1; justify-content: center; }
 .btn.cal-today { padding-left: var(--s3); padding-right: var(--s3); }
 
-.cal-month { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; margin-top: var(--s3); touch-action: pan-y; }
+.cal-month { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; margin-top: var(--s3); touch-action: manipulation; }
 .cal-head { text-align: center; font-size: 13px; font-weight: 700; color: var(--ink-2); padding: var(--s1) 0; }
 .cal-day {
   position: relative; display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
@@ -279,7 +279,7 @@ label.select { display: grid; gap: var(--s1); font-size: 14px; color: var(--ink-
 .mark.program { background: var(--new); border-radius: 2px; } /* square, so shape differs as well as colour */
 @media (hover: hover) { .cal-day:hover { background: var(--river-100); } }
 
-.cal-week { display: flex; gap: 4px; margin-top: var(--s3); touch-action: pan-y; }
+.cal-week { display: flex; gap: 4px; margin-top: var(--s3); touch-action: manipulation; }
 .cal-week .cal-day { flex: 1; min-height: 72px; background: var(--surface); border: 1px solid var(--line); }
 .cal-week .cal-day.is-selected { background: var(--river-100); border-color: var(--river-500); }
 .cal-wd { font-size: 13px; color: var(--ink-2); margin-bottom: 2px; }
@@ -373,3 +373,12 @@ details.fold > .link-list { margin-bottom: var(--s4); }
 .prov-row .badge.stale-b { background: rgba(180,60,40,.12); color: var(--ink); }
 .prov-card.open { border-color: var(--river-500); }
 .prov-card .prov-more { margin-top: var(--s3); border-top: 1px solid var(--line); padding-top: var(--s3); }
+
+/* No double-tap zoom anywhere (taps on buttons were zooming the page); pinch-to-zoom still works. */
+html, body, button, a, input, select, textarea, label { touch-action: manipulation; }
+
+/* iPhone gives date and time fields a built-in minimum width that pushes them past the edge. */
+.field { min-width: 0; }
+.field input, .field textarea, .field select { width: 100%; min-width: 0; max-width: 100%; box-sizing: border-box; }
+input[type="date"], input[type="time"] { -webkit-appearance: none; appearance: none; display: block; min-width: 0; text-align: left; }
+input[type="date"]::-webkit-date-and-time-value, input[type="time"]::-webkit-date-and-time-value { text-align: left; margin: 0; }

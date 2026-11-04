@@ -454,8 +454,10 @@ function render() {
 function renderStatus() {
   if (!state.status.length) return;
   const bad = state.status.filter((s) => !s.ok).length;
-  const oldest = state.status.filter((s) => s.ok && s.at).map((s) => s.at).sort()[0];
-  $('status-summary').textContent = `${oldest ? `Updated ${ago(oldest)}` : 'Not updated'}${bad ? `, ${bad} problem${bad === 1 ? '' : 's'}` : ''}`;
+  // The newest update is what "Updated" means to a reader; each source's own time is in the list below,
+  // and a source that's really stale still shows as a problem there.
+  const newest = state.status.filter((s) => s.ok && s.at).map((s) => s.at).sort().slice(-1)[0];
+  $('status-summary').textContent = `${newest ? `Updated ${ago(newest)}` : 'Not updated'}${bad ? `, ${bad} problem${bad === 1 ? '' : 's'}` : ''}`;
   $('status-summary').classList.toggle('bad', bad > 0);
   $('status-list').replaceChildren(...state.status.map((s) => h('li', { class: s.ok ? null : 'bad', text: `${s.name}: ${s.detail}` })));
 }
@@ -576,12 +578,7 @@ function renderCalendar(entries) {
   }
   const sel = state.calDay;
   const body = $('cal-body');
-  if (!entries.length) {
-    body.replaceChildren(h('div', { class: 'empty' },
-      h('p', { text: 'Your calendar is empty. Save an event or a program and it shows up here on every day it happens, or use Add your own.' }),
-      h('button', { type: 'button', class: 'btn primary', text: 'Browse events', onclick: () => document.querySelector('.tabs button[data-view="events"]').click() })));
-    return;
-  }
+  const isEmpty = !entries.length;
   const monthName = (iso) => dateOf(iso).toLocaleDateString('en-CA', { month: 'long', year: 'numeric' });
   const dayLabel = (iso) => dateOf(iso).toLocaleDateString('en-CA', { weekday: 'long', month: 'long', day: 'numeric' });
   const countFor = (iso) => (byDay.get(iso) || []).length;
@@ -619,7 +616,11 @@ function renderCalendar(entries) {
   const list = (byDay.get(sel) || []).sort((a, b) => String(a.o.time || a.o.timeText || 'zz').localeCompare(String(b.o.time || b.o.timeText || 'zz')));
   const agenda = h('section', { class: 'cal-agenda', 'aria-live': 'polite' },
     h('h3', { text: `${dayLabel(sel)}${sel === today ? ' (today)' : ''}` }),
-    list.length ? list.map(({ item, o }) => agendaRow(item, o, sel)) : h('p', { class: 'muted', text: 'Nothing saved for this day.' }));
+    list.length ? list.map(({ item, o }) => agendaRow(item, o, sel))
+      : isEmpty ? h('div', { class: 'empty' },
+        h('p', { text: 'Your calendar is empty. Save an event or a program and it shows up here on every day it happens, or use Add your own.' }),
+        h('button', { type: 'button', class: 'btn primary', text: 'Browse events', onclick: () => document.querySelector('.tabs button[data-view="events"]').click() }))
+        : h('p', { class: 'muted', text: 'Nothing saved for this day.' }));
 
   body.replaceChildren(...[nav, grid,
     h('p', { class: 'cal-legend' }, h('i', { class: 'mark event', 'aria-hidden': 'true' }), ' Event ', h('i', { class: 'mark program', 'aria-hidden': 'true' }), ' Program ', h('i', { class: 'mark custom', 'aria-hidden': 'true' }), ' Yours'),
@@ -820,14 +821,25 @@ function deleteCustom(id) {
 
 // Swipe left or right on the grid to change month or week.
 function swipe(el, onLeft, onRight) {
-  let x0 = null; let y0 = null;
-  el.addEventListener('touchstart', (ev) => { x0 = ev.touches[0].clientX; y0 = ev.touches[0].clientY; }, { passive: true });
+  let x0 = null; let y0 = null; let dir = null;
+  el.addEventListener('touchstart', (ev) => {
+    if (ev.touches.length !== 1) { x0 = null; return; } // leave pinch-zoom alone
+    x0 = ev.touches[0].clientX; y0 = ev.touches[0].clientY; dir = null;
+  }, { passive: true });
+  el.addEventListener('touchmove', (ev) => {
+    if (x0 === null) return;
+    const dx = ev.touches[0].clientX - x0; const dy = ev.touches[0].clientY - y0;
+    if (!dir && Math.hypot(dx, dy) > 8) dir = Math.abs(dx) > Math.abs(dy) ? 'side' : 'down';
+    if (dir === 'side') ev.preventDefault(); // lock the page while swiping sideways
+  }, { passive: false });
   el.addEventListener('touchend', (ev) => {
     if (x0 === null) return;
-    const dx = ev.changedTouches[0].clientX - x0; const dy = ev.changedTouches[0].clientY - y0;
-    x0 = null;
-    if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) (dx < 0 ? onLeft : onRight)();
+    const dx = ev.changedTouches[0].clientX - x0;
+    const wasSide = dir === 'side';
+    x0 = null; dir = null;
+    if (wasSide && Math.abs(dx) > 40) (dx < 0 ? onLeft : onRight)();
   });
+  el.addEventListener('touchcancel', () => { x0 = null; dir = null; });
 }
 
 function renderElsewhere() {
