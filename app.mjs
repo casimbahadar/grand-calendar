@@ -34,7 +34,8 @@ const state = {
   geoCache: store.get('geo', {}),
   status: [],
   dates: '2w', from: null, to: null,
-  preset: false,           // the "This weekend for her age" shortcut is on
+  preset: false,           // the "This weekend" shortcut is on
+  hasKids: store.get('hasKids', true), // false hides the kids options (set on the welcome screen or in Settings)
   who: 'everyone',
   topics: new Set(),
   q: '',
@@ -457,6 +458,7 @@ function cardBody(x, id) {
 }
 
 function render() {
+  applyKidsSetting();
   renderStatus();
   renderControls();
   if (state.view === 'events') renderEvents();
@@ -465,6 +467,12 @@ function render() {
   else renderSaved();
   renderElsewhere();
   $('saved-count').textContent = Object.keys(state.saved).length ? `(${Object.keys(state.saved).length})` : '';
+}
+
+function applyKidsSetting() {
+  for (const id of ['seg-who', 'seg-pwho', 'seg-provwho']) { const b = document.querySelector(`#${id} button[data-v="kids"]`); if (b) b.hidden = !state.hasKids; }
+  if (!state.hasKids) { if (state.who === 'kids') state.who = 'everyone'; if (state.pwho === 'kids') state.pwho = 'everyone'; if (state.provWho === 'kids') state.provWho = 'everyone'; }
+  $('has-kids').checked = state.hasKids; $('kid-ages').hidden = !state.hasKids;
 }
 
 function renderStatus() {
@@ -482,10 +490,11 @@ function renderControls() {
   for (const b of $('seg-dates').children) b.setAttribute('aria-pressed', String(b.dataset.v === state.dates));
   const ages = `ages ${state.kid.min} to ${state.kid.max}`;
   $('preset-weekend').setAttribute('aria-pressed', String(state.preset));
-  $('preset-weekend').firstChild.textContent = state.preset ? `This weekend, ${ages}` : `This weekend for ${ages}`;
-  $('preset-sub').textContent = state.preset ? (state.loc ? 'Nearest first. Tap again to go back to all events.' : 'Set your location in Filters to see the nearest first. Tap again to go back.') : 'One tap: this weekend, for her age, nearest first.';
+  $('preset-weekend').firstChild.textContent = state.hasKids ? (state.preset ? `This weekend, ${ages}` : `This weekend for ${ages}`) : 'This weekend';
+  $('preset-sub').textContent = state.preset ? (state.loc ? 'Nearest first. Tap again to go back to all events.' : 'Set your location in Filters to see the nearest first. Tap again to go back.')
+    : state.hasKids ? `One tap: this weekend, for kids ${ages}, nearest first.` : 'One tap: everything this weekend, nearest first.';
   const soonHint = $('preset-programs');
-  if (state.preset && state.programsReady === true) {
+  if (state.preset && state.hasKids && state.programsReady === true) {
     const today = isoOf(new Date()); const in28 = isoOf(new Date(Date.now() + 28 * 86400000));
     const soon = new Set(state.programs.filter((p) => p.start && p.start.date >= today && p.start.date <= in28 && programFits(p)).map((p) => `${p.source}|${p.title}`));
     soonHint.hidden = !soon.size;
@@ -1136,6 +1145,7 @@ function renderProgramCats() {
 
 function renderPrograms() {
   renderProgramCats();
+  document.querySelector('#view-programs .websearch').hidden = !store.get('searchUrl', '');
   $('pkids-btn').textContent = $('kids-btn').textContent;
   for (const b of $('seg-pwho').children) b.setAttribute('aria-pressed', String(b.dataset.v === state.pwho));
   $('p-upcoming').checked = state.pUpcoming;
@@ -1506,7 +1516,7 @@ function wire() {
   });
   $('preset-weekend').addEventListener('click', () => {
     if (state.preset) { state.preset = false; state.dates = '2w'; state.who = 'everyone'; render(); return; }
-    state.preset = true; state.dates = 'weekend'; state.who = 'kids'; render(); window.scrollTo(0, 0);
+    state.preset = true; state.dates = 'weekend'; state.who = state.hasKids ? 'kids' : 'everyone'; render(); window.scrollTo(0, 0);
   });
   $('seg-who').addEventListener('click', (ev) => { const v = ev.target.closest('button')?.dataset.v; if (v) { state.who = v; state.preset = false; render(); } });
   $('d-from').addEventListener('change', (ev) => { state.from = ev.target.value; render(); });
@@ -1550,6 +1560,32 @@ function wire() {
     state.kid = { min, max }; store.set('kid', state.kid); render();
   };
   $('kid-min').addEventListener('change', kidChange); $('kid-max').addEventListener('change', kidChange);
+  $('has-kids').addEventListener('change', (ev) => { state.hasKids = ev.target.checked; store.set('hasKids', state.hasKids); state.preset = false; render(); });
+  $('share-app').addEventListener('click', async () => {
+    const url = location.origin + location.pathname.replace(/index\.html$/, '');
+    const data = { title: 'Grand Calendar', text: 'Free events, programs and activities across Waterloo Region, in one place.', url };
+    try {
+      if (navigator.share) { await navigator.share(data); $('share-result').textContent = ''; return; }
+      await navigator.clipboard.writeText(url); $('share-result').textContent = `Link copied: ${url}`;
+    } catch (err) { if (err?.name !== 'AbortError') $('share-result').textContent = `Share this link: ${url}`; }
+  });
+  // First visit: a short welcome that asks who the app is for. Existing users skip it.
+  if (!store.get('setupDone', false)) {
+    const existing = Object.keys(localStorage).some((k) => /^grandcal:(saved|kid|ew|prefs|calView)$/.test(k));
+    if (existing) store.set('setupDone', true);
+    else {
+      let who = 'kids';
+      kidOpts($('welcome-min'), state.kid.min); kidOpts($('welcome-max'), state.kid.max);
+      $('welcome-who').addEventListener('click', (ev) => { const v = ev.target.closest('button')?.dataset.v; if (!v) return; who = v; for (const b of $('welcome-who').children) b.setAttribute('aria-pressed', String(b.dataset.v === v)); $('welcome-ages').hidden = v !== 'kids'; });
+      $('welcome-form').addEventListener('submit', (ev) => {
+        ev.preventDefault();
+        state.hasKids = who === 'kids'; store.set('hasKids', state.hasKids);
+        if (state.hasKids) { let min = +$('welcome-min').value; let max = +$('welcome-max').value; if (min > max) [min, max] = [max, min]; state.kid = { min, max }; store.set('kid', state.kid); kidOpts($('kid-min'), min); kidOpts($('kid-max'), max); }
+        store.set('setupDone', true); $('welcome').close(); render();
+      });
+      $('welcome').showModal();
+    }
+  }
   $('settings-open').addEventListener('click', () => $('settings').showModal());
   $('refresh-now').addEventListener('click', () => { $('settings').close(); load(true); });
   $('test-sources').addEventListener('click', testSources);

@@ -312,21 +312,41 @@
     </form>
   </dialog>
 
+  <dialog id="welcome" aria-labelledby="welcome-h">
+    <form class="sheet" id="welcome-form">
+      <h2 id="welcome-h">Welcome to Grand Calendar</h2>
+      <p>Events, programs and activity providers across Waterloo Region, in one place. Free, no account, and what you save stays on this phone.</p>
+      <fieldset>
+        <legend>Who are you looking for?</legend>
+        <div class="seg" role="group" aria-label="Who are you looking for" id="welcome-who">
+          <button type="button" data-v="adults" aria-pressed="false">Just adults</button>
+          <button type="button" data-v="kids" aria-pressed="true">Kids too</button>
+        </div>
+      </fieldset>
+      <fieldset id="welcome-ages">
+        <legend>Kids' ages</legend>
+        <div class="btn-row">
+          <label class="select">From <select id="welcome-min"></select></label>
+          <label class="select">to <select id="welcome-max"></select></label>
+        </div>
+        <p class="hint">Used for Kids mode and the weekend shortcut. You can change it any time in Settings.</p>
+      </fieldset>
+      <div class="btn-row"><button type="submit" class="btn primary" autofocus>Start</button></div>
+    </form>
+  </dialog>
+
   <dialog id="settings" aria-labelledby="settings-h">
     <form method="dialog" class="sheet">
       <h2 id="settings-h">Settings</h2>
+      <h3 class="settings-group">Your setup</h3>
       <fieldset>
-        <legend>Kids mode ages</legend>
-        <div class="btn-row">
-          <label class="select">From <select id="kid-min"></select></label>
-          <label class="select">To <select id="kid-max"></select></label>
+        <legend>Kids</legend>
+        <label class="check"><input type="checkbox" id="has-kids"> Show kids options</label>
+        <div class="btn-row" id="kid-ages">
+          <label class="select">Ages from <select id="kid-min"></select></label>
+          <label class="select">to <select id="kid-max"></select></label>
         </div>
         <p class="hint">Kids mode shows events whose source says they suit these ages, then events for families or all ages, then events with no age listed.</p>
-      </fieldset>
-      <fieldset>
-        <legend>Event lists</legend>
-        <button type="button" class="btn" id="refresh-now">Refresh Explore Waterloo now</button>
-        <p class="hint">Explore Waterloo is read on this phone and refreshed when your copy is over 6 hours old. Library events refresh on GitHub every hour.</p>
       </fieldset>
       <fieldset>
         <legend>Links</legend>
@@ -334,36 +354,73 @@
         <p class="hint">Links to other sites open in the Chrome app instead of wherever iPhone sends them. This only changes this phone.</p>
       </fieldset>
       <fieldset>
-        <legend>Season alerts</legend>
-        <p class="hint" id="push-status">Get a notification on this phone when a new program guide comes out.</p>
-        <button type="button" class="btn" id="push-on">Turn on alerts</button>
-        <div id="push-code-box" hidden>
-          <p class="hint">Last step: copy this code and save it in GitHub as a secret named PUSH_CONFIG (repo Settings, Secrets and variables, Actions). It lets only your repo send alerts to only this phone. Don't share it.</p>
-          <textarea id="push-code" rows="4" readonly></textarea>
-          <button type="button" class="btn" id="push-copy">Copy code</button>
-        </div>
+        <legend>Event lists</legend>
+        <button type="button" class="btn" id="refresh-now">Refresh Explore Waterloo now</button>
+        <p class="hint">Explore Waterloo is read on this phone and refreshed when your copy is over 6 hours old. Library events and program guides are gathered by the app's server job every few hours.</p>
       </fieldset>
+
+      <h3 class="settings-group">Share Grand Calendar</h3>
       <fieldset>
-        <legend>Live search</legend>
-        <p class="hint">The address of your search helper (a Cloudflare Worker), for example https://grand-calendar-search.yourname.workers.dev</p>
-        <div class="place-row">
-          <label class="visually-hidden" for="search-url">Search helper address</label>
-          <input id="search-url" type="url" inputmode="url" autocomplete="off" placeholder="https://...workers.dev">
-          <button type="button" class="btn" id="search-url-save">Save</button>
-        </div>
-        <button type="button" class="btn" id="search-test">Test helper</button>
-        <p class="hint" id="search-test-result" aria-live="polite"></p>
+        <legend>Send the app to someone</legend>
+        <button type="button" class="btn primary" id="share-app">Share Grand Calendar</button>
+        <p class="hint" id="share-result" aria-live="polite"></p>
+        <details class="fold-inline">
+          <summary>How to add it to a Home Screen</summary>
+          <p class="hint"><strong>iPhone (Safari or Chrome):</strong> open the link, tap the Share button, then Add to Home Screen. If you see Open as Web App, leave it on. Then open Grand Calendar from its new icon.</p>
+          <p class="hint"><strong>Android (Chrome):</strong> open the link, tap the ⋮ menu, then Add to Home screen or Install app.</p>
+          <p class="hint">Saved items and settings stay on each phone. Nobody else can see them.</p>
+        </details>
       </fieldset>
+
+      <h3 class="settings-group">About and privacy</h3>
       <fieldset>
-        <legend>Test other sources</legend>
-        <button type="button" class="btn" id="test-sources">Test from this phone</button>
-        <p class="hint">Tries reading three calendars that blocked Grand Calendar's servers, from your phone instead. Takes a few seconds. Screenshot the result and send it.</p>
-        <ul class="test-results" id="test-results"></ul>
+        <legend>About Grand Calendar</legend>
+        <p class="hint">A free app that gathers events, programs and activity providers across Waterloo Region and Stratford in one place. No ads, no accounts, nothing to pay for.</p>
+        <details class="fold-inline">
+          <summary>Where the information comes from</summary>
+          <p class="hint">Events: Explore Waterloo Region and Waterloo Public Library. Programs: the City of Waterloo program guide and the Township of Wellesley's programs page. Providers: each provider's own website, checked by hand and rechecked monthly. Every item links to its source.</p>
+          <p class="hint">Ages, times and prices are shown only as each source states them. Details change, so check with the source before you go or register.</p>
+          <p class="hint">Venue locations © OpenStreetMap contributors (ODbL). Text set in Atkinson Hyperlegible (SIL Open Font License).</p>
+        </details>
+        <details class="fold-inline">
+          <summary>Privacy</summary>
+          <p class="hint">Everything you save, your settings and your location stay on this phone. Grand Calendar has no accounts and collects nothing about you.</p>
+          <p class="hint">To show events, this phone reads Explore Waterloo's public calendar directly, and looks up new venue addresses on OpenStreetMap (the address only, never your location). Your location, if you share it, is used only on this phone, rounded to about 1 km.</p>
+          <p class="hint">Removing the app from your Home Screen deletes everything saved in it. Use Calendar, List, Export saved to keep a backup.</p>
+        </details>
       </fieldset>
-      <fieldset>
-        <legend>About</legend>
-        <p class="hint">Events come from Explore Waterloo Region and Waterloo Public Library. Every event links to its source. Venue locations © OpenStreetMap contributors (ODbL). Your location stays on this phone, rounded to about 1 km.</p>
-      </fieldset>
+
+      <details class="owner-setup">
+        <summary>For the app's owner</summary>
+        <p class="hint">These settings are for the person who runs this copy of Grand Calendar. Everyone else can ignore them.</p>
+        <fieldset>
+          <legend>Season alerts</legend>
+          <p class="hint" id="push-status">Get a notification on this phone when a new program guide comes out.</p>
+          <button type="button" class="btn" id="push-on">Turn on alerts</button>
+          <div id="push-code-box" hidden>
+            <p class="hint">Last step: copy this code and save it in GitHub as a secret named PUSH_CONFIG (repo Settings, Secrets and variables, Actions). It lets only your repo send alerts to only this phone. Don't share it.</p>
+            <textarea id="push-code" rows="4" readonly></textarea>
+            <button type="button" class="btn" id="push-copy">Copy code</button>
+          </div>
+        </fieldset>
+        <fieldset>
+          <legend>Live search</legend>
+          <p class="hint">The address of your search helper (a Cloudflare Worker), for example https://grand-calendar-search.yourname.workers.dev. Without it, the Programs tab's web search stays hidden.</p>
+          <div class="place-row">
+            <label class="visually-hidden" for="search-url">Search helper address</label>
+            <input id="search-url" type="url" inputmode="url" autocomplete="off" placeholder="https://...workers.dev">
+            <button type="button" class="btn" id="search-url-save">Save</button>
+          </div>
+          <button type="button" class="btn" id="search-test">Test helper</button>
+          <p class="hint" id="search-test-result" aria-live="polite"></p>
+        </fieldset>
+        <fieldset>
+          <legend>Test other sources</legend>
+          <button type="button" class="btn" id="test-sources">Test from this phone</button>
+          <p class="hint">Tries reading three calendars that blocked Grand Calendar's servers, from this phone instead. Takes a few seconds.</p>
+          <ul class="test-results" id="test-results"></ul>
+        </fieldset>
+      </details>
       <div class="btn-row"><button class="btn primary" value="done">Done</button></div>
     </form>
   </dialog>

@@ -152,6 +152,16 @@ The workflow runs these before every gather. If any fail, nothing is published a
 - **Topic words.** Each topic's word list is in `topics.mjs`.
 - **Polite requests.** The job identifies itself as GrandCalendar, checks the library's robots.txt before reading its feed, and pauses between page requests. Explore Waterloo is read from the phone, at most every 6 hours.
 
+## Sharing the app
+
+- **Link:** https://casimbahadar.github.io/grand-calendar/ (Settings, Share Grand Calendar opens the phone's share sheet).
+- **First visit:** a short welcome asks who it's for (just adults, or kids and their ages). It sets Kids mode and the weekend shortcut and can be changed in Settings. Phones already using the app skip it.
+- **What other people get:** everything except two owner-only features, which are in Settings under "For the app's owner":
+  - **Season alerts** go only to the owner's phone (its code is in the PUSH_CONFIG secret). Others see new guides in the Programs tab and can add registration dates to their calendar.
+  - **Live search** needs the owner's search helper address, so the Programs tab's web search stays hidden on other phones. Typing in the search boxes and all filters work for everyone and use no credits.
+- **Privacy:** Settings, About and privacy explains it: saved items, settings and location stay on each phone; no accounts; nothing collected.
+- **Adding to a Home Screen:** iPhone (Safari or Chrome): Share, then Add to Home Screen, leaving Open as Web App on. Android (Chrome): ⋮ menu, then Add to Home screen or Install app.
+
 ## Accessibility
 
 - Text follows the iPhone's Text Size setting (Settings, Display & Brightness, Text Size, or Accessibility, Larger Text); the default size looks as designed. Well above the default, a larger-text layout switches on: one-line title, selectors as tidy grids, the month name on its own line, stacked buttons and shorter search hints. Checked at four sizes up to a large accessibility size with nothing cut off or running off the screen.
