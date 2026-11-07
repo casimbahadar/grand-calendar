@@ -1561,13 +1561,22 @@ function wire() {
   };
   $('kid-min').addEventListener('change', kidChange); $('kid-max').addEventListener('change', kidChange);
   $('has-kids').addEventListener('change', (ev) => { state.hasKids = ev.target.checked; store.set('hasKids', state.hasKids); state.preset = false; render(); });
-  $('share-app').addEventListener('click', async () => {
-    const url = location.origin + location.pathname.replace(/index\.html$/, '');
-    const data = { title: 'Grand Calendar', text: 'Free events, programs and activities across Waterloo Region, in one place.', url };
-    try {
-      if (navigator.share) { await navigator.share(data); $('share-result').textContent = ''; return; }
-      await navigator.clipboard.writeText(url); $('share-result').textContent = `Link copied: ${url}`;
-    } catch (err) { if (err?.name !== 'AbortError') $('share-result').textContent = `Share this link: ${url}`; }
+  // Sharing. iPhone may not open its share sheet on top of an open Settings window, so Settings
+  // closes first. The link is also always shown with its own Copy button, in case sharing isn't available.
+  const appUrl = location.origin + location.pathname.replace(/index\.html$/, '');
+  $('share-url').value = appUrl;
+  $('share-app').addEventListener('click', () => {
+    const data = { title: 'Grand Calendar', text: 'Free events, programs and activities across Waterloo Region, in one place.', url: appUrl };
+    if (!navigator.share) { $('share-result').textContent = 'Sharing isn\'t available here. Use Copy link instead.'; return; }
+    $('settings').close();
+    navigator.share(data).catch((err) => {
+      if (err?.name === 'AbortError') return; // closed the share sheet
+      toast('Couldn\'t open sharing. In Settings, use Copy link instead.');
+    });
+  });
+  $('share-copy').addEventListener('click', async () => {
+    try { await navigator.clipboard.writeText(appUrl); $('share-result').textContent = 'Link copied. Paste it into a message.'; }
+    catch { $('share-url').select(); $('share-result').textContent = 'Press and hold the link above, then Copy.'; }
   });
   // First visit: a short welcome that asks who the app is for. Existing users skip it.
   if (!store.get('setupDone', false)) {

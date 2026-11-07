@@ -446,3 +446,5 @@ details.fold-inline > summary { cursor: pointer; font-weight: 700; color: var(--
 details.owner-setup { margin-top: var(--s5); border-top: 1px solid var(--line); padding-top: var(--s3); }
 details.owner-setup > summary { cursor: pointer; font-weight: 700; color: var(--ink-2); min-height: var(--btn-h); display: flex; align-items: center; }
 #welcome p { margin: 0 0 var(--s3); }
+.share-link { margin-top: var(--s3); }
+.share-link .place-row input { flex: 1; min-width: 0; }
