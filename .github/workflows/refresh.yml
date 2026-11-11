@@ -36,6 +36,7 @@ jobs:
           node test-import.mjs
           node test-providers.mjs
           node test-export.mjs
+          node test-business.mjs
 
       - name: Gather events
         run: |
