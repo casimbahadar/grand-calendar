@@ -1,0 +1,78 @@
+name: Refresh events
+
+on:
+  schedule:
+    - cron: "17 * * * *"   # every hour at 17 past (GitHub may start it late); status pages about every 6 h
+  workflow_dispatch:           # adds a "Run workflow" button for manual runs
+    inputs:
+      test_push:
+        description: "Send a test alert to your phone"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: refresh-events
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    env:
+      HAS_PUSH: ${{ secrets.PUSH_CONFIG != '' }}
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Run checks (stops here if anything is broken)
+        run: |
+          node test-ages.mjs
+          node test-gather.mjs
+          node test-rules.mjs
+          node test-guide.mjs
+          node test-calendar.mjs
+          node test-import.mjs
+          node test-providers.mjs
+          node test-export.mjs
+          node test-business.mjs
+
+      - name: Gather events
+        run: |
+          node --version
+          node gather.mjs
+
+      - name: Program guides (about once a day; skipped otherwise)
+        continue-on-error: true
+        run: |
+          command -v pdftotext || (sudo apt-get update -qq && sudo apt-get install -y -qq poppler-utils)
+          node gather-programs.mjs
+
+      - name: Provider check (about once a month; skipped otherwise)
+        continue-on-error: true
+        run: node check-providers.mjs
+
+      - name: Season alerts
+        if: env.HAS_PUSH == 'true'
+        continue-on-error: true
+        env:
+          PUSH_CONFIG: ${{ secrets.PUSH_CONFIG }}
+          TEST_PUSH: ${{ github.event.inputs.test_push }}
+        run: |
+          npm install --no-save --no-audit --no-fund web-push@3.6.7
+          node notify.mjs
+
+      - name: Save events.json if it changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add events.json
+          for f in programs.json guides.json notify-state.json provider-checks.json; do if [ -f "$f" ]; then git add "$f"; fi; done
+          if git diff --cached --quiet; then
+            echo "No changes to save"
+            exit 0
+          fi
+          git commit -m "Refresh events"
+          git pull --rebase
+          git push

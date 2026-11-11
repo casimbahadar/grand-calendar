@@ -1,0 +1,41 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Luma//Communitech//EN
+X-WR-CALNAME:Communitech
+X-WR-CALDESC:Luma Calendar
+REFRESH-INTERVAL;VALUE=DURATION:PT12H
+X-PUBLISHED-TTL:PT12H
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+DTSTART:20261117T140000Z
+DTEND:20261117T220000Z
+DTSTAMP:20261111T233902Z
+ORGANIZER;CN="Communitech Events Team":MAILTO:calendar-invite@lu.ma
+UID:evt-IbpEjXFqjX7alZi@events.lu.ma
+SUMMARY:Coworking Day
+DESCRIPTION:Get up-to-date information at: https://luma.com/coworkingday20
+ 26\n\nAddress:\nCommunitech\nKitchener, ON\nCanada\n\nHosted by Communitec
+ h Events Team
+LOCATION:Communitech, 151 Charles St W Suite 100, Kitchener, ON N2G 1H6, C
+ anada
+GEO:43.4512795;-80.4981141
+SEQUENCE:216603542
+STATUS:TENTATIVE
+END:VEVENT
+BEGIN:VEVENT
+DTSTART:20260601T213000Z
+DTEND:20260601T223000Z
+DTSTAMP:20261111T233902Z
+ORGANIZER;CN="Communitech Events Team":MAILTO:calendar-invite@lu.ma
+UID:evt-si0HbreTSZmXPJo@events.lu.ma
+SUMMARY:AI Power Hour: Set Up an AI That Knows Your Business
+DESCRIPTION:Get up-to-date information at: https://luma.com/l0i34md7\n\nAd
+ dress:\nCheck event page for more details.\n\nHosted by Communitech Events
+  Team
+LOCATION:https://luma.com/event/evt-si0HbreTSZmXPJo
+GEO:43.44963374595017;-80.49641288430279
+SEQUENCE:216603542
+STATUS:TENTATIVE
+END:VEVENT
+END:VCALENDAR

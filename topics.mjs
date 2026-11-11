@@ -41,6 +41,15 @@ export const TOPICS = [
       'gymnastics', 'fun run', 'run club', 'running club', 'public skating', 'family swim', 'public swim'],
     titleOnly: ['skate', 'skating', 'swim', 'swimming', 'fitness', 'soccer', 'basketball', 'hockey', 'climbing',
       'sports', 'dance', 'dancing', 'vs', 'vs.'], categories: ['Sports'] },
+  // Everything from the business and tech sources counts (decided Nov 2026), plus events
+  // elsewhere whose own words say business, networking or startups. "Tech" alone isn't used:
+  // the library's "Tech Connect" sessions are device help, not business events.
+  { id: 'business-tech', label: 'Business & tech',
+    anywhere: ['networking', 'entrepreneur', 'entrepreneurs', 'entrepreneurship', 'startup', 'startups', 'start-up',
+      'small business', 'founder', 'founders', 'business plan', 'career fair', 'job fair', 'chamber of commerce',
+      'pitch competition', 'pitch night', 'coworking', 'co-working', 'venture capital', 'hackathon', 'go-to-market'],
+    titleOnly: ['business', 'career', 'careers', 'marketing'],
+    categories: [], sources: ['communitech', 'waterloo-tech', 'small-business-centre', 'accelerator-centre'] },
   { id: 'markets', label: 'Markets',
     anywhere: ['farmers market', "farmers' market", 'farmers’ market', 'craft fair', 'craft show', 'bazaar',
       'christkindl', 'pop-up shop', 'sip & shop', 'holiday market', 'christmas market', 'night market'],
@@ -61,6 +70,7 @@ const COMPILED = TOPICS.map((t) => ({
   any: t.anywhere.map((w) => [w, wordRe(w)]),
   title: t.titleOnly.map((w) => [w, wordRe(w)]),
   cats: new Set(t.categories.map((c) => c.toLowerCase())),
+  sources: t.sources ? new Set(t.sources) : null,
 }));
 
 function clean(text) {
@@ -87,6 +97,7 @@ export function topicsOf(e) {
     if (inTitle) hit = { word: inTitle, where: 'title' };
     if (!hit) { const c = cats.find((x) => t.cats.has(x.toLowerCase())); if (c) hit = { word: c, where: 'category' }; }
     if (!hit) { const inDesc = find(desc, t.any); if (inDesc) hit = { word: inDesc, where: 'description' }; }
+    if (!hit && t.sources && t.sources.has(e.source)) hit = { word: 'business and tech source', where: 'source' };
     if (hit) out.push({ id: t.id, label: t.label, ...hit });
   }
   return out;

@@ -129,6 +129,7 @@ export function normalizeEvent(raw, source, checkedAt) {
   const { timeListed } = timed;
 
   let description = val('DESCRIPTION') ? unescapeText(val('DESCRIPTION')).trim() : '';
+  const fullDescription = description;
   const age = readAges(title, description); // read before the description is shortened
   let descriptionTruncated = false;
   if (description.length > DESC_MAX) { description = description.slice(0, DESC_MAX); descriptionTruncated = true; }
@@ -139,7 +140,21 @@ export function normalizeEvent(raw, source, checkedAt) {
     url = source.eventUrl(uid);
     notes.push('Event link built from the source\'s event number (its feed has no link field).');
   }
-  const location = val('LOCATION') ? unescapeText(val('LOCATION')).replace(/\s+/g, ' ').trim() : null;
+  if (!url && source.linkFromDescription) {
+    const m = source.linkFromDescription.exec(fullDescription);
+    if (m) { url = m[0]; notes.push('Event link taken from the event\'s description (its feed has no link field).'); }
+  }
+  let location = val('LOCATION') ? unescapeText(val('LOCATION')).replace(/\s+/g, ' ').trim() : null;
+  if (location && /^https?:\/\/\S+$/.test(location)) {
+    // Some feeds give only a link as the location (online, or the address is shared on registration).
+    if (!url) url = location;
+    location = null;
+    notes.push('The feed gives only a link for the location; it may be online or shared on registration.');
+  }
+  if (!url && source.fallbackUrl) {
+    url = source.fallbackUrl;
+    notes.push(`Links to ${source.name}'s events calendar (its feed has no link for each event).`);
+  }
   const categories = val('CATEGORIES') ? splitCategories(val('CATEGORIES')) : [];
   const status = val('STATUS') ? val('STATUS').trim().toUpperCase() : null; // e.g. CONFIRMED, CANCELLED
   let geo = null;

@@ -36,6 +36,7 @@ These rules shape every part of the code:
 |---|---|---|
 | Waterloo Public Library events | iCal feed, hourly; event pages for registration status | GitHub job |
 | Explore Waterloo Region events | iCal feed, read on the phone (it blocks GitHub's servers) | Phone |
+| Communitech (Luma), the Waterloo tech community calendar kept by Builders Club (Luma), Waterloo Region Small Business Centre, Accelerator Centre | Calendar feeds published for subscribing; Luma times converted from UTC; Toronto events hidden | GitHub job |
 | City of Waterloo program guide | PDF, checked daily, read again only when the file changes. Preschool, Children's, Youth, Adult and Swim sections | GitHub job |
 | Township of Wellesley programs | Programs web page, checked daily | GitHub job |
 | Web search for other providers | Tavily, through your own Cloudflare Worker | Phone, on request |
@@ -44,6 +45,7 @@ These rules shape every part of the code:
 
 - Kitchener Public Library, and the Kitchener, Waterloo, Wilmot, Woolwich, North Dumfries and Stratford municipal calendars. These block automated requests.
 - Program registration on ActiveNet (Kitchener, Wilmot, Wellesley, Woolwich, Cambridge) and PerfectMind (Stratford). Their terms don't allow automated access.
+- Greater KW Chamber of Commerce and Cambridge Chamber of Commerce events: behind member or ticketing systems, so the app links to their calendars.
 - Cambridge's Activities Guide. It's published only as a BlueToad flipbook whose text comes out scrambled (ages and times separate from their classes), so it can't be read reliably. A PDF from the city would fix this.
 - Eventbrite, Meetup and Luma. There's no free search access for these. Meetup's API needs a paid Meetup Pro subscription to get a key, so it isn't used. Live search can still find Meetup pages.
 - Visit Stratford. Its robots.txt disallows all automated access.
@@ -100,7 +102,7 @@ All files sit at the repo root except the workflow.
 - `worker.js`: paste this into a Cloudflare Worker. It isn't used from the repo itself.
 
 **Tests**
-- `test-ages.mjs`, `test-gather.mjs`, `test-rules.mjs`, `test-guide.mjs`, `test-calendar.mjs`, `test-import.mjs`, `test-providers.mjs`, `test-export.mjs`, with saved copies of real source data (`*-sample.*`, `wpl-page-*.html`).
+- `test-ages.mjs`, `test-gather.mjs`, `test-rules.mjs`, `test-guide.mjs`, `test-calendar.mjs`, `test-import.mjs`, `test-providers.mjs`, `test-export.mjs`, `test-business.mjs`, with saved copies of real source data (`*-sample.*`, `wpl-page-*.html`).
 
 ## Setup
 
@@ -139,6 +141,7 @@ node test-calendar.mjs
 node test-import.mjs
 node test-providers.mjs
 node test-export.mjs
+node test-business.mjs
 ```
 
 The workflow runs these before every gather. If any fail, nothing is published and the previous data stays in place.

@@ -53,6 +53,51 @@ export const SOURCES = [
     defaultPlace: 'Waterloo',
     statusFromPages: true,
   },
+  // Business and tech sources (Nov 2026). All four publish calendar feeds meant for subscribing,
+  // and their robots.txt files don't block them. Luma's feeds give times in UTC (converted) and
+  // put each event's link in its description.
+  {
+    id: 'communitech',
+    name: 'Communitech',
+    kind: 'ical-single',
+    server: true,
+    business: true,
+    origin: 'https://api.luma.com',
+    feedUrl: () => 'https://api.luma.com/ics/get?entity=calendar&id=cal-xN0J6QkQRTN3jiU',
+    linkFromDescription: /https:\/\/luma\.com\/[A-Za-z0-9-]+/,
+  },
+  {
+    id: 'waterloo-tech',
+    name: 'Waterloo tech community calendar',
+    kind: 'ical-single',
+    server: true,
+    business: true,
+    origin: 'https://api.luma.com',
+    feedUrl: () => 'https://api.luma.com/ics/get?entity=calendar&id=cal-rJoHBmPlHGvg5F8',
+    linkFromDescription: /https:\/\/luma\.com\/[A-Za-z0-9-]+/,
+    // The shared calendar (kept by Builders Club) also lists Communitech's events; keep one copy.
+    skipSameEventAs: ['communitech'],
+  },
+  {
+    id: 'small-business-centre',
+    name: 'Waterloo Region Small Business Centre',
+    kind: 'ical-single',
+    server: true,
+    business: true,
+    origin: 'https://www.waterlooregionsmallbusiness.com',
+    feedUrl: () => 'https://www.waterlooregionsmallbusiness.com/events/?ical=1',
+  },
+  {
+    id: 'accelerator-centre',
+    name: 'Accelerator Centre',
+    kind: 'ical-single',
+    server: true,
+    business: true,
+    origin: 'https://www.acceleratorcentre.com',
+    feedUrl: () => 'https://www.acceleratorcentre.com/events-listings/?ical=1',
+    // Its feed normally has each event's link; if one is missing, link to its events calendar.
+    fallbackUrl: 'https://www.acceleratorcentre.com/event-calendar/',
+  },
 ];
 
 // ---------- robots.txt ----------
@@ -147,7 +192,9 @@ async function gatherSingle(source, checkedAt) {
   const text = await res.text();
   if (!text.includes('BEGIN:VCALENDAR')) throw new Error('response was not a calendar file');
   const all = parseICS(text).map((r) => normalizeEvent(r, source, checkedAt)).filter(Boolean);
-  const events = all.filter((e) => e.start.date <= horizon);
+  // Upcoming only (some feeds keep years of past events), so counts match what the app shows.
+  const today = todayToronto();
+  const events = all.filter((e) => e.start.date <= horizon && (e.end ? e.end.date : e.start.date) >= today);
   // The feed caps at 500 events; if it is full we may be missing some.
   return { events, pages: 1, truncated: all.length >= 500 };
 }
@@ -221,6 +268,13 @@ async function addPageStatus(source, events, prev, fullPass) {
 // firstSeen = when Grand Calendar first saw the event. The app uses it for the "New" badge.
 // Events already in the previous file keep their time (or that file's time, for files made
 // before this field existed), so an upgrade doesn't mark everything as new.
+// The same Luma event can sit on two Luma calendars; keep the first copy (Luma's event ID is shared).
+export function dropSameLumaEvents(already, incoming, fromSources) {
+  const lumaId = (e) => (e.id.match(/evt-[A-Za-z0-9]+/) || [null])[0];
+  const seen = new Set(already.filter((e) => fromSources.includes(e.source)).map(lumaId).filter(Boolean));
+  return incoming.filter((e) => !seen.has(lumaId(e)));
+}
+
 export function assignFirstSeen(events, prev, now) {
   const prevById = new Map((prev?.events || []).map((e) => [e.id, e]));
   for (const e of events) {
@@ -266,6 +320,11 @@ export async function run({ fixtures = {} } = {}) {
             fullPassAt: fullPass ? checkedAt : prevStatus.statusPages.fullPassAt,
           };
         }
+      }
+      if (source.skipSameEventAs) {
+        const before = result.events.length;
+        result.events = dropSameLumaEvents(events, result.events, source.skipSameEventAs);
+        result.duplicatesSkipped = before - result.events.length;
       }
       events.push(...result.events);
       Object.assign(status, {

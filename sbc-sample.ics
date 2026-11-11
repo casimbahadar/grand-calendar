@@ -1,0 +1,78 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Waterloo Region Small Business Centre - ECPv6.18.3.1//NONSGML v1.0//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Waterloo Region Small Business Centre
+X-ORIGINAL-URL:https://www.waterlooregionsmallbusiness.com
+X-WR-CALDESC:Events for Waterloo Region Small Business Centre
+REFRESH-INTERVAL;VALUE=DURATION:PT1H
+X-Robots-Tag:noindex
+X-PUBLISHED-TTL:PT1H
+BEGIN:VTIMEZONE
+TZID:America/Toronto
+BEGIN:DAYLIGHT
+TZOFFSETFROM:-0500
+TZOFFSETTO:-0400
+TZNAME:EDT
+DTSTART:20250309T070000
+END:DAYLIGHT
+BEGIN:STANDARD
+TZOFFSETFROM:-0400
+TZOFFSETTO:-0500
+TZNAME:EST
+DTSTART:20251102T060000
+END:STANDARD
+BEGIN:DAYLIGHT
+TZOFFSETFROM:-0500
+TZOFFSETTO:-0400
+TZNAME:EDT
+DTSTART:20260308T070000
+END:DAYLIGHT
+BEGIN:STANDARD
+TZOFFSETFROM:-0400
+TZOFFSETTO:-0500
+TZNAME:EST
+DTSTART:20261101T060000
+END:STANDARD
+BEGIN:DAYLIGHT
+TZOFFSETFROM:-0500
+TZOFFSETTO:-0400
+TZNAME:EDT
+DTSTART:20270314T070000
+END:DAYLIGHT
+BEGIN:STANDARD
+TZOFFSETFROM:-0400
+TZOFFSETTO:-0500
+TZNAME:EST
+DTSTART:20271107T060000
+END:STANDARD
+END:VTIMEZONE
+BEGIN:VEVENT
+DTSTART;TZID=America/Toronto:20261124T130000
+DTEND;TZID=America/Toronto:20261124T143000
+DTSTAMP:20261020T150426Z
+CREATED:20260724T180701Z
+LAST-MODIFIED:20261020T150426Z
+UID:10001588-1795525200-1795530600@www.waterlooregionsmallbusiness.com
+SUMMARY:Business Plan 101 | Nov 24
+DESCRIPTION:Why have a business plan? A business plan is a roadmap for your business that outlines goals and details how you plan to achieve those goals. \nTHIS SESSION WILL EXPLORE: \n\nBusiness Plan overview & why it’s vital\nThought mapping your business\nResearch /information you’ll need\nUnderstanding your target market\nBusiness Model Canvas: 1 page plan\nDeveloping a plan for success\nIntroduction to Financial Planning and Forecasting\n\nUpon completion of the webinar\, you will receive additional resources and templates and will be fully equipped to start drafting your own business plan. \nClick here to access the Zoom call (Please ensure you are registered so you can receive any post-session resources).
+URL:https://www.waterlooregionsmallbusiness.com/event/business-plan-101-nov-24/
+LOCATION:https://kitchener-ca.zoom.us/j/82487713938
+CATEGORIES:Growing your Business,Starting a Business
+ATTACH;FMTTYPE=image/jpeg:https://www.waterlooregionsmallbusiness.com/wp-content/uploads/2023/12/8c7a633dac558e88eeedf2470e9ab6b7-HmnSzz.tmp_.jpg
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;TZID=America/Toronto:20261125T130000
+DTEND;TZID=America/Toronto:20261125T143000
+DTSTAMP:20261102T152408Z
+CREATED:20261102T152008Z
+LAST-MODIFIED:20261102T152408Z
+UID:10001609-1795611600-1795617000@www.waterlooregionsmallbusiness.com
+SUMMARY:Demystifying Succession Planning
+DESCRIPTION:Free Drop-In Workshop & One-on-One Consulting with George Boahene \n\nDate: November 25\nTime: 1:00 PM – 2:30 PM\nLocation: SDG Idea Factory\nCost: Free \nThinking about selling your business\, passing it on to family or employees\, or planning your retirement? Join us for an informal drop-in session with Business Advisor George Boahene to learn the basics of succession planning and explore your options for the future of your business. \nThis session will begin with a short presentation\, Demystifying Succession Planning\, followed by opportunities for one-on-one discussions and personalized guidance. Whether you’re just starting to think about transitioning your business or are ready to develop a plan\, George can help answer your questions and connect you with free resources available through Succession Ontario. \nWhat you’ll learn: \n\nThe fundamentals of succession and exit planning\nCommon transition options for business owners\nHow to start planning for a successful business transition\nResources and supports available through Succession Ontario\n\nDrop in\, ask questions\, and take the first step toward securing the future of your business. \nRegistration required. Learn more about Succession Ontario and the supports available to Ontario business owners.
+URL:https://www.waterlooregionsmallbusiness.com/event/succession-planning-nov2026/
+LOCATION:SDG Idea Factory\, 2 King Street West\, #Suite 100\, Kitchener\, ON\, N2G 1A3\, Canada
+ATTACH;FMTTYPE=image/jpeg:https://www.waterlooregionsmallbusiness.com/wp-content/uploads/2026/11/Succession.jpg
+END:VEVENT
+END:VCALENDAR

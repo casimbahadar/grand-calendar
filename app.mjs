@@ -25,7 +25,9 @@ const store = {
 
 const EW_MAX_AGE_MS = 6 * 60 * 60 * 1000;
 const PHONE_LOOKUPS_PER_VISIT = 3; // new venues looked up on OpenStreetMap per app open
-const SOURCE_NAMES = { wpl: 'Waterloo Public Library', 'explore-waterloo': 'Explore Waterloo Region' };
+const BUSINESS_SOURCES = new Set(['communitech', 'waterloo-tech', 'small-business-centre', 'accelerator-centre']);
+const SOURCE_NAMES = { wpl: 'Waterloo Public Library', 'explore-waterloo': 'Explore Waterloo Region',
+  communitech: 'Communitech', 'waterloo-tech': 'Waterloo tech community calendar', 'small-business-centre': 'Waterloo Region Small Business Centre', 'accelerator-centre': 'Accelerator Centre' };
 
 const state = {
   events: [],          // merged, ready to filter
@@ -347,6 +349,8 @@ function filtered() {
     if (over(e)) { hidden.earlier++; continue; }
     if (e.derived?.region?.status === 'out') continue;
     if (state.who !== 'everyone' && e.suit.adultsOnly) { hidden.adults++; continue; }
+    // Business and tech calendars list no ages; keep them out of Kids and Family views (they show under Everyone).
+    if (state.who !== 'everyone' && BUSINESS_SOURCES.has(e.source)) { hidden.business = (hidden.business || 0) + 1; continue; }
     let tier = null;
     if (state.who === 'kids') { tier = kidTier(e); if (tier.tier === 0) { hidden.otherAges++; continue; } }
     if (state.topics.size && !e.topicList.some((t) => state.topics.has(t.id))) continue;
@@ -523,6 +527,7 @@ function renderEvents() {
   }
   const hid = [];
   if (hidden.adults) hid.push(`${hidden.adults} adults-only`);
+  if (hidden.business) hid.push(`${hidden.business} business & tech`);
   if (hidden.otherAges) hid.push(`${hidden.otherAges} for other ages`);
   if (hidden.far) hid.push(`${hidden.far} farther away`);
   if (hidden.noLocation) hid.push(`${hidden.noLocation} with no known location`);
@@ -908,6 +913,9 @@ function renderElsewhere() {
     ['Meetup', q ? `https://www.meetup.com/find/?keywords=${enc}&location=ca--on--Kitchener&source=EVENTS` : 'https://www.meetup.com/find/ca--on--kitchener/', q ? `searches for “${q}” (also copies it)` : 'Kitchener area', true],
     ['Luma', 'https://lu.ma/discover', q ? `opens Luma and copies “${q}” to paste in its search` : 'discover events', true],
     ['Visit Stratford', 'https://visitstratford.ca/calendar/', 'Stratford events calendar'],
+    // Business events these sites can't share with the app: both are behind member or ticketing systems.
+    ['Greater KW Chamber of Commerce', 'https://greaterkwchamber.com/networking-events/events-calendar/', 'networking events calendar'],
+    ['Cambridge Chamber of Commerce', 'https://www.cambridgechamber.com/events/', 'events calendar'],
   ];
   $('elsewhere-count').textContent = `${links.length} sites`;
   $('elsewhere').replaceChildren(...links.map(([name, href, sub, copies]) => h('a', {

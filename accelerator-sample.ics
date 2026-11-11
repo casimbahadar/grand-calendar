@@ -1,0 +1,64 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Accelerator Centre - ECPv6.18.2//NONSGML v1.0//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Accelerator Centre
+X-ORIGINAL-URL:https://www.acceleratorcentre.com
+X-WR-CALDESC:Events for Accelerator Centre
+REFRESH-INTERVAL;VALUE=DURATION:PT1H
+X-Robots-Tag:noindex
+X-PUBLISHED-TTL:PT1H
+BEGIN:VTIMEZONE
+TZID:America/Toronto
+BEGIN:DAYLIGHT
+TZOFFSETFROM:-0500
+TZOFFSETTO:-0400
+TZNAME:EDT
+DTSTART:20260308T070000
+END:DAYLIGHT
+BEGIN:STANDARD
+TZOFFSETFROM:-0400
+TZOFFSETTO:-0500
+TZNAME:EST
+DTSTART:20261101T060000
+END:STANDARD
+BEGIN:DAYLIGHT
+TZOFFSETFROM:-0500
+TZOFFSETTO:-0400
+TZNAME:EDT
+DTSTART:20270314T070000
+END:DAYLIGHT
+BEGIN:STANDARD
+TZOFFSETFROM:-0400
+TZOFFSETTO:-0500
+TZNAME:EST
+DTSTART:20271107T060000
+END:STANDARD
+BEGIN:DAYLIGHT
+TZOFFSETFROM:-0500
+TZOFFSETTO:-0400
+TZNAME:EDT
+DTSTART:20280312T070000
+END:DAYLIGHT
+BEGIN:STANDARD
+TZOFFSETFROM:-0400
+TZOFFSETTO:-0500
+TZNAME:EST
+DTSTART:20281105T060000
+END:STANDARD
+END:VTIMEZONE
+BEGIN:VEVENT
+DTSTART;TZID=America/Toronto:20270118T183000
+DTEND;TZID=America/Toronto:20270118T220000
+DTSTAMP:20261109T145437Z
+CREATED:20261105T163522Z
+LAST-MODIFIED:20261109T145437Z
+UID:10000034-1800297000-1800309600@www.acceleratorcentre.com
+SUMMARY:3rd Annual Battle of the Bands
+DESCRIPTION:Turning Blue Monday into the Best Monday Ever! 💙\nJanuary 18\, 2027 | Maxwell’s Concerts & Events | Doors Open at 6:30 PM \nBlue Monday is about to get a whole lot louder! 🎸 \nThe Accelerator Centre’s third annual Battle of the Bands: Tech Edition is back\, bringing Waterloo Region’s tech community together for a night of live music\, friendly competition\, and support for founder mental health. \nOver the past 2 years\, we’ve raised nearly $15\,000 for CMHA Waterloo Wellington\, proving that our tech community knows how to rock for a good cause. This year\, we’re turning up the volume! \nBuilding a company can be an incredible journey\, but it comes with real challenges. Long hours\, financial pressures\, uncertainty\, and the responsibility of leading a team can take a toll on founders’ mental health. We believe supporting entrepreneurs means supporting the people behind the businesses\, too. \nThat’s why we’re bringing founders\, startup teams\, alumni\, industry partners\, and friends together on Blue Monday to celebrate community\, make meaningful connections\, and raise funds for local mental health services. \nWhat to Expect\n🎸 Live Tech Bands: Watch talented members of Waterloo Region’s tech community trade their laptops for instruments and battle it out on stage. \n🎶 A Night to Remember: Enjoy live music\, friendly competition\, and plenty of rock ‘n’ roll as our bands compete for the Battle of the Bands trophy. \n🤝 Bring Your Community: Rally your coworkers\, bring your friends\, or make it a team night out. It’s a chance to connect with the people who make Waterloo Region’s tech ecosystem special. \n💙 Rock for Mental Health: Help shine a spotlight on founder well-being and raise funds for essential mental health services in our community. \nWhy Blue Monday?\nBlue Monday may be known as the most depressing day of the year\, but we’re turning it into an opportunity to talk about something that matters: mental health. \nEntrepreneurship can be isolating\, and the pressure to succeed often makes it difficult for founders to prioritize their own well-being. \nBattle of the Bands is a reminder that behind every startup is a person\, and that a strong startup community supports its people as much as its businesses. \nWe’re bringing our community together through music\, connection\, and a little friendly competition to remind founders they’re not alone. \nSupporting CMHA Waterloo Wellington\nProceeds from Battle of the Bands will support Canadian Mental Health Association (CMHA) Waterloo Wellington\, which provides mental health\, addiction\, and developmental services to nearly 18\,000 people across our region each year. \nCommunity support helps fund vital services\, including 1st Step\, a program celebrating 20 years of helping individuals and families experiencing first-episode psychosis. Since launching in 2006\, the program has grown from supporting 52 individuals in its first year to 269 in 2025–26. \nBy joining us\, you’re helping make mental health care and support more accessible to people in our community. \nGet Your Tickets! 🎟️\nTickets: $25 \nOne night. Local tech bands. A community coming together for mental health. \nGrab your friends\, rally your team\, and join us on January 18 as we turn Blue Monday into the Best Monday Ever! \nInterested in Performing?\nWe’re CHALLENGING YOU to put a band together and rock out for a good cause! Fill out our band application to particpate. \nThank You to Our Sponsors\nTrophy Sponsor: Magnet Forensics \n \nWe’re grateful to our sponsors and alumni community for helping make this event possible and supporting mental health across Waterloo Region. \n 
+URL:https://www.acceleratorcentre.com/event-page/3rd-annual-battle-of-the-bands/
+LOCATION:Maxwells\, 35 University Ave E\, Waterloo\, Ontario\, N2J 2V9\, Canada
+ATTACH;FMTTYPE=image/png:https://www.acceleratorcentre.com/wp-content/uploads/2026/11/BOTB_2027_Website-Image.png
+END:VEVENT
+END:VCALENDAR
