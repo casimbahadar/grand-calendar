@@ -3,17 +3,17 @@
   "waterloo-guide": {
    "name": "City of Waterloo program guide",
    "url": "https://media-002-ca.cdn.govstack.com/waterloo-013-ca/media/v3uac3f2/activewaterloo-guide.pdf",
-   "edition": "FALL 2026",
-   "sha256": "f660637b6fd573ff035c4dbb3fc3f83b225a29ca3be2a16ab28247f702f2bea1",
-   "checkedAt": "2026-11-17T22:56:38.513Z",
-   "readAt": "2026-11-04T06:30:12.443Z",
+   "edition": "WINTER 2027",
+   "sha256": "b373795da7b48385d39dd95dc38e0fa5451d3f23ba5250d5c7f302191f167d3f",
+   "checkedAt": "2026-11-18T22:00:58.734Z",
+   "readAt": "2026-11-18T22:00:58.734Z",
    "ok": true,
-   "programs": 840,
-   "registrationOpens": "Active Living, Aug 18 (Waterloo residents), Aug 21 (non-residents), Swim, Sept 8 (Waterloo residents), Sept 11 (non-residents)",
+   "programs": 640,
+   "registrationOpens": "Active Living, Dec 1 (Waterloo residents), Dec 4 (non-residents), Swim & leadership, Dec 15 (Waterloo residents), Dec 18 (non-residents), AwInside the guide, How to register 3, Inclusion services 6, Preschool 8, Children 12, Youth 18, Adult 21, Adult leagues – CARL 39, Drop-in 40, Leadership 47, Swim 52, waterloo.ca/subscribe, Sign up for our Active Waterloo, enewsletter — a quick and easy, way to stay connected with the, city's programs and events., Registration 3, Register online, Create or retrieve your",
    "readerVersion": 2,
-   "newEditionAt": null,
-   "previousEdition": null,
-   "fileChangedAt": "2026-11-04T06:30:12.443Z"
+   "newEditionAt": "2026-11-18T22:00:58.734Z",
+   "previousEdition": "FALL 2026",
+   "fileChangedAt": "2026-11-18T22:00:58.734Z"
   },
   "wellesley-programs": {
    "name": "Township of Wellesley programs",
